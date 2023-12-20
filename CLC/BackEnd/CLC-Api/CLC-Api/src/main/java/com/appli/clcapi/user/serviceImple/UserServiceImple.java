@@ -68,11 +68,22 @@ public class UserServiceImple implements UserService {
     }
 
     @Override
-    public Optional<UserEntity> updateUser(UserDto userDto) {
+    public String updateUser(UserDto userDto) {
         try {
             Optional<UserEntity> existingUserOptional = userRepo.findById(userDto.getUserId());
             UserEntity aUser = null;
-                if (existingUserOptional.isPresent()) {
+            if (existingUserOptional.isPresent()) {
+                if(userDto.getConfirmPw()==null && userDto.getPassword()==null){
+                        aUser = existingUserOptional.get();
+                        aUser.setFirstname(userDto.getFirstname());
+                        aUser.setLastname(userDto.getLastname());
+                        aUser.setUsername(userDto.getUsername());
+                        aUser.setPassword(existingUserOptional.get().getPassword());
+                        aUser.setConfirmPw(existingUserOptional.get().getConfirmPw());
+                        aUser.setRole(userDto.getRole());
+                        aUser.setGender(userDto.getGender());
+                        aUser.setEmail(userDto.getEmail());
+                }else{
                     aUser = existingUserOptional.get();
                     aUser.setFirstname(userDto.getFirstname());
                     aUser.setLastname(userDto.getLastname());
@@ -83,8 +94,9 @@ public class UserServiceImple implements UserService {
                     aUser.setGender(userDto.getGender());
                     aUser.setEmail(userDto.getEmail());
                 }
+            }
             userRepo.save(aUser);
-            return Optional.of(aUser);
+            return "Updated";
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException();

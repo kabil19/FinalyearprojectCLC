@@ -1,12 +1,10 @@
 package com.appli.clcapi.user.controller;
 import com.appli.clcapi.user.dto.UserDto;
-import com.appli.clcapi.user.entity.UserEntity;
 import com.appli.clcapi.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,14 +42,13 @@ private final UserService userService ;
     }
 
     @PutMapping("updateUser")
-    private Optional<UserEntity> update(@RequestBody UserDto userDto)
+    private String update(@RequestBody UserDto userDto)
     {
         return  userService.updateUser(userDto);
     }
 
-    @GetMapping(path = "selectUsers")
-    private ArrayList<UserDto> selectUsers(@RequestBody String existingChars)
-    {
+    @GetMapping(path = "selectUsers/{existingChars}")
+    private ArrayList<UserDto> selectUsers(@PathVariable String existingChars) throws Exception {
         return userService.selectUsers(existingChars);
     }
 
