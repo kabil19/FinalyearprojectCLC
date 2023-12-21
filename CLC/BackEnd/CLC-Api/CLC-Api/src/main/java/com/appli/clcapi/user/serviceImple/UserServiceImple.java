@@ -73,26 +73,19 @@ public class UserServiceImple implements UserService {
             Optional<UserEntity> existingUserOptional = userRepo.findById(userDto.getUserId());
             UserEntity aUser = null;
             if (existingUserOptional.isPresent()) {
+                aUser = existingUserOptional.get();
+                aUser.setFirstname(userDto.getFirstname());
+                aUser.setLastname(userDto.getLastname());
+                aUser.setUsername(userDto.getUsername());
+                aUser.setRole(userDto.getRole());
+                aUser.setGender(userDto.getGender());
+                aUser.setEmail(userDto.getEmail());
                 if(userDto.getConfirmPw()==null && userDto.getPassword()==null){
-                        aUser = existingUserOptional.get();
-                        aUser.setFirstname(userDto.getFirstname());
-                        aUser.setLastname(userDto.getLastname());
-                        aUser.setUsername(userDto.getUsername());
-                        aUser.setPassword(existingUserOptional.get().getPassword());
-                        aUser.setConfirmPw(existingUserOptional.get().getConfirmPw());
-                        aUser.setRole(userDto.getRole());
-                        aUser.setGender(userDto.getGender());
-                        aUser.setEmail(userDto.getEmail());
+                    aUser.setPassword(existingUserOptional.get().getPassword());
+                    aUser.setConfirmPw(existingUserOptional.get().getConfirmPw());
                 }else{
-                    aUser = existingUserOptional.get();
-                    aUser.setFirstname(userDto.getFirstname());
-                    aUser.setLastname(userDto.getLastname());
-                    aUser.setUsername(userDto.getUsername());
                     aUser.setPassword(userDto.getPassword());
                     aUser.setConfirmPw(userDto.getConfirmPw());
-                    aUser.setRole(userDto.getRole());
-                    aUser.setGender(userDto.getGender());
-                    aUser.setEmail(userDto.getEmail());
                 }
             }
             userRepo.save(aUser);

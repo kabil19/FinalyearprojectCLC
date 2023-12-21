@@ -18,11 +18,16 @@ private final UserService userService ;
     public String registerUser(@RequestBody UserDto userDto) throws Exception
     {
         try{
-            if(Objects.equals(userDto.getPassword(), userDto.getConfirmPw())){
-                return userService.register(userDto);
+            if(userDto.getPassword() != null){
+                if(Objects.equals(userDto.getPassword(), userDto.getConfirmPw())){
+                    return userService.register(userDto);
+                }else{
+                    return "Password isn't matching";
+                }
             }else{
-                return "Password isn't matching";
+                return "Password can't be null";
             }
+
         }catch (Exception e){
             e.printStackTrace();
             throw new RuntimeException();
