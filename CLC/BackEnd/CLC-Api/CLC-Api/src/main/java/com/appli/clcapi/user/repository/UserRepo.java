@@ -13,7 +13,11 @@ import java.util.Optional;
 @Repository
 public interface UserRepo extends JpaRepository<UserEntity,Long> {
 
-    Iterable<UserEntity> findByUsernameIsContainingIgnoreCase(String existingChars);
+    Iterable<UserEntity> findByUsernameIsContainingIgnoreCaseOrFirstnameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrGenderContainingIgnoreCase
+            (String username,
+             String firstname,
+             String email,
+             String gender);
 
 
 }

@@ -53,7 +53,7 @@ private final UserService userService ;
     }
 
     @GetMapping(path = "selectUsers/{existingChars}")
-    private ArrayList<UserDto> selectUsers(@PathVariable String existingChars) throws Exception {
+    private ArrayList<UserDto> selectUsers(@PathVariable String existingChars)  {
         return userService.selectUsers(existingChars);
     }
 

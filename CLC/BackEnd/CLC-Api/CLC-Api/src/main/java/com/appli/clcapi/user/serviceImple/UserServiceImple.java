@@ -98,11 +98,16 @@ public class UserServiceImple implements UserService {
     }
 
 
+    @Override
     public ArrayList<UserDto> selectUsers(String existingChars) {
         try {
 //            Optional<UserEntity> foundUsers =
             ArrayList<UserDto> userList = new ArrayList<>();
-            Iterable<UserEntity> searchedUser = userRepo.findByUsernameIsContainingIgnoreCase(existingChars);
+            Iterable<UserEntity> searchedUser = userRepo.findByUsernameIsContainingIgnoreCaseOrFirstnameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrGenderContainingIgnoreCase
+                            (existingChars,
+                            existingChars,
+                            existingChars,
+                            existingChars);
             for (UserEntity aUser : searchedUser) {
                 UserDto userDto = new UserDto(aUser);
                 userList.add(userDto);
