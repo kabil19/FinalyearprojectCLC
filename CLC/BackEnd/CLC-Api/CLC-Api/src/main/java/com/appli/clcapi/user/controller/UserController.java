@@ -1,4 +1,5 @@
 package com.appli.clcapi.user.controller;
+import com.appli.clcapi.user.dto.GetUserReqDto;
 import com.appli.clcapi.user.dto.UserDto;
 import com.appli.clcapi.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,7 @@ import java.util.Objects;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/user/")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class UserController {
 
 private final UserService userService ;
@@ -34,17 +35,21 @@ private final UserService userService ;
         }
     }
 
+
     @GetMapping(path="getAll")
-    public ArrayList<UserDto> getAllUsers() throws Exception
+    public ArrayList<GetUserReqDto> getAllUsers() throws Exception
     {
       return  userService.getAllUsers();
     }
 
+
+//    @CrossOrigin(originPatterns = "*")
     @DeleteMapping("deleteUser/{userId}")
     public String deleteUser(@PathVariable Long userId ) throws Exception
     {
         return userService.deleteUser(userId);
     }
+
 
     @PutMapping("updateUser")
     private String update(@RequestBody UserDto userDto)

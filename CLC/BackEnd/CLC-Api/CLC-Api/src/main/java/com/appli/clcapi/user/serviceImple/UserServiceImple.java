@@ -1,17 +1,21 @@
 package com.appli.clcapi.user.serviceImple;
 
+import com.appli.clcapi.user.dto.GetUserReqDto;
 import com.appli.clcapi.user.dto.UserDto;
 import com.appli.clcapi.user.entity.UserEntity;
 import com.appli.clcapi.user.repository.UserRepo;
 import com.appli.clcapi.user.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Optional;
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImple implements UserService {
     private final UserRepo userRepo;
+    private final PasswordEncoder passwordEncoder;
 
     public String register(UserDto userDto) {
         try {
@@ -23,8 +27,8 @@ public class UserServiceImple implements UserService {
                     .gender(userDto.getGender())
                     .role(userDto.getRole())
                     .email(userDto.getEmail())
-                    .password(userDto.getPassword())
-                    .confirmPw(userDto.getConfirmPw())
+                    .password(passwordEncoder.encode(userDto.getPassword()))
+                    .confirmPw(passwordEncoder.encode(userDto.getConfirmPw()))
                     .build();
             userRepo.save(user);
             return "Added";
@@ -35,13 +39,13 @@ public class UserServiceImple implements UserService {
     }
 
 
-    public ArrayList<UserDto> getAllUsers() {
+    public ArrayList<GetUserReqDto> getAllUsers() {
         try {
-            ArrayList<UserDto> userList = new ArrayList<>();
+            ArrayList<GetUserReqDto> userList = new ArrayList<>();
             Iterable<UserEntity> userEntityList = userRepo.findAll();
 
             for (UserEntity aUser : userEntityList) {
-                UserDto userDto = new UserDto(aUser);
+                GetUserReqDto userDto = new GetUserReqDto(aUser);
                 userList.add(userDto);
             }
             return userList;
@@ -84,8 +88,8 @@ public class UserServiceImple implements UserService {
                     aUser.setPassword(existingUserOptional.get().getPassword());
                     aUser.setConfirmPw(existingUserOptional.get().getConfirmPw());
                 }else{
-                    aUser.setPassword(userDto.getPassword());
-                    aUser.setConfirmPw(userDto.getConfirmPw());
+                    aUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+                    aUser.setConfirmPw(passwordEncoder.encode(userDto.getConfirmPw()));
                 }
             }
             userRepo.save(aUser);
