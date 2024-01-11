@@ -4,13 +4,14 @@ import com.appli.clcapi.user.dto.GetUserReqDto;
 import com.appli.clcapi.user.dto.UserDto;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface UserService{
 
 
     String register(UserDto userDto)throws Exception;
 
-    ArrayList<GetUserReqDto> getAllUsers() throws Exception;
+    List<GetUserReqDto> getAllUsers() throws Exception;
 
     String deleteUser(Long userId);
 

@@ -5,12 +5,14 @@ import com.appli.clcapi.user.dto.UserDto;
 import com.appli.clcapi.user.entity.UserEntity;
 import com.appli.clcapi.user.repository.UserRepo;
 import com.appli.clcapi.user.service.UserService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImple implements UserService {
@@ -39,15 +41,18 @@ public class UserServiceImple implements UserService {
     }
 
 
-    public ArrayList<GetUserReqDto> getAllUsers() {
+    public List<GetUserReqDto> getAllUsers() {
         try {
-            ArrayList<GetUserReqDto> userList = new ArrayList<>();
-            Iterable<UserEntity> userEntityList = userRepo.findAll();
+            List<GetUserReqDto> userList = new ArrayList<>();
+            List<UserEntity> userEntityList = userRepo.findAll();
 
             for (UserEntity aUser : userEntityList) {
                 GetUserReqDto userDto = new GetUserReqDto(aUser);
                 userList.add(userDto);
             }
+//            List<GetUserReqDto> userlist = userEntityList.stream()
+//                    .map(GetUserReqDto::new)
+//                    .collect(Collectors.toList());
             return userList;
 
         } catch (Exception e) {
@@ -62,6 +67,7 @@ public class UserServiceImple implements UserService {
         try {
             Optional<UserEntity> existingUserOptional = userRepo.findById(userId);
             UserEntity aUser = existingUserOptional.get();
+
             userRepo.delete(aUser);
             return "UserDeleted";
         } catch (Exception e) {
@@ -105,7 +111,6 @@ public class UserServiceImple implements UserService {
     @Override
     public ArrayList<UserDto> selectUsers(String existingChars) {
         try {
-//            Optional<UserEntity> foundUsers =
             ArrayList<UserDto> userList = new ArrayList<>();
             Iterable<UserEntity> searchedUser = userRepo.findByUsernameIsContainingIgnoreCaseOrFirstnameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrGenderContainingIgnoreCase
                             (existingChars,

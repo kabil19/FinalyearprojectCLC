@@ -27,7 +27,7 @@ private final AuthenticationProvider authenticationProvider;
         http
                 .authorizeHttpRequests(
                         (authReq)->authReq
-                                .requestMatchers("/user/*","/user/deleteUser/*","/user/selectUsers/*")
+                                .requestMatchers("/dash-board/user/**","/dash-board/customer/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated());

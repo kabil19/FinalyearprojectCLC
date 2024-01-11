@@ -5,19 +5,19 @@ import com.appli.clcapi.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/user/")
+@RequestMapping(path = "/dash-board/user/")
 @CrossOrigin(origins = "*")
 public class UserController {
 
 private final UserService userService ;
 
     @PostMapping(path = "register")
-    public String registerUser(@RequestBody UserDto userDto) throws Exception
-    {
+    public String registerUser(@RequestBody UserDto userDto) {
         try{
             if(userDto.getPassword() != null){
                 if(Objects.equals(userDto.getPassword(), userDto.getConfirmPw())){
@@ -37,27 +37,23 @@ private final UserService userService ;
 
 
     @GetMapping(path="getAll")
-    public ArrayList<GetUserReqDto> getAllUsers() throws Exception
+    public List<GetUserReqDto> getAllUsers() throws Exception
     {
       return  userService.getAllUsers();
     }
 
-
-//    @CrossOrigin(originPatterns = "*")
-    @DeleteMapping("deleteUser/{userId}")
-    public String deleteUser(@PathVariable Long userId ) throws Exception
-    {
+    @DeleteMapping("delete/{userId}")
+    public String deleteUser(@PathVariable Long userId ) {
         return userService.deleteUser(userId);
     }
 
-
-    @PutMapping("updateUser")
+    @PutMapping("update")
     private String update(@RequestBody UserDto userDto)
     {
         return  userService.updateUser(userDto);
     }
 
-    @GetMapping(path = "selectUsers/{existingChars}")
+    @GetMapping(path = "select/{existingChars}")
     private ArrayList<UserDto> selectUsers(@PathVariable String existingChars)  {
         return userService.selectUsers(existingChars);
     }
