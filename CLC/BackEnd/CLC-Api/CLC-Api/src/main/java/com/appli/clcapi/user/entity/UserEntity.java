@@ -28,6 +28,7 @@ public class UserEntity implements UserDetails {
     private String email;
     private String confirmPw;
     private String password;
+    private boolean deleted = false;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

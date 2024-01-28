@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/dash-board/user/")
+@RequestMapping(path = "/api/user/")
 @CrossOrigin(origins = "*")
 public class UserController {
 
@@ -54,7 +54,7 @@ private final UserService userService ;
     }
 
     @GetMapping(path = "select/{existingChars}")
-    private ArrayList<UserDto> selectUsers(@PathVariable String existingChars)  {
+    private ArrayList<GetUserReqDto> selectUsers(@PathVariable String existingChars)  {
         return userService.selectUsers(existingChars);
     }
 

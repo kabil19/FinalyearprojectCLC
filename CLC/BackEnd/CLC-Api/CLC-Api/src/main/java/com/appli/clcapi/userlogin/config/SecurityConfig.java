@@ -27,7 +27,7 @@ private final AuthenticationProvider authenticationProvider;
         http
                 .authorizeHttpRequests(
                         (authReq)->authReq
-                                .requestMatchers("/dash-board/user/**","/dash-board/customer/**")
+                                .requestMatchers("/api/user/**","/api/customer/**","/api/vendor/**","/api/stock/**","/api/category/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated());

@@ -1,6 +1,7 @@
 package com.appli.clcapi.user.dto;
 
 import com.appli.clcapi.user.entity.UserEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,7 +33,9 @@ public class GetUserReqDto {
 
     @JsonProperty("email")
     private String email;
-
+    @JsonProperty(value = "deleted")
+    @JsonIgnore
+    private boolean deleted;
 
     public GetUserReqDto(UserEntity userEntity){
         this.userId = userEntity.getUserId();
@@ -42,5 +45,6 @@ public class GetUserReqDto {
         this.gender = userEntity.getGender();
         this.role = userEntity.getRole();
         this.email = userEntity.getEmail();
+        this.deleted =userEntity.isDeleted();
     }
 }

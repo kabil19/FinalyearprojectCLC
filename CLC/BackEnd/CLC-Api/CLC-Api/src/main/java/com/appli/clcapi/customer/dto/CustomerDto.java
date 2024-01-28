@@ -1,6 +1,7 @@
 package com.appli.clcapi.customer.dto;
 
 import com.appli.clcapi.customer.entity.CustomerEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +29,9 @@ public class CustomerDto {
     @JsonProperty("contact")
     private Integer contact;
 
-
+    @JsonProperty(value = "deleted")
+    @JsonIgnore
+    private boolean deleted;
     public CustomerDto(CustomerEntity customerEntity){
         this.custId = customerEntity.getCustId();
         this.email = customerEntity.getEmail();

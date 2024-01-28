@@ -33,12 +33,12 @@ public class CustomerServiceImple implements CustomerService {
     @Override
     public String delete(Long custId) {
         try{
-            var custDelete=customerRepo.findById(custId);
-            if (custDelete.isPresent()){
-                customerRepo.deleteById(custId);
-                return "Customer Deleted";
-            }
-            return "Customer not Found!";
+             var aCust = customerRepo.getReferenceById(custId);
+             aCust.setDeleted(true);
+             customerRepo.save(aCust);
+             return "Customer Deleted";
+
+
         }catch (Exception e){
             e.printStackTrace();
             throw new RuntimeException("Couldn't delete customer");
@@ -48,34 +48,49 @@ public class CustomerServiceImple implements CustomerService {
 
     @Override
     public String update(CustomerDto customerDto) {
-       Optional<CustomerEntity> foundCust= customerRepo.findById(customerDto.getCustId());
-       CustomerEntity updatedCustomer;
-        if(foundCust.isPresent()){
-            updatedCustomer = foundCust.get();
-            updatedCustomer.setCustName(customerDto.getCustName());
-            updatedCustomer.setEmail(customerDto.getEmail());
-            updatedCustomer.setContact(customerDto.getContact());
-            updatedCustomer.setAddress(customerDto.getAddress());
-        }else{
-            return "Couldn't find the customer";
+        try{
+            Optional<CustomerEntity> foundCust= customerRepo.findById(customerDto.getCustId());
+            CustomerEntity updatedCustomer;
+            if(foundCust.isPresent()){
+                updatedCustomer = foundCust.get();
+                updatedCustomer.setCustName(customerDto.getCustName());
+                updatedCustomer.setEmail(customerDto.getEmail());
+                updatedCustomer.setContact(customerDto.getContact());
+                updatedCustomer.setAddress(customerDto.getAddress());
+            }else{
+                return "Couldn't find the customer";
+            }
+            customerRepo.save(updatedCustomer);
+            return "Customer Updated";
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException("Error while updating the category");
         }
-        customerRepo.save(updatedCustomer);
-        return "Customer Updated";
+
     }
 
     @Override
     public List<CustomerDto> getAll() {
-      List<CustomerEntity> customersList = customerRepo.findAll();
-      List<CustomerDto> customersForView = new ArrayList<>();
-      for(CustomerEntity aCust : customersList){
-          CustomerDto customerDto = new CustomerDto(aCust);
-          customersForView.add(customerDto);
-      }
-      return customersForView;
+        try{
+            List<CustomerEntity> customersList = customerRepo.findAllByDeletedEquals(false);
+            List<CustomerDto> customersForView = new ArrayList<>();
+            for(CustomerEntity aCust : customersList){
+                CustomerDto customerDto = new CustomerDto(aCust);
+                customersForView.add(customerDto);
+            }
+            return customersForView;
+        }catch (Exception e){
+            e.printStackTrace();
+           // throw new RuntimeException("");
+        }
+
+        return null;
     }
 
     @Override
     public ArrayList<CustomerDto> selectCustomers(String existingChar) {
+
+
         Iterable<CustomerEntity> cust= customerRepo.findByEmailContainingIgnoreCaseOrAddressContainingIgnoreCaseOrCustNameContaining(
                 existingChar,
                 existingChar,
@@ -83,8 +98,11 @@ public class CustomerServiceImple implements CustomerService {
         );
         ArrayList<CustomerDto> customerForView = new ArrayList<>();
         for (CustomerEntity aCust : cust){
-            CustomerDto customerDto = new CustomerDto(aCust);
-            customerForView.add(customerDto);
+            if(!aCust.isDeleted()){
+                CustomerDto customerDto = new CustomerDto(aCust);
+                customerForView.add(customerDto);
+            }
+
         }
         return customerForView;
     }

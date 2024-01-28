@@ -29,6 +29,7 @@ public class UserServiceImple implements UserService {
                     .gender(userDto.getGender())
                     .role(userDto.getRole())
                     .email(userDto.getEmail())
+
                     .password(passwordEncoder.encode(userDto.getPassword()))
                     .confirmPw(passwordEncoder.encode(userDto.getConfirmPw()))
                     .build();
@@ -44,7 +45,7 @@ public class UserServiceImple implements UserService {
     public List<GetUserReqDto> getAllUsers() {
         try {
             List<GetUserReqDto> userList = new ArrayList<>();
-            List<UserEntity> userEntityList = userRepo.findAll();
+            List<UserEntity> userEntityList = userRepo.findAllByDeletedEquals(false);
 
             for (UserEntity aUser : userEntityList) {
                 GetUserReqDto userDto = new GetUserReqDto(aUser);
@@ -65,10 +66,9 @@ public class UserServiceImple implements UserService {
     @Override
     public String deleteUser(Long userId) {
         try {
-            Optional<UserEntity> existingUserOptional = userRepo.findById(userId);
-            UserEntity aUser = existingUserOptional.get();
-
-            userRepo.delete(aUser);
+            UserEntity aUser = userRepo.getReferenceById(userId);
+            aUser.setDeleted(true);
+            userRepo.save(aUser);
             return "UserDeleted";
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,7 +81,7 @@ public class UserServiceImple implements UserService {
     public String updateUser(UserDto userDto) {
         try {
             Optional<UserEntity> existingUserOptional = userRepo.findById(userDto.getUserId());
-            UserEntity aUser = null;
+            UserEntity aUser = new UserEntity();
             if (existingUserOptional.isPresent()) {
                 aUser = existingUserOptional.get();
                 aUser.setFirstname(userDto.getFirstname());
@@ -109,17 +109,19 @@ public class UserServiceImple implements UserService {
 
 
     @Override
-    public ArrayList<UserDto> selectUsers(String existingChars) {
+    public ArrayList<GetUserReqDto> selectUsers(String existingChars) {
         try {
-            ArrayList<UserDto> userList = new ArrayList<>();
+            ArrayList<GetUserReqDto> userList = new ArrayList<>();
             Iterable<UserEntity> searchedUser = userRepo.findByUsernameIsContainingIgnoreCaseOrFirstnameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrGenderContainingIgnoreCase
                             (existingChars,
                             existingChars,
                             existingChars,
                             existingChars);
             for (UserEntity aUser : searchedUser) {
-                UserDto userDto = new UserDto(aUser);
-                userList.add(userDto);
+                if(!aUser.isDeleted()){
+                    GetUserReqDto userDto = new GetUserReqDto(aUser);
+                    userList.add(userDto);
+                }
             }
             return userList;
         } catch (Exception e) {

@@ -1,5 +1,4 @@
-package com.appli.clcapi.customer.entity;
-
+package com.appli.clcapi.vendor.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,21 +6,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+@Entity
 @Builder
+@Table(name = "vendor_tbl")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "cust_tbl")
-public class CustomerEntity {
+public class VendorEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long custId;
-    private String custName;
+    private Long vendorId;
+    private String vendorName;
     private String address;
-    private Integer contact;
     private String email;
+    private  Integer contact;
     private boolean deleted = false;
-
-
 }

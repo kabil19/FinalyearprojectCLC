@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/dash-board/customer/")
+@RequestMapping(path = "/api/customer/")
 @CrossOrigin(origins = "*")
 public class CustomerController {
 

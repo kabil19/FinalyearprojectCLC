@@ -17,5 +17,5 @@ public interface UserService{
 
     String updateUser(UserDto userDto);
 
-    ArrayList<UserDto> selectUsers(String existingChars);
+    ArrayList<GetUserReqDto> selectUsers(String existingChars);
 }
