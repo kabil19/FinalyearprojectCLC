@@ -8,6 +8,8 @@ import com.appli.clcapi.tempInvoice.entity.TempInvoiceEntity;
 import com.appli.clcapi.tempInvoice.repository.TempInvoiceRepo;
 import com.appli.clcapi.tempInvoice.service.TempInvoiceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -19,39 +21,44 @@ public class TempInvoiceServiceImple implements TempInvoiceService {
     private final CustomerRepo customerRepo;
     private final TempInvoiceRepo tempInvoiceRepo;
     @Override
-    public String register(TempInvoiceDto tempInvoiceDto) {
-        Long custId = tempInvoiceDto.getCustomerOBJ().getCustId();
-        Optional<CustomerEntity> aCustomer =  customerRepo.findById(custId);
-        if(aCustomer.isPresent()){
-            CustomerEntity aCustomerGet = aCustomer.get();
-            var anInvoice = TempInvoiceEntity.builder()
-                    .tempInvoiceId(tempInvoiceDto.getTempInvoiceId())
-                    .date(tempInvoiceDto.getDate())
-                    .netAmount(tempInvoiceDto.getNetAmount())
-                    .customer(new CustomerEntity(
-                            aCustomerGet.getCustId(),
-                            aCustomerGet.getCustName(),
-                            aCustomerGet.getContact(),
-                            aCustomerGet.getAddress(),
-                            aCustomerGet.getEmail()
-                    ))
-                    .build();
-            tempInvoiceRepo.save(anInvoice);
-        }else{
-            return "select an existing user";
+    public ResponseEntity<String> register(TempInvoiceDto tempInvoiceDto) {
+        try {
+            Long custId = tempInvoiceDto.getCustomerOBJ().getCustId();
+            Optional<CustomerEntity> aCustomer =  customerRepo.findById(custId);
+            if(aCustomer.isPresent()){
+                CustomerEntity aCustomerGet = aCustomer.get();
+                var anInvoice = TempInvoiceEntity.builder()
+                        .tempInvoiceId(tempInvoiceDto.getTempInvoiceId())
+                        .date(tempInvoiceDto.getDate())
+                        .netAmount(tempInvoiceDto.getNetAmount())
+                        .customer(new CustomerEntity(
+                                aCustomerGet.getCustId(),
+                                aCustomerGet.getCustName(),
+                                aCustomerGet.getContact(),
+                                aCustomerGet.getAddress(),
+                                aCustomerGet.getEmail()
+                        ))
+                        .build();
+                tempInvoiceRepo.save(anInvoice);
+            }else{
+                return new ResponseEntity<>("select an existing user", HttpStatus.BAD_REQUEST);
+            }
+
+            return new ResponseEntity<>("Invoice has been created",HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>("Server Error",HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return "Invoice has been created";
     }
 
     @Override
-    public String delete(Long tempInvoiceId) {
+    public ResponseEntity<String> delete(Long tempInvoiceId) {
      tempInvoiceRepo.deleteById(tempInvoiceId);
-        return "deleted";
+        return new ResponseEntity<>("deleted",HttpStatus.OK);
     }
 
     @Override
-    public String update(TempInvoiceDto tempInvoiceDto) {
+    public ResponseEntity<String> update(TempInvoiceDto tempInvoiceDto) {
         Optional<TempInvoiceEntity> aTempInvoice = tempInvoiceRepo.findById(tempInvoiceDto.getTempInvoiceId());
         Long custId = tempInvoiceDto.getCustomerOBJ().getCustId();
         Optional<CustomerEntity> selectedCustomer =  customerRepo.findById(custId);
@@ -73,25 +80,25 @@ public class TempInvoiceServiceImple implements TempInvoiceService {
             );
             tempInvoiceRepo.save(updatedTempInvoice);
         }else{
-            return "Select an existing customer";
+            return new ResponseEntity<>("Select an existing customer",HttpStatus.BAD_REQUEST);
         }
 
-        return "Invoice has been updated";
+        return new ResponseEntity<>("Invoice has been updated",HttpStatus.OK);
     }
 
     @Override
-    public List<TempInvoiceDto> getAll() {
+    public ResponseEntity<List<?>> getAll() {
         List<TempInvoiceEntity> existingTempInvoices = tempInvoiceRepo.findAll();
         List<TempInvoiceDto> listOfTempInvoiceDto = new ArrayList<>();
         for(TempInvoiceEntity aTempInvoice: existingTempInvoices){
             TempInvoiceDto tempInvoiceDto =  new TempInvoiceDto(aTempInvoice);
             listOfTempInvoiceDto.add(tempInvoiceDto);
         }
-        return listOfTempInvoiceDto;
+        return new ResponseEntity<>(listOfTempInvoiceDto,HttpStatus.OK) ;
     }
 
     @Override
-    public ArrayList<TempInvoiceDto> select(String existingChar) {
+    public ResponseEntity<ArrayList<?>> select(String existingChar) {
         Iterable<TempInvoiceEntity> searchedListOfTempInvoices;
         searchedListOfTempInvoices = tempInvoiceRepo.findByCustomerCustNameContainingIgnoreCase(existingChar);
         ArrayList<TempInvoiceDto> listOfDtoForView = new ArrayList<>();
@@ -99,6 +106,6 @@ public class TempInvoiceServiceImple implements TempInvoiceService {
             TempInvoiceDto anInvoiceDto = new TempInvoiceDto(anInvoice);
             listOfDtoForView.add(anInvoiceDto);
         }
-        return listOfDtoForView;
+        return new ResponseEntity<>(listOfDtoForView,HttpStatus.OK);
     }
 }

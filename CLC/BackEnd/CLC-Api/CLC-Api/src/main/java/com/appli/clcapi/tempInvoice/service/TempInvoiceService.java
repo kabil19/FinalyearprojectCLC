@@ -1,14 +1,15 @@
 package com.appli.clcapi.tempInvoice.service;
 
 import com.appli.clcapi.tempInvoice.dto.TempInvoiceDto;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public interface TempInvoiceService {
-    String register(TempInvoiceDto tempInvoiceDto);
-    String delete(Long tempInvoiceId);
-    String update(TempInvoiceDto tempInvoiceDto);
-    List<TempInvoiceDto> getAll();
-    ArrayList<TempInvoiceDto> select(String existingChar);
+    ResponseEntity<String> register(TempInvoiceDto tempInvoiceDto);
+    ResponseEntity<String> delete(Long tempInvoiceId);
+    ResponseEntity<String> update(TempInvoiceDto tempInvoiceDto);
+    ResponseEntity<List<?>> getAll();
+    ResponseEntity<ArrayList<?>> select(String existingChar);
 }

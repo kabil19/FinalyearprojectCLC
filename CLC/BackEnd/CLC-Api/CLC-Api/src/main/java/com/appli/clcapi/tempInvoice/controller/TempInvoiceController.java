@@ -20,33 +20,28 @@ public class TempInvoiceController {
 
         private final TempInvoiceService tempInvoiceService;
         @PostMapping("register")
-        public ResponseEntity<?> register(@RequestBody TempInvoiceDto tempInvoiceDto){
-            tempInvoiceService.register(tempInvoiceDto);
-            return new ResponseEntity<>("Invoice has been created", HttpStatus.CREATED);
+        public ResponseEntity<String> register(@RequestBody TempInvoiceDto tempInvoiceDto){
+            return tempInvoiceService.register(tempInvoiceDto);
         }
 
         @DeleteMapping("delete/{tempInvoiceId}")
-        public ResponseEntity<?> delete(@PathVariable Long tempInvoiceId){
-            tempInvoiceService.delete(tempInvoiceId);
-            return new ResponseEntity<>("Selected invoice has been wiped out", HttpStatus.OK);
+        public ResponseEntity<String> delete(@PathVariable Long tempInvoiceId){
+            return tempInvoiceService.delete(tempInvoiceId);
         }
 
         @PutMapping("update")
-        public ResponseEntity<?> update(@RequestBody  TempInvoiceDto tempInvoiceDto){
-            tempInvoiceService.update(tempInvoiceDto);
-            return new ResponseEntity<>("Selected invoice has been updated", HttpStatus.OK);
+        public ResponseEntity<String> update(@RequestBody  TempInvoiceDto tempInvoiceDto){
+            return tempInvoiceService.update(tempInvoiceDto);
         }
 
         @GetMapping("getAll")
-        public List<TempInvoiceDto> getAll(){
+        public ResponseEntity<List<?>> getAll(){
             return tempInvoiceService.getAll();
         }
 
         @GetMapping("select/{existingChar}")
-        public ArrayList<TempInvoiceDto> select(@PathVariable String existingChar){
+        public ResponseEntity<ArrayList<?>> select(@PathVariable String existingChar){
             return tempInvoiceService.select(existingChar);
         }
-
-
 
 }
