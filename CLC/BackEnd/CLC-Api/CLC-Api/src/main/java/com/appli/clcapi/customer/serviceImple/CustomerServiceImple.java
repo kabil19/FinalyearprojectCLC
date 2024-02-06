@@ -88,7 +88,7 @@ public class CustomerServiceImple implements CustomerService {
     }
 
     @Override
-    public ArrayList<CustomerDto> selectCustomers(String existingChar) {
+    public ArrayList<CustomerDto> select(String existingChar) {
 
 
         Iterable<CustomerEntity> cust= customerRepo.findByEmailContainingIgnoreCaseOrAddressContainingIgnoreCaseOrCustNameContaining(

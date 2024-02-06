@@ -51,9 +51,6 @@ public class UserServiceImple implements UserService {
                 GetUserReqDto userDto = new GetUserReqDto(aUser);
                 userList.add(userDto);
             }
-//            List<GetUserReqDto> userlist = userEntityList.stream()
-//                    .map(GetUserReqDto::new)
-//                    .collect(Collectors.toList());
             return userList;
 
         } catch (Exception e) {

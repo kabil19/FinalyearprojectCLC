@@ -36,8 +36,8 @@ public class CustomerController {
     }
 
     @GetMapping("select/{existingChar}")
-    public ArrayList<CustomerDto> selectCustomers(@PathVariable String existingChar){
-        return customerService.selectCustomers(existingChar);
+    public ArrayList<CustomerDto> select(@PathVariable String existingChar){
+        return customerService.select(existingChar);
     }
 
 }

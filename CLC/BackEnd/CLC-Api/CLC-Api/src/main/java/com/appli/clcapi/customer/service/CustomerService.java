@@ -14,5 +14,5 @@ public interface CustomerService {
 
     List<CustomerDto> getAll();
 
-    ArrayList<CustomerDto> selectCustomers(String existingChar);
+    ArrayList<CustomerDto> select(String existingChar);
 }

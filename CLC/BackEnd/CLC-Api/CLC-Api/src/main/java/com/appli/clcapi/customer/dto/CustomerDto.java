@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class CustomerDto {
 
     @JsonProperty("custId")
-    private Long custId;
+    private Long custId; //1
 
     @JsonProperty("custName")
     private String custName;
@@ -27,7 +27,7 @@ public class CustomerDto {
     private String address;
 
     @JsonProperty("contact")
-    private Integer contact;
+    private long contact;
 
     @JsonProperty(value = "deleted")
     @JsonIgnore

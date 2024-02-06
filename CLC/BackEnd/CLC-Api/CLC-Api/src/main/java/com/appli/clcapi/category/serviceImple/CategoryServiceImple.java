@@ -1,12 +1,10 @@
 package com.appli.clcapi.category.serviceImple;
-
 import com.appli.clcapi.category.dto.CategoryDto;
 import com.appli.clcapi.category.entity.CategoryEntity;
 import com.appli.clcapi.category.repository.CategoryRepo;
 import com.appli.clcapi.category.service.CatergoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +21,8 @@ public class CategoryServiceImple implements CatergoryService {
                     .builder()
                     .categoryId(categoryDto.getCategoryId())
                     .categoryName(categoryDto.getCategoryName())
-                    .description(categoryDto.getDescription()).build();
+                    .description(categoryDto.getDescription())
+                    .build();
             categoryRepo.save(aCategory);
             return "Category has been Inserted";
         }catch (Exception e){
@@ -31,7 +30,6 @@ public class CategoryServiceImple implements CatergoryService {
             throw new RuntimeException("Hasn't been Inserted");
         }
     }
-
     @Override
     public String delete(Long categoryId) {
        try {
@@ -43,18 +41,15 @@ public class CategoryServiceImple implements CatergoryService {
            e.printStackTrace();
            throw new RuntimeException("Hasn't been deleted");
        }
-
     }
-
     @Override
     public String update(CategoryDto categoryDto) {
-        Optional<CategoryEntity> foundCat= categoryRepo.findById(categoryDto.getCategoryId());
+        Optional<CategoryEntity> foundCat = categoryRepo.findById(categoryDto.getCategoryId());
         CategoryEntity updatedCat;
         if(foundCat.isPresent()){
             updatedCat = foundCat.get();
             updatedCat.setCategoryName(categoryDto.getCategoryName());
             updatedCat.setDescription(categoryDto.getDescription());
-
         }else{
             return "Couldn't find the category";
         }
@@ -72,10 +67,9 @@ public class CategoryServiceImple implements CatergoryService {
         }
         return categoryForView;
     }
-
     @Override
     public ArrayList<CategoryDto> selectCategory(String existingChar) {
-        Iterable<CategoryEntity> catList= categoryRepo.findByCategoryNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
+        Iterable<CategoryEntity> catList = categoryRepo.findByCategoryNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
                 existingChar,
                 existingChar
         );
@@ -85,7 +79,6 @@ public class CategoryServiceImple implements CatergoryService {
                 CategoryDto categoryDto = new CategoryDto(aCat);
                 categoryForView.add(categoryDto);
             }
-
         }
         return categoryForView;
     }
