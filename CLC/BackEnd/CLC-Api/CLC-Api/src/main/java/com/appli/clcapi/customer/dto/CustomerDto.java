@@ -39,4 +39,11 @@ public class CustomerDto {
         this.contact = customerEntity.getContact();
         this.custName = customerEntity.getCustName();
     }
+
+
+
+
+    public CustomerDto(String custName) {
+        setCustName(custName);
+    }
 }

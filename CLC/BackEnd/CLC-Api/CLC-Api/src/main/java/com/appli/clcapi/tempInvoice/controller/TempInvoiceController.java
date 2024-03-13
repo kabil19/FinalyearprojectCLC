@@ -19,27 +19,27 @@ public class TempInvoiceController {
 
         private final TempInvoiceService tempInvoiceService;
         @PostMapping("register")
-        public ResponseEntity<String> register(@RequestBody TempInvoiceDto tempInvoiceDto){
+        public ResponseEntity<String> register(@RequestBody TempInvoiceDto tempInvoiceDto)throws Exception{
             return tempInvoiceService.register(tempInvoiceDto);
         }
 
         @DeleteMapping("delete/{tempInvoiceId}")
-        public ResponseEntity<String> delete(@PathVariable Long tempInvoiceId){
+        public ResponseEntity<String> delete(@PathVariable Long tempInvoiceId)throws Exception{
             return tempInvoiceService.delete(tempInvoiceId);
         }
 
         @PutMapping("update")
-        public ResponseEntity<String> update(@RequestBody  TempInvoiceDto tempInvoiceDto){
+        public ResponseEntity<String> update(@RequestBody  TempInvoiceDto tempInvoiceDto)throws Exception{
             return tempInvoiceService.update(tempInvoiceDto);
         }
 
         @GetMapping("getAll")
-        public ResponseEntity<List<?>> getAll(){
+        public ResponseEntity<List<?>> getAll()throws Exception{
             return tempInvoiceService.getAll();
         }
 
         @GetMapping("select/{existingChar}")
-        public ResponseEntity<ArrayList<?>> select(@PathVariable String existingChar){
+        public ResponseEntity<ArrayList<?>> select(@PathVariable String existingChar)throws Exception{
             return tempInvoiceService.select(existingChar);
         }
 

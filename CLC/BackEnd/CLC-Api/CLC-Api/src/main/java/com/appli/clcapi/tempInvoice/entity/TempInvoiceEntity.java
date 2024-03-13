@@ -2,9 +2,7 @@ package com.appli.clcapi.tempInvoice.entity;
 
 
 
-
 import com.appli.clcapi.customer.entity.CustomerEntity;
-
 import jakarta.persistence.*;
 import lombok.*;
 

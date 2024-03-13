@@ -34,5 +34,6 @@ public class TempInvoiceDto {
         this.setDate(tempInvoiceEntity.getDate());
         this.setNetAmount(tempInvoiceEntity.getNetAmount());
         this.setCustomerOBJ(new CustomerDto(tempInvoiceEntity.getCustomer()));
+       // this.setCustomerOBJ(new CustomerDto( tempInvoiceEntity.getCustomer().getCustName()));
     }
 }
