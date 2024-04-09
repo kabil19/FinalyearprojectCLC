@@ -2,7 +2,7 @@ package com.appli.clcapi.tempInvoice.entity;
 
 
 
-import com.appli.clcapi.common.date.DateUtils;
+
 import com.appli.clcapi.customer.entity.CustomerEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -42,7 +42,5 @@ public class TempInvoiceEntity {
         this.setNetAmount(tempInvoiceEntity.getNetAmount());
         this.setCustomer(new CustomerEntity());
     }
-//   /* public void setDate(String date) {
-//        this.date = DateUtils.formatDate(date);
-//    }*/
+
 }
