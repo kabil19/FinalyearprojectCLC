@@ -1,4 +1,4 @@
-package com.appli.clcapi.userlogin.service.jwtService;
+package com.appli.clcapi.authentication.service.jwtService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -56,12 +56,12 @@ public class JwtService {
 
     public boolean isTokenValid(String token,UserDetails userDetails){
         final String username = extractUsername(token);
-        return Objects.equals(userDetails.getUsername(), username) && isTokenNotExpired(token);
+        return Objects.equals(userDetails.getUsername(), username) && isTokenExpired(token);
     }
 
-    public boolean isTokenNotExpired(String token) {
+    public boolean isTokenExpired(String token) {
         Date now = new Date(System.currentTimeMillis()*1000*60);
-        return (extractTokenExpiration(token).before(now));
+        return now.before(extractTokenExpiration(token));
     }
 
     private Date extractTokenExpiration(String token){

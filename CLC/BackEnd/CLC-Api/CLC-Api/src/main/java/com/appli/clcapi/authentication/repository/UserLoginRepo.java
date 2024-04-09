@@ -1,4 +1,4 @@
-package com.appli.clcapi.userlogin.repository;
+package com.appli.clcapi.authentication.repository;
 
 import com.appli.clcapi.user.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,5 +1,6 @@
 package com.appli.clcapi.stock.dto;
 
+import com.appli.clcapi.category.dto.CategoryDto;
 import com.appli.clcapi.stock.entity.StockEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -19,11 +20,11 @@ public class StockDto {
     @JsonProperty("stockId")
     private Long stockId;
 
-    @JsonProperty("materialType")
-    private String materialType;
+    @JsonProperty("itemName")
+    private String itemName;
 
-    @JsonProperty("materialName")
-    private String materialName;
+    @JsonProperty("categoryOBJ")
+    private CategoryDto categoryOBJ;
 
     @JsonProperty("materialColour")
     private String materialColour;
@@ -53,8 +54,8 @@ public class StockDto {
 
     public StockDto(StockEntity stockEntity){
        setStockId(stockEntity.getStockId());
-       setMaterialName(stockEntity.getMaterialName());
-       setMaterialType(stockEntity.getMaterialType());
+       setCategoryOBJ(new CategoryDto(stockEntity.getCategoryEntity()));
+       setItemName(stockEntity.getItemName());
        setMaterialColour(stockEntity.getMaterialColour());
        setArrivalDate(stockEntity.getArrivalDate());
        setPurchasePrice(stockEntity.getPurchasePrice());

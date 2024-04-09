@@ -27,13 +27,19 @@ public class TempInvoiceDto {
     @JsonProperty("customerOBJ")
     private CustomerDto customerOBJ; //{custId:1}
 
+    @JsonProperty("tempInvoiceNumber")
+    private Long tempInvoiceNumber;
 
+    @JsonProperty("finalized")
+    private Boolean finalized;
     //table get
     public TempInvoiceDto(TempInvoiceEntity tempInvoiceEntity){
+        this.setFinalized(tempInvoiceEntity.getFinalized());
         this.setTempInvoiceId(tempInvoiceEntity.getTempInvoiceId());
         this.setDate(tempInvoiceEntity.getDate());
         this.setNetAmount(tempInvoiceEntity.getNetAmount());
         this.setCustomerOBJ(new CustomerDto(tempInvoiceEntity.getCustomer()));
+        this.setTempInvoiceNumber(tempInvoiceEntity.getTempInvoiceNumber());
        // this.setCustomerOBJ(new CustomerDto( tempInvoiceEntity.getCustomer().getCustName()));
     }
 }

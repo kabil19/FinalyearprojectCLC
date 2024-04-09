@@ -1,4 +1,4 @@
-package com.appli.clcapi.userlogin.dto.response;
+package com.appli.clcapi.authentication.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginSuccessful {
     String token;
+    String userName;
 }

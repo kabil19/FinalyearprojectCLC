@@ -19,8 +19,7 @@ public class CustomerServiceImple implements CustomerService {
     public String register(CustomerDto customerDto) {
       var customer = CustomerEntity
               .builder()
-                .custId(customerDto.getCustId())
-//              id??
+              .custId(customerDto.getCustId())
               .custName(customerDto.getCustName())
               .address(customerDto.getAddress())
               .email(customerDto.getEmail())

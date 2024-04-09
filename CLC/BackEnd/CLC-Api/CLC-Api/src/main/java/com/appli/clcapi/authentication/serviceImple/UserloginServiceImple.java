@@ -1,10 +1,10 @@
-package com.appli.clcapi.userlogin.serviceImple;
+package com.appli.clcapi.authentication.serviceImple;
 
-import com.appli.clcapi.userlogin.dto.request.LoginDto;
-import com.appli.clcapi.userlogin.dto.response.LoginSuccessful;
-import com.appli.clcapi.userlogin.repository.UserLoginRepo;
-import com.appli.clcapi.userlogin.service.UserLoginService;
-import com.appli.clcapi.userlogin.service.jwtService.JwtService;
+import com.appli.clcapi.authentication.dto.request.LoginDto;
+import com.appli.clcapi.authentication.dto.response.LoginSuccessful;
+import com.appli.clcapi.authentication.repository.UserLoginRepo;
+import com.appli.clcapi.authentication.service.UserLoginService;
+import com.appli.clcapi.authentication.service.jwtService.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,6 +32,7 @@ public class UserloginServiceImple implements UserLoginService {
             String jwtToken = jwtService.generateToken(existingUserInDB);
             return LoginSuccessful.builder()
                     .token(jwtToken)
+                    .userName(existingUserInDB.getUsername())
                     .build();
         }catch (Exception e){
             e.printStackTrace();

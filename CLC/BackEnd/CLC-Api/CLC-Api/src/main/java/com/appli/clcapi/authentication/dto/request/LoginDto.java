@@ -1,4 +1,4 @@
-package com.appli.clcapi.userlogin.dto.request;
+package com.appli.clcapi.authentication.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginDto {
-    @JsonProperty("username")
+    @JsonProperty("userName")
     private String username;
 
     @JsonProperty("password")

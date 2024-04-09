@@ -1,16 +1,16 @@
-package com.appli.clcapi.userlogin.controller;
+package com.appli.clcapi.authentication.controller;
 
-import com.appli.clcapi.userlogin.dto.request.LoginDto;
-import com.appli.clcapi.userlogin.dto.response.LoginSuccessful;
-import com.appli.clcapi.userlogin.service.UserLoginService;
+import com.appli.clcapi.authentication.dto.request.LoginDto;
+import com.appli.clcapi.authentication.dto.response.LoginSuccessful;
+import com.appli.clcapi.authentication.service.UserLoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/user/")
+@RequestMapping(path = "/api/authentication/")
 @CrossOrigin(origins = "http://localhost:4200")
-public class UserLoginController {
+public class AuthenticationController {
 public final UserLoginService userLoginService;
 
     @PostMapping(path = "login")

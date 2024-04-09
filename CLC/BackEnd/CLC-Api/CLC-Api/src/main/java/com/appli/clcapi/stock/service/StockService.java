@@ -2,18 +2,20 @@ package com.appli.clcapi.stock.service;
 
 
 import com.appli.clcapi.stock.dto.StockDto;
+import org.springframework.http.ResponseEntity;
 
 
 import java.util.List;
 
 public interface StockService {
-    String register(StockDto stockDto);
+    ResponseEntity<String> register(StockDto stockDto);
 
-    String delete(Long stockId);
+    ResponseEntity<String>  delete(Long stockId);
 
-    String update(StockDto stockDto);
+    ResponseEntity<String>  update(StockDto stockDto);
 
     List<StockDto> selectStocks(String existingChar);
 
     List<StockDto> getAll();
+     List<StockDto> getPaginatedAll(int pageNum, int pageSize);
 }

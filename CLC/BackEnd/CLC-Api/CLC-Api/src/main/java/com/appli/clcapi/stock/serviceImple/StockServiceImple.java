@@ -1,12 +1,18 @@
 package com.appli.clcapi.stock.serviceImple;
 
+import com.appli.clcapi.category.entity.CategoryEntity;
 import com.appli.clcapi.stock.dto.StockDto;
 import com.appli.clcapi.stock.entity.StockEntity;
 import com.appli.clcapi.stock.repository.StockRepo;
 import com.appli.clcapi.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,13 +22,14 @@ import java.util.Optional;
 public class StockServiceImple implements StockService {
 
     private final StockRepo stockRepo;
+
     @Override
-    public String register(StockDto stockDto) {
+    public ResponseEntity<String> register(StockDto stockDto) {
         try{
             StockEntity aStock = StockEntity.builder()
                     .stockId(stockDto.getStockId())
-                    .materialName(stockDto.getMaterialName())
-                    .materialType(stockDto.getMaterialType())
+                    .categoryEntity(new CategoryEntity(stockDto.getCategoryOBJ().getCategoryId()))
+                    .itemName(stockDto.getItemName())
                     .arrivalDate(stockDto.getArrivalDate())
                     .quantity(stockDto.getQuantity())
                     .materialColour(stockDto.getMaterialColour())
@@ -32,49 +39,50 @@ public class StockServiceImple implements StockService {
                     .reorderQty(stockDto.getReorderQty())
                     .build();
             stockRepo.save(aStock);
-            return "Stock has been Inserted";
+            return new ResponseEntity<>("Stock has been Inserted", HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
-            throw new RuntimeException("Could add the stock");
+            return new ResponseEntity<>("Server Error",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
-    public String delete(Long stockId) {
+    public ResponseEntity<String> delete(Long stockId) {
         StockEntity aStock = stockRepo.getReferenceById(stockId);
         aStock.setDeleted(true);
         stockRepo.save(aStock);
-        return "Stock has been deleted";
+        return new ResponseEntity<>("deleted",HttpStatus.OK);
     }
 
     @Override
-    public String update(StockDto stockDto) {
+    public ResponseEntity<String> update(StockDto stockDto) {
         try{
             Optional<StockEntity> aStock = stockRepo.findById(stockDto.getStockId());
-            if(aStock.isPresent()){
-                StockEntity existingStock = aStock.get();
-                existingStock.setMaterialName(stockDto.getMaterialName());
-                existingStock.setMaterialType(stockDto.getMaterialType());
-                existingStock.setQuantity(stockDto.getQuantity());
-                existingStock.setRemarks(stockDto.getRemarks());
-                existingStock.setArrivalDate(stockDto.getArrivalDate());
-                existingStock.setMaterialColour(stockDto.getMaterialColour());
-                existingStock.setPurchasePrice(stockDto.getPurchasePrice());
-                existingStock.setSellingPrice(stockDto.getSellingPrice());
-                existingStock.setReorderQty(stockDto.getReorderQty());
-            }
-            return "Selected StockHas been Updated";
-        }catch (Exception e){
+            StockEntity updatedStock;
+            updatedStock = aStock.get();
+            updatedStock.setCategoryEntity(new CategoryEntity(stockDto.getCategoryOBJ().getCategoryId()));
+            updatedStock.setItemName(stockDto.getItemName());
+            updatedStock.setQuantity(stockDto.getQuantity());
+            updatedStock.setRemarks(stockDto.getRemarks());
+            updatedStock.setArrivalDate(stockDto.getArrivalDate());
+            updatedStock.setMaterialColour(stockDto.getMaterialColour());
+            updatedStock.setPurchasePrice(stockDto.getPurchasePrice());
+            updatedStock.setSellingPrice(stockDto.getSellingPrice());
+            updatedStock.setReorderQty(stockDto.getReorderQty());
+            stockRepo.save(updatedStock);
+            return new ResponseEntity<>("Stock has been updated",HttpStatus.OK);
+        } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Couldn't update the selected stock");
+            return new ResponseEntity<>("Server Error",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         }
 
-    }
 
     @Override
     public List<StockDto> selectStocks(String existingChar) {
-       List<StockEntity> stockEntities = stockRepo.findAllByMaterialColourContainingIgnoreCaseOrMaterialNameContainingIgnoreCaseOrMaterialTypeContainingIgnoreCaseOrRemarksContainingIgnoreCase
-               (existingChar,existingChar,existingChar,existingChar);
+       List<StockEntity> stockEntities = stockRepo.
+               findAllByMaterialColourContainingIgnoreCaseOrItemNameContainingIgnoreCaseOrRemarksContainingIgnoreCase
+               (existingChar,existingChar,existingChar);
        List<StockDto> stockDtoList = new ArrayList<>();
        for (StockEntity aStock : stockEntities){
            if(!aStock.isDeleted()){
@@ -87,11 +95,23 @@ public class StockServiceImple implements StockService {
 
     @Override
     public List<StockDto> getAll() {
+        Pageable sortedByName =   PageRequest.of(0, 3, Sort.by("itemName"));
         List<StockEntity> stockList = stockRepo.findAllByDeletedEquals(false);
         List<StockDto> stockDtoListForView = new ArrayList<>();
         for(StockEntity aStock : stockList) {
                 StockDto stockDto = new StockDto(aStock);
                 stockDtoListForView.add(stockDto);
+        }
+        return stockDtoListForView;
+    }
+    public List<StockDto> getPaginatedAll(int pageNum, int pageSize) {
+        Pageable sortedByName =   PageRequest.of(pageNum, 3, Sort.by("itemName"));
+//        List<StockEntity> stockList = stockRepo.findAllByDeletedEquals(false);
+        Page<StockEntity> stockList = stockRepo.findAll(sortedByName);
+        List<StockDto> stockDtoListForView = new ArrayList<>();
+        for(StockEntity aStock : stockList) {
+            StockDto stockDto = new StockDto(aStock);
+            stockDtoListForView.add(stockDto);
         }
         return stockDtoListForView;
     }

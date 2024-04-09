@@ -2,6 +2,7 @@ package com.appli.clcapi.tempInvoice.entity;
 
 
 
+import com.appli.clcapi.common.date.DateUtils;
 import com.appli.clcapi.customer.entity.CustomerEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,9 +22,13 @@ public class TempInvoiceEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long tempInvoiceId;
 
+    private Long tempInvoiceNumber;
+
     private Date date;
 
     private Long netAmount;
+
+    private Boolean finalized = false;
 
     @ManyToOne
     @JoinColumn(name="custId", nullable = false)
@@ -31,10 +36,13 @@ public class TempInvoiceEntity {
 
     TempInvoiceEntity(TempInvoiceEntity tempInvoiceEntity){
         super();
+        this.setTempInvoiceNumber(tempInvoiceEntity.getTempInvoiceNumber());
         this.setTempInvoiceId(tempInvoiceEntity.getTempInvoiceId());
         this.setDate(tempInvoiceEntity.getDate());
         this.setNetAmount(tempInvoiceEntity.getNetAmount());
         this.setCustomer(new CustomerEntity());
     }
-
+//   /* public void setDate(String date) {
+//        this.date = DateUtils.formatDate(date);
+//    }*/
 }

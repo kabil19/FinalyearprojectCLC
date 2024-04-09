@@ -1,4 +1,4 @@
-package com.appli.clcapi.userlogin.config;
+package com.appli.clcapi.authentication.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -16,8 +16,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-private final JwtAuthFilter jwtAuthenticationFilter;
-private final AuthenticationProvider authenticationProvider;
+    public static final String[] WHITE_LIST_APIS = {"/api/authentication/**","/v3/api-docs/**", "/swagger-resources/**",
+            "/swagger-ui/**", "/webjars/**","/api/**"};
+    private final JwtAuthFilter jwtAuthenticationFilter;
+    private final AuthenticationProvider authenticationProvider;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -27,7 +29,8 @@ private final AuthenticationProvider authenticationProvider;
         http
                 .authorizeHttpRequests(
                         (authReq)->authReq
-                                .requestMatchers("/api/user/**","/api/customer/**","/api/vendor/**","/api/stock/**","/api/category/**","/api/tempInvoice/**")
+//                                .requestMatchers("/api/user/**","/api/customer/**","/api/vendor/**","/api/stock/**","/api/category/**","/api/tempInvoice/**")
+                                .requestMatchers(WHITE_LIST_APIS)
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated());

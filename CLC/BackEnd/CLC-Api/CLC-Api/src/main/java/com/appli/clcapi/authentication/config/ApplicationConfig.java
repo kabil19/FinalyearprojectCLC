@@ -1,6 +1,6 @@
-package com.appli.clcapi.userlogin.config;
+package com.appli.clcapi.authentication.config;
 
-import com.appli.clcapi.userlogin.repository.UserLoginRepo;
+import com.appli.clcapi.authentication.repository.UserLoginRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

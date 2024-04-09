@@ -27,7 +27,9 @@ public class TempInvoiceServiceImple implements TempInvoiceService {
                     .tempInvoiceId(tempInvoiceDto.getTempInvoiceId())
                     .date(tempInvoiceDto.getDate())
                     .netAmount(tempInvoiceDto.getNetAmount())
-                    .customer(new CustomerEntity(tempInvoiceDto.getCustomerOBJ().getCustId()))
+                    .finalized(false)
+                    .tempInvoiceNumber(tempInvoiceDto.getTempInvoiceNumber())
+                        .customer(new CustomerEntity(tempInvoiceDto.getCustomerOBJ().getCustId()))
                     .build();
             tempInvoiceRepo.save(anInvoice);
             return new ResponseEntity<>("Invoice has been created",HttpStatus.OK);
@@ -39,22 +41,38 @@ public class TempInvoiceServiceImple implements TempInvoiceService {
 
         @Override
     public ResponseEntity<String> delete(Long tempInvoiceId) {
-     tempInvoiceRepo.deleteById(tempInvoiceId);
-        return new ResponseEntity<>("deleted",HttpStatus.OK);
-    }
+            Optional<TempInvoiceEntity> aUser = tempInvoiceRepo.findById(tempInvoiceId);
+            if (aUser.isPresent()) {
+                if (!aUser.get().getFinalized()) {
+                    tempInvoiceRepo.deleteById(tempInvoiceId);
+                    return new ResponseEntity<>("deleted", HttpStatus.OK);
+                }
+            }
+            return new ResponseEntity<>("Can't be deleted", HttpStatus.FORBIDDEN);
+        }
 
     @Override
     public ResponseEntity<String> update(TempInvoiceDto tempInvoiceDto) {
         try{
+
             Optional<TempInvoiceEntity> aTempInvoice = tempInvoiceRepo.findById(tempInvoiceDto.getTempInvoiceId());
-            TempInvoiceEntity updatedTempInvoice;
-            updatedTempInvoice = aTempInvoice.get();
-            updatedTempInvoice.setTempInvoiceId(tempInvoiceDto.getTempInvoiceId());
-            updatedTempInvoice.setDate(tempInvoiceDto.getDate());
-            updatedTempInvoice.setNetAmount(tempInvoiceDto.getNetAmount());
-            updatedTempInvoice.setCustomer(new CustomerEntity(tempInvoiceDto.getCustomerOBJ().getCustId()));
-            tempInvoiceRepo.save(updatedTempInvoice);
-            return new ResponseEntity<>("Invoice has been updated",HttpStatus.OK);
+            if(!aTempInvoice.get().getFinalized()){
+                TempInvoiceEntity updatedTempInvoice;
+                updatedTempInvoice = aTempInvoice.get();
+                updatedTempInvoice.setTempInvoiceId(tempInvoiceDto.getTempInvoiceId());
+                updatedTempInvoice.setDate(tempInvoiceDto.getDate());
+                updatedTempInvoice.setNetAmount(tempInvoiceDto.getNetAmount());
+                updatedTempInvoice.setTempInvoiceNumber(tempInvoiceDto.getTempInvoiceNumber());
+                updatedTempInvoice.setCustomer(new CustomerEntity(tempInvoiceDto.getCustomerOBJ().getCustId()));
+                if(tempInvoiceDto.getFinalized()!=null){
+                    updatedTempInvoice.setFinalized(tempInvoiceDto.getFinalized());
+                }else {
+                    updatedTempInvoice.setFinalized(false);
+                }
+                tempInvoiceRepo.save(updatedTempInvoice);
+                return new ResponseEntity<>("Invoice has been updated",HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Finalized Invoice can't be updated",HttpStatus.FORBIDDEN);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>("Server Error",HttpStatus.INTERNAL_SERVER_ERROR);

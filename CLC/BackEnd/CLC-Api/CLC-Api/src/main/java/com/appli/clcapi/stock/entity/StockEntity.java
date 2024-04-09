@@ -1,25 +1,26 @@
 package com.appli.clcapi.stock.entity;
 
+import com.appli.clcapi.category.entity.CategoryEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "stock_tbl")
 @Builder
-@Data
 public class StockEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long stockId;
-    private String materialType;
-    private String materialName;
+    private String itemName;
+    @ManyToOne
+    @JoinColumn(name="categoryId", nullable = false)
+    private CategoryEntity categoryEntity;
     private String materialColour;
     private int quantity;
     private float purchasePrice;

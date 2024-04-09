@@ -46,6 +46,6 @@ public class UserDto {
     private boolean deleted;
 
 
-
-
+    public UserDto(UserEntity aUser) {
+    }
 }

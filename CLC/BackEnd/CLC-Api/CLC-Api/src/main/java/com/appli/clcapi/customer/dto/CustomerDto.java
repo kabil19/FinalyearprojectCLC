@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class CustomerDto {
 
     @JsonProperty("custId")
-    private Long custId; //1
+    private Long custId;
 
     @JsonProperty("custName")
     private String custName;
