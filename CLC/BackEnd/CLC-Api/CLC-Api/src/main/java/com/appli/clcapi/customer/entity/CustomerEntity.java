@@ -2,6 +2,7 @@ package com.appli.clcapi.customer.entity;
 
 
 
+import com.appli.clcapi.customer.dto.CustomerDto;
 import com.appli.clcapi.tempInvoice.entity.TempInvoiceEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,15 +30,20 @@ public class CustomerEntity {
 
     private boolean deleted = false;
 
-    public CustomerEntity(Long custId, String custName, long contact, String address, String email) {
-        this.custId = custId;
-        this.custName = custName;
-        this.contact = contact;
-        this.address = address;
-        this.email = email;
-    }
+
     public CustomerEntity(Long custId){
         this.custId = custId;
     }
+
+    public CustomerEntity(CustomerDto customerDto) {
+        this.custId = customerDto.getCustId();
+        this.custName = customerDto.getCustName();
+        this.address = customerDto.getAddress();
+        this.contact = customerDto.getContact();
+        this.email = customerDto.getEmail();
+        this.deleted = customerDto.isDeleted();
+    }
+
+
 
 }

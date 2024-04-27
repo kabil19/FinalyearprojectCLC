@@ -85,7 +85,7 @@ public class StockServiceImple implements StockService {
                (existingChar,existingChar,existingChar);
        List<StockDto> stockDtoList = new ArrayList<>();
        for (StockEntity aStock : stockEntities){
-           if(!aStock.isDeleted()){
+           if(!aStock.getCategoryEntity().isDeleted()){
                StockDto aNewStockDto = new StockDto(aStock);
                stockDtoList.add(aNewStockDto);
            }

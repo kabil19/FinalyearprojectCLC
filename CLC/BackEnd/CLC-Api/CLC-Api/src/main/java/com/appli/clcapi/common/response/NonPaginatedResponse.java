@@ -2,6 +2,7 @@ package com.appli.clcapi.common.response;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +14,12 @@ public class NonPaginatedResponse {
     private Object result;
     private List<String> errors;
     private String successMessage;
+    private HttpStatus status;
     public NonPaginatedResponse(){
         isPaginated = Boolean.FALSE;
         result = null;
         errors = new ArrayList<String>();
         successMessage = null;
+        status = null;
     }
 }

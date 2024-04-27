@@ -12,6 +12,6 @@ public interface TempInvoiceRepo extends JpaRepository<TempInvoiceEntity, Long> 
 
     Iterable<TempInvoiceEntity> findByCustomerCustNameContainingIgnoreCase(String custName);
 
-
+     TempInvoiceEntity findAllByCustomer_CustIdAndCustomer_Deleted(Long custId, Boolean deleted);
 
 }

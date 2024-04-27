@@ -43,7 +43,5 @@ public class CustomerDto {
 
 
 
-    public CustomerDto(String custName) {
-        setCustName(custName);
-    }
+
 }

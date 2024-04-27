@@ -40,6 +40,5 @@ public class TempInvoiceDto {
         this.setNetAmount(tempInvoiceEntity.getNetAmount());
         this.setCustomerOBJ(new CustomerDto(tempInvoiceEntity.getCustomer()));
         this.setTempInvoiceNumber(tempInvoiceEntity.getTempInvoiceNumber());
-       // this.setCustomerOBJ(new CustomerDto( tempInvoiceEntity.getCustomer().getCustName()));
     }
 }

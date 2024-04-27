@@ -1,5 +1,6 @@
 package com.appli.clcapi.category.entity;
 
+import com.appli.clcapi.category.dto.CategoryDto;
 import com.appli.clcapi.stock.entity.StockEntity;
 import com.appli.clcapi.tempInvoice.entity.TempInvoiceEntity;
 import jakarta.persistence.*;
@@ -21,7 +22,7 @@ public class CategoryEntity {
     private String categoryName;
     private String description;
     private boolean deleted=false;
-    @OneToMany(mappedBy = "categoryEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "categoryEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<StockEntity> stockEntity;
 
 
@@ -29,5 +30,11 @@ public class CategoryEntity {
         this.categoryId = categoryId;
     }
 
-
+    public CategoryEntity(CategoryDto categoryDto) {
+        this.categoryId = categoryDto.getCategoryId();
+        this.categoryName = categoryDto.getCategoryName();
+        this.description = categoryDto.getDescription();
+        this.deleted = categoryDto.isDeleted();
+        this.stockEntity = null;
+    }
 }
