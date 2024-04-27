@@ -1,7 +1,6 @@
 package com.appli.clcapi.stock.dto;
 
 import com.appli.clcapi.category.dto.CategoryDto;
-import com.appli.clcapi.productCart.entity.ProductCartEntity;
 import com.appli.clcapi.stock.entity.StockEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

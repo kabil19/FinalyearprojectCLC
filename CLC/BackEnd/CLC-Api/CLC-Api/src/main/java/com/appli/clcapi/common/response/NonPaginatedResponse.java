@@ -18,7 +18,7 @@ public class NonPaginatedResponse {
     public NonPaginatedResponse(){
         isPaginated = Boolean.FALSE;
         result = null;
-        errors = new ArrayList<String>();
+        errors = new ArrayList<>();
         successMessage = null;
         status = null;
     }

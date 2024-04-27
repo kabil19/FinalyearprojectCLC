@@ -12,7 +12,7 @@ import com.appli.clcapi.stock.entity.StockEntity;
 import com.appli.clcapi.stock.repository.StockRepo;
 import com.appli.clcapi.tempInvoice.dto.TempInvoiceDto;
 import com.appli.clcapi.tempInvoice.entity.TempInvoiceEntity;
-import com.appli.clcapi.tempInvoice.repository.TempInvoiceRepo;
+
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

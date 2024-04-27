@@ -40,14 +40,6 @@ public class TempInvoiceEntity {
     @OneToMany(mappedBy = "tempInvoiceEntity" ,cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductCartEntity> productCartEntity;
 
-    public TempInvoiceEntity(TempInvoiceEntity tempInvoiceEntity){
-        super();
-        this.setTempInvoiceNumber(tempInvoiceEntity.getTempInvoiceNumber());
-        this.setTempInvoiceId(tempInvoiceEntity.getTempInvoiceId());
-        this.setDate(tempInvoiceEntity.getDate());
-        this.setNetAmount(tempInvoiceEntity.getNetAmount());
-        this.setCustomer(new CustomerEntity());
-    }
 
     public TempInvoiceEntity(TempInvoiceDto tempInvoiceDto){
         super();
@@ -58,8 +50,5 @@ public class TempInvoiceEntity {
         this.setCustomer(new CustomerEntity(tempInvoiceDto.getCustomerOBJ()));
     }
 
-    public TempInvoiceEntity(Long tempInvoiceId){
-        this.setTempInvoiceId(tempInvoiceId);
-    }
 
 }

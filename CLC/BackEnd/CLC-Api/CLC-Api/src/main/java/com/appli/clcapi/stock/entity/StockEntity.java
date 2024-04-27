@@ -53,9 +53,4 @@ public class StockEntity {
 
 
 
-    public StockEntity(Long stockId){
-       setStockId(stockId);
-    }
-
-
 }

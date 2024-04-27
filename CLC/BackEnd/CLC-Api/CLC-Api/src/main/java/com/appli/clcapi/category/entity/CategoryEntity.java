@@ -2,7 +2,6 @@ package com.appli.clcapi.category.entity;
 
 import com.appli.clcapi.category.dto.CategoryDto;
 import com.appli.clcapi.stock.entity.StockEntity;
-import com.appli.clcapi.tempInvoice.entity.TempInvoiceEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
