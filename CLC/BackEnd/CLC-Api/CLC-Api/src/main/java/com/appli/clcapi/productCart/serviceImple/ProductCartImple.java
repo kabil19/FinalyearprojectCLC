@@ -43,12 +43,13 @@ public class ProductCartImple implements ProductCartService {
                     .orElseThrow(()-> new IllegalArgumentException("Stock with ID "+ stockId + " not found"));
 
             Optional<ProductCartEntity> itemInCart = productCartRepo.findByStockEntity_StockIdAndTempInvoiceEntity_TempInvoiceId(stockId,tempInvoiceId);
-            long newQty = stocksFromStockEntity.getQuantity() - productCartDto.getQuantity();
+            long newQtyToStock = stocksFromStockEntity.getQuantity() - productCartDto.getQuantity();
 
             if(itemInCart.isEmpty()) {
                 ProductCartEntity returnedProduct = addNewItem(productCartDto);
-                stocksFromStockEntity.setQuantity(newQty);
+                stocksFromStockEntity.setQuantity(newQtyToStock);
                 stockRepo.save(stocksFromStockEntity);
+                stockRepo.flush();
                 response.setSuccessMessage(ProductCartConstants.PRODUCT_HAS_BEEN_ADDED_INTO_THE_CART_SUCCESSFULLY);
                 ProductCartDto aProductIntoTheCart = new ProductCartDto(returnedProduct);
                 response.setResult(aProductIntoTheCart);
@@ -56,22 +57,22 @@ public class ProductCartImple implements ProductCartService {
             }else{
                 ProductCartEntity itemInCartDetails = itemInCart.get();
                 ProductCartEntity returnedProduct = addMoreQuantity(itemInCartDetails,productCartDto);
-                stocksFromStockEntity.setQuantity(newQty);
+                stocksFromStockEntity.setQuantity(newQtyToStock);
                 stockRepo.save(stocksFromStockEntity);
+                stockRepo.flush();
                 response.setSuccessMessage(ProductCartConstants.MORE_QUANTITY_HAS_BEEN_UPDATED_TO_THE_PRODUCT);
                 ProductCartDto aProductIntoTheCart = new ProductCartDto(returnedProduct);
                 response.setResult(aProductIntoTheCart);
                 response.setStatus(HttpStatus.ACCEPTED);
             }
-            return response;
+
         }catch (Exception e){
             logger.error("An error occurred while registering product cart", e);
             response.setSuccessMessage("");
             response.setErrors(Arrays.asList("An error occurred while registering product cart"));
             response.setStatus(HttpStatus.BAD_REQUEST);
-            return response;
         }
-
+        return response;
     }
 
 
@@ -91,31 +92,43 @@ public class ProductCartImple implements ProductCartService {
     }
 
     private ProductCartEntity addMoreQuantity(ProductCartEntity existingItemsDetails, ProductCartDto productCartDto) {
-        existingItemsDetails.setQuantity(existingItemsDetails.getQuantity() + productCartDto.getQuantity());
-        existingItemsDetails.setDiscount(existingItemsDetails.getDiscount() + productCartDto.getDiscount());
-//        existingItemsDetails.setNetAmount(existingItemsDetails.getNetAmount() + productCartDto.getNetAmount());
-        existingItemsDetails.setNetAmount(existingItemsDetails.getNetAmount() + productCartDto.getNetAmount());
-        existingItemsDetails.setTotal(existingItemsDetails.getTotal() + productCartDto.getTotal());
+        long updatedQty = existingItemsDetails.getQuantity() + productCartDto.getQuantity();
+        existingItemsDetails.setQuantity(updatedQty);
+        long discount = existingItemsDetails.getDiscount() + productCartDto.getDiscount();
+        existingItemsDetails.setDiscount(discount);
+        long total = existingItemsDetails.getTotal() * updatedQty;
+        existingItemsDetails.setTotal(total);
+        long netAmount = total - (updatedQty * discount);
+        existingItemsDetails.setNetAmount(netAmount);
         return productCartRepo.save(existingItemsDetails);
     }
-
+    @Override
     @Transactional
     public NonPaginatedResponse delete(Long cartId){
         NonPaginatedResponse response = new NonPaginatedResponse();
+
         ProductCartEntity anItemInCart =productCartRepo.findById(cartId).orElseThrow();
-        Optional<StockEntity> aStock = stockRepo.findById(anItemInCart.getStockEntity().getStockId());
-        Long selectedQty = anItemInCart.getQuantity();
-        aStock.get().setQuantity((aStock.get().getQuantity()+selectedQty));
+
+        StockEntity stockEntity = anItemInCart.getStockEntity();
+        Optional<StockEntity> aStock = stockRepo.findById(stockEntity.getStockId());
+
+        Long qtyToBeAdded = anItemInCart.getQuantity();
+        Long currentQtyInStock = aStock.get().getQuantity();
+        aStock.get().setQuantity((currentQtyInStock + qtyToBeAdded));
         stockRepo.save(aStock.get());
+        stockRepo.flush();
         productCartRepo.deleteById(cartId);
         productCartRepo.flush();
+
         ProductCartDto productCartDto = new ProductCartDto(anItemInCart);
-        response.setSuccessMessage("The Item with the StockId:- "+ aStock.get().getStockId() +" Successfully removed from the cart");
+        Long stockId = aStock.get().getStockId();
+        String itemName = aStock.get().getItemName();
+        response.setSuccessMessage("The Item :- "+ stockId +"-"+ itemName +" Successfully removed from the cart");
         response.setResult(productCartDto);
         response.setStatus(HttpStatus.OK);
         return response;
     }
-
+    @Override
     public NonPaginatedResponse getAll(Long invoiceId){
         NonPaginatedResponse response = new NonPaginatedResponse();
         try{
@@ -132,11 +145,64 @@ public class ProductCartImple implements ProductCartService {
         catch (Exception e){
           response.setStatus(HttpStatus.BAD_REQUEST);
           response.setErrors(Arrays.asList("couldn't find any Data"));
-
         }
         return response;
     }
 
+    @Override
+    @Transactional
+    public NonPaginatedResponse update(ProductCartDto productCartDto){
+            NonPaginatedResponse response = new NonPaginatedResponse();
+            Optional<ProductCartEntity> selectedCartRecord = productCartRepo.findById(productCartDto.getProCartId());
+            Long currentQtyInTheRecord = selectedCartRecord.get().getQuantity();
+            Long newlySelectedQty = productCartDto.getQuantity();
+            ProductCartEntity recordDetails = selectedCartRecord.get();
+            if(selectedCartRecord.isPresent()){
+                long quantityChange  = currentQtyInTheRecord - newlySelectedQty;
+                recordDetails.setQuantity(currentQtyInTheRecord - quantityChange );
+                recordDetails.setDiscount(productCartDto.getDiscount());
+                recordDetails.setTotal(productCartDto.getTotal());
+                recordDetails.setNetAmount(productCartDto.getNetAmount());
+                productCartRepo.save(recordDetails);
+                Long stockId = productCartDto.getStockDto().getStockId();
+                
+                Optional<StockEntity> theStockTobeUpdated = stockRepo.findById(stockId);
+                StockEntity stockEntity = theStockTobeUpdated.get();
+                stockEntity.setQuantity(stockEntity.getQuantity()+ quantityChange );
+                stockRepo.save(stockEntity);
+                
+                response.setResult(recordDetails);
+                response.setSuccessMessage("The selected Item has been Successfully updated");
+                response.setStatus(HttpStatus.OK);
+                return response;
+            }else{
+                response.setResult(null);
+                response.setErrors(Arrays.asList("Unsuccessful"));
+                response.setStatus(HttpStatus.BAD_GATEWAY);
+            }
+            return response;
+    }
+    @Override
+    public NonPaginatedResponse select(String exitingChar){
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        try {
+            List<ProductCartEntity> existingCartDetails = productCartRepo.findByStockEntity_ItemNameContaining(exitingChar);
+            List<ProductCartDto> productCartDtoForView = new ArrayList<>();
+            for (ProductCartEntity aRecordOfCart : existingCartDetails) {
+                ProductCartDto productCartDto = new ProductCartDto(aRecordOfCart);
+                productCartDtoForView.add(productCartDto);
+            }
+            response.setResult(productCartDtoForView);
+            response.setStatus(HttpStatus.OK);
+            response.setSuccessMessage("Searched Item has been found");
+
+        }catch (Exception e){
+            response.setErrors(Arrays.asList(e.toString()));
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setResult(null);
+        }
+        return response;
+    }
 
 
 }

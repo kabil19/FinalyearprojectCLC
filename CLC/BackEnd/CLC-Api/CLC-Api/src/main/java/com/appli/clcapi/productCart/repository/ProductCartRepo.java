@@ -13,8 +13,9 @@ import java.util.Optional;
 public interface ProductCartRepo extends JpaRepository<ProductCartEntity, Long> {
 
 List<ProductCartEntity> findByTempInvoiceEntity_TempInvoiceId(Long invoiceID);
-    Optional<ProductCartEntity> findByStockEntity_StockIdAndTempInvoiceEntity_TempInvoiceId(Long stockId, Long tempInvoiceId);
+Optional<ProductCartEntity> findByStockEntity_StockIdAndTempInvoiceEntity_TempInvoiceId(Long stockId, Long tempInvoiceId);
 
+    List<ProductCartEntity> findByStockEntity_ItemNameContaining(String name);
 
 
 }
