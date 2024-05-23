@@ -30,16 +30,16 @@ public class StockDto {
     private String materialColour;
 
     @JsonProperty("quantity")
-    private Long quantity;
+    private Double quantity;
 
     @JsonProperty("purchasePrice")
-    private Float purchasePrice;
+    private Double purchasePrice;
 
     @JsonProperty("sellingPrice")
-    private Float sellingPrice;
+    private Double sellingPrice;
 
     @JsonProperty("reorderQty")
-    private Long reorderQty;
+    private Double reorderQty;
 
     @JsonProperty("arrivalDate")
     private Date arrivalDate;

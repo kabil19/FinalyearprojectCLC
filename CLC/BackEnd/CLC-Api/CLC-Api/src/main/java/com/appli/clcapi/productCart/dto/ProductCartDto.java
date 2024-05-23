@@ -23,16 +23,16 @@ public class ProductCartDto {
     private StockDto stockDto;
 
     @JsonProperty("quantity")
-    private Long quantity;
+    private Double quantity;
 
     @JsonProperty("discount")
-    private Long discount;
+    private Double discount;
 
     @JsonProperty("total")
-    private Long total;
+    private Double total;
 
     @JsonProperty("netAmount")
-    private Long netAmount;
+    private Double netAmount;
 
     @JsonProperty("tempInvoiceOBJ")
     private TempInvoiceDto tempInvoiceDto;

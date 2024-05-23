@@ -8,7 +8,6 @@ import lombok.*;
 
 @Getter
 @Setter
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -19,14 +18,14 @@ public class ProductCartEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long proCartId;
-    private Long quantity;
-    private Long discount;
-    private Long total;
-    private Long netAmount;
-    @ManyToOne(fetch = FetchType.EAGER)
+    private Double quantity;
+    private Double discount;
+    private Double total;
+    private Double netAmount;
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tempInvoiceId")
     private TempInvoiceEntity tempInvoiceEntity;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stockEntityId")
     private StockEntity stockEntity;
     private boolean deleted = false;

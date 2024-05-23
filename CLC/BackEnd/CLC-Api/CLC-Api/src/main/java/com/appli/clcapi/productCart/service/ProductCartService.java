@@ -9,6 +9,7 @@ public interface ProductCartService {
      NonPaginatedResponse addToCart(ProductCartDto productCartDto) ;
      NonPaginatedResponse delete(Long proCartId) ;
      NonPaginatedResponse getAll(Long invoiceId);
-     NonPaginatedResponse select(String exitingChar);
+     NonPaginatedResponse select(Long invoiceId, String exitingChar);
      NonPaginatedResponse update(ProductCartDto productCartDto);
+
 }

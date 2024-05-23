@@ -41,9 +41,11 @@ public class ProductCartController {
         return productCartService.getAll(invoiceId);
     }
 
-    @GetMapping("select/{existingChar}")
-    public NonPaginatedResponse select(@PathVariable String existingChar){
-        return productCartService.select(existingChar);
+
+
+    @GetMapping("select/{invoiceId}/{existingChar}")
+    public NonPaginatedResponse select(@PathVariable Long invoiceId, @PathVariable String existingChar){
+        return productCartService.select(invoiceId, existingChar);
     }
 
 }

@@ -27,6 +27,7 @@ public class TempInvoiceServiceImple implements TempInvoiceService {
                     .tempInvoiceId(tempInvoiceDto.getTempInvoiceId())
                     .date(tempInvoiceDto.getDate())
                     .netAmount(tempInvoiceDto.getNetAmount())
+                    .paidAmount(tempInvoiceDto.getPaidAmount())
                     .finalized(false)
                     .tempInvoiceNumber(tempInvoiceDto.getTempInvoiceNumber())
                         .customer(new CustomerEntity(tempInvoiceDto.getCustomerOBJ().getCustId()))
@@ -62,6 +63,7 @@ public class TempInvoiceServiceImple implements TempInvoiceService {
                 updatedTempInvoice.setTempInvoiceId(tempInvoiceDto.getTempInvoiceId());
                 updatedTempInvoice.setDate(tempInvoiceDto.getDate());
                 updatedTempInvoice.setNetAmount(tempInvoiceDto.getNetAmount());
+                updatedTempInvoice.setPaidAmount(tempInvoiceDto.getPaidAmount());
                 updatedTempInvoice.setTempInvoiceNumber(tempInvoiceDto.getTempInvoiceNumber());
                 updatedTempInvoice.setCustomer(new CustomerEntity(tempInvoiceDto.getCustomerOBJ().getCustId()));
                 if(tempInvoiceDto.getFinalized()!=null){

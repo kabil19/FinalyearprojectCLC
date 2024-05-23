@@ -15,7 +15,8 @@ public interface ProductCartRepo extends JpaRepository<ProductCartEntity, Long> 
 List<ProductCartEntity> findByTempInvoiceEntity_TempInvoiceId(Long invoiceID);
 Optional<ProductCartEntity> findByStockEntity_StockIdAndTempInvoiceEntity_TempInvoiceId(Long stockId, Long tempInvoiceId);
 
-    List<ProductCartEntity> findByStockEntity_ItemNameContaining(String name);
+//    List<ProductCartEntity> findByStockEntity_ItemNameContaining(String name);
+    List<ProductCartEntity> findByTempInvoiceEntity_TempInvoiceIdAndStockEntity_ItemNameContaining(Long id, String name);
 
 
 }

@@ -3,6 +3,7 @@ package com.appli.clcapi.stock.entity;
 import com.appli.clcapi.category.entity.CategoryEntity;
 import com.appli.clcapi.productCart.entity.ProductCartEntity;
 import com.appli.clcapi.stock.dto.StockDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,16 +26,17 @@ public class StockEntity {
     @JoinColumn(name="categoryId", nullable = false)
     private CategoryEntity categoryEntity;
     private String materialColour;
-    private Long quantity;
-    private Float purchasePrice;
-    private Float sellingPrice;
-    private Long reorderQty;
+    private Double quantity;
+    private Double purchasePrice;
+    private Double sellingPrice;
+    private Double reorderQty;
     private Date arrivalDate;
     private Boolean deleted = false;
     //image
     private String remarks;
 
     @OneToMany(mappedBy = "stockEntity",cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<ProductCartEntity> productCartEntity;
 
 
