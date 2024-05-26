@@ -2,7 +2,6 @@ package com.appli.clcapi.payments.dto;
 
 import com.appli.clcapi.payments.entity.PaymentsEntity;
 import com.appli.clcapi.tempInvoice.dto.TempInvoiceDto;
-import com.appli.clcapi.tempInvoice.entity.TempInvoiceEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +24,7 @@ public class PaymentsDto {
     @JsonProperty("paidAmount")
     private Double paidAmount;
     @JsonProperty("sellInvoice")
-    private TempInvoiceDto sellInvoice;
+    private TempInvoiceDto salesInvoice;
 //    private Long purchaseInvoice;
 
     public PaymentsDto(PaymentsEntity paymentsEntity){
@@ -33,6 +32,6 @@ public class PaymentsDto {
         setPaymentType(paymentsEntity.getPaymentType());
         setPaidAmount(paymentsEntity.getPaidAmount());
         setPaidDate(paymentsEntity.getPaidDate());
-        setSellInvoice(new TempInvoiceDto(paymentsEntity.getSellInvoice()));
+        setSalesInvoice(new TempInvoiceDto(paymentsEntity.getSalesInvoice()));
     }
 }

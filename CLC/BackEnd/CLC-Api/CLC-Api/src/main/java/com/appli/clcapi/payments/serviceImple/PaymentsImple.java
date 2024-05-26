@@ -34,12 +34,12 @@ public class PaymentsImple implements PaymentsService {
                     .paymentType(paymentsDto.getPaymentType())
                     .paidAmount(paymentsDto.getPaidAmount())
                     .paidDate(paymentsDto.getPaidDate())
-                    .sellInvoice(new TempInvoiceEntity(paymentsDto.getSellInvoice()))
+                    .salesInvoice(new TempInvoiceEntity(paymentsDto.getSalesInvoice()))
                     .build();
             paymentsRepo.save(aPayment);
-            Optional<TempInvoiceEntity> selectedSellInvoice = tempInvoiceRepo.findById(paymentsDto.getSellInvoice().getTempInvoiceId());
-            selectedSellInvoice.get().setPaidAmount(selectedSellInvoice.get().getPaidAmount() + paymentsDto.getPaidAmount());
-            tempInvoiceRepo.save(selectedSellInvoice.get());
+            Optional<TempInvoiceEntity> selectedSalesInvoice = tempInvoiceRepo.findById(paymentsDto.getSalesInvoice().getTempInvoiceId());
+            selectedSalesInvoice.get().setPaidAmount(selectedSalesInvoice.get().getPaidAmount() + paymentsDto.getPaidAmount());
+            tempInvoiceRepo.save(selectedSalesInvoice.get());
             response.setResult(null);
             response.setSuccessMessage(PaymentsConstants.PAYMENT_HAS_BEEN_ADDED);
             response.setStatus(HttpStatus.CREATED);

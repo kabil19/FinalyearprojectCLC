@@ -1,9 +1,9 @@
 package com.appli.clcapi.stock.entity;
 
 import com.appli.clcapi.category.entity.CategoryEntity;
+import com.appli.clcapi.confirmInvoice.confirmCartItems.entity.ConfirmProductCartEntity;
 import com.appli.clcapi.productCart.entity.ProductCartEntity;
 import com.appli.clcapi.stock.dto.StockDto;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,8 +36,10 @@ public class StockEntity {
     private String remarks;
 
     @OneToMany(mappedBy = "stockEntity",cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<ProductCartEntity> productCartEntity;
+
+    @OneToMany(mappedBy = "stockEntity", cascade = CascadeType.ALL)
+    private List<ConfirmProductCartEntity> confirmProductCartEntity;
 
 
     public StockEntity(StockDto stockDto){

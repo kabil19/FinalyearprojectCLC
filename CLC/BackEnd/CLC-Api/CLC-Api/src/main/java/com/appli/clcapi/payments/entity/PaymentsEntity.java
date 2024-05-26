@@ -1,5 +1,6 @@
 package com.appli.clcapi.payments.entity;
 
+import com.appli.clcapi.confirmInvoice.entity.ConfirmInvoiceEntity;
 import com.appli.clcapi.payments.dto.PaymentsDto;
 import com.appli.clcapi.tempInvoice.entity.TempInvoiceEntity;
 import jakarta.persistence.*;
@@ -23,7 +24,11 @@ public class PaymentsEntity {
     private Double paidAmount;
     @ManyToOne
     @JoinColumn(name="tempInvoiceId")
-    private TempInvoiceEntity sellInvoice;
+    private TempInvoiceEntity salesInvoice;
+
+    @ManyToOne
+    @JoinColumn(name="confirmInvoiceId")
+    private ConfirmInvoiceEntity confirmInvoice;
 //    private Long purchaseInvoice;
 
 
@@ -32,6 +37,6 @@ public class PaymentsEntity {
         this.paymentType = paymentsDto.getPaymentType();
         this.paidDate = paymentsDto.getPaidDate();
         this.paidAmount = paymentsDto.getPaidAmount();
-        this.sellInvoice = new TempInvoiceEntity(paymentsDto.getSellInvoice());
+        this.salesInvoice = new TempInvoiceEntity(paymentsDto.getSalesInvoice());
     }
 }

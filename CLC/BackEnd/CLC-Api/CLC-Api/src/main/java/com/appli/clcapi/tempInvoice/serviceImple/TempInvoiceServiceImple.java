@@ -30,7 +30,7 @@ public class TempInvoiceServiceImple implements TempInvoiceService {
                     .paidAmount(tempInvoiceDto.getPaidAmount())
                     .finalized(false)
                     .tempInvoiceNumber(tempInvoiceDto.getTempInvoiceNumber())
-                        .customer(new CustomerEntity(tempInvoiceDto.getCustomerOBJ().getCustId()))
+                    .customer(new CustomerEntity(tempInvoiceDto.getCustomerOBJ()))
                     .build();
             tempInvoiceRepo.save(anInvoice);
             return new ResponseEntity<>("Invoice has been created",HttpStatus.OK);
@@ -65,7 +65,7 @@ public class TempInvoiceServiceImple implements TempInvoiceService {
                 updatedTempInvoice.setNetAmount(tempInvoiceDto.getNetAmount());
                 updatedTempInvoice.setPaidAmount(tempInvoiceDto.getPaidAmount());
                 updatedTempInvoice.setTempInvoiceNumber(tempInvoiceDto.getTempInvoiceNumber());
-                updatedTempInvoice.setCustomer(new CustomerEntity(tempInvoiceDto.getCustomerOBJ().getCustId()));
+                updatedTempInvoice.setCustomer(new CustomerEntity(tempInvoiceDto.getCustomerOBJ()));
                 if(tempInvoiceDto.getFinalized()!=null){
                     updatedTempInvoice.setFinalized(tempInvoiceDto.getFinalized());
                 }else {

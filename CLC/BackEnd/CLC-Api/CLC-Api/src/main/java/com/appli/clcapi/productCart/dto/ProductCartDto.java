@@ -1,5 +1,6 @@
 package com.appli.clcapi.productCart.dto;
 
+import com.appli.clcapi.confirmInvoice.dto.ConfirmInvoiceDto;
 import com.appli.clcapi.productCart.entity.ProductCartEntity;
 import com.appli.clcapi.stock.dto.StockDto;
 import com.appli.clcapi.tempInvoice.dto.TempInvoiceDto;
@@ -37,6 +38,9 @@ public class ProductCartDto {
     @JsonProperty("tempInvoiceOBJ")
     private TempInvoiceDto tempInvoiceDto;
 
+    @JsonProperty("confirmInvoiceOBJ")
+    private ConfirmInvoiceDto confirmInvoiceDto;
+
     @JsonIgnore
     private boolean deleted = false;
 
@@ -48,5 +52,6 @@ public class ProductCartDto {
         setTotal(productCartEntity.getTotal());
         setTempInvoiceDto(new TempInvoiceDto(productCartEntity.getTempInvoiceEntity()));
         setStockDto(new StockDto(productCartEntity.getStockEntity()));
+//        setConfirmInvoiceDto(new ConfirmInvoiceDto(productCartEntity.getConfirmInvoiceEntity()));
     }
 }

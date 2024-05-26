@@ -34,6 +34,7 @@ public class StockServiceImple implements StockService {
                     .quantity(stockDto.getQuantity())
                     .materialColour(stockDto.getMaterialColour())
                     .remarks(stockDto.getRemarks())
+                    .deleted(false)
                     .purchasePrice(stockDto.getPurchasePrice())
                     .sellingPrice(stockDto.getSellingPrice())
                     .reorderQty(stockDto.getReorderQty())
