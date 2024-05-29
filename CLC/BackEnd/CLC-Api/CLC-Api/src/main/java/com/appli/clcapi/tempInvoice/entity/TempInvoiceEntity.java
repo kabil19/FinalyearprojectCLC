@@ -2,6 +2,9 @@ package com.appli.clcapi.tempInvoice.entity;
 import com.appli.clcapi.confirmInvoice.confirmCartItems.entity.ConfirmProductCartEntity;
 import com.appli.clcapi.customer.entity.CustomerEntity;
 import com.appli.clcapi.payments.entity.PaymentsEntity;
+import com.appli.clcapi.payments.paymentMethod.entity.CardEntity;
+import com.appli.clcapi.payments.paymentMethod.entity.CashEntity;
+import com.appli.clcapi.payments.paymentMethod.entity.ChequeEntity;
 import com.appli.clcapi.productCart.entity.ProductCartEntity;
 import com.appli.clcapi.tempInvoice.dto.TempInvoiceDto;
 import jakarta.persistence.*;
@@ -38,13 +41,23 @@ public class TempInvoiceEntity {
 
     @OneToMany(mappedBy = "tempInvoiceEntity" ,cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ConfirmProductCartEntity> confirmProductCartEntity;
+
     @ManyToOne
     @JoinColumn(name="custId", nullable = false)
     private CustomerEntity customer;
 
-
     @OneToMany(mappedBy = "salesInvoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PaymentsEntity> paymentsEntities;
+
+    @OneToMany(mappedBy = "tempInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CardEntity> cardEntity;
+
+    @OneToMany(mappedBy = "tempInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CashEntity> cashEntity;
+
+    @OneToMany(mappedBy = "tempInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ChequeEntity> chequeEntity;
+
     public TempInvoiceEntity(TempInvoiceDto tempInvoiceDto){
         super();
         this.setTempInvoiceNumber(tempInvoiceDto.getTempInvoiceNumber());
@@ -52,7 +65,7 @@ public class TempInvoiceEntity {
         this.setDate(tempInvoiceDto.getDate());
         this.setNetAmount(tempInvoiceDto.getNetAmount());
         this.setPaidAmount(tempInvoiceDto.getPaidAmount());
-        this.setCustomer(new CustomerEntity(tempInvoiceDto.getCustomerOBJ()));
+        this.setCustomer(new CustomerEntity(tempInvoiceDto.getCustomerEntity()));
     }
 
 

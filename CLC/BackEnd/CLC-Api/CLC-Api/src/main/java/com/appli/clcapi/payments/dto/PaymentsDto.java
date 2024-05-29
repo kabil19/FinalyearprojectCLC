@@ -3,14 +3,12 @@ package com.appli.clcapi.payments.dto;
 import com.appli.clcapi.payments.entity.PaymentsEntity;
 import com.appli.clcapi.tempInvoice.dto.TempInvoiceDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
-@Data
+@Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,8 +21,14 @@ public class PaymentsDto {
     private Date paidDate;
     @JsonProperty("paidAmount")
     private Double paidAmount;
-    @JsonProperty("sellInvoice")
+    @JsonProperty("salesInvoice")
     private TempInvoiceDto salesInvoice;
+    @JsonProperty("chequeRefNo")
+    private Long chequeRefNo;
+    @JsonProperty("chequeDueDate")
+    private Date chequeDueDate;
+    @JsonProperty("cardRefNo")
+    private Long cardRefNo;
 //    private Long purchaseInvoice;
 
     public PaymentsDto(PaymentsEntity paymentsEntity){

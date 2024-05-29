@@ -32,9 +32,9 @@ public class ProductCartEntity {
     @JoinColumn(name = "stockEntityId")
     private StockEntity stockEntity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+   /* @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "confirmInvoiceId")
-    private ConfirmInvoiceEntity confirmInvoiceEntity;
+    private ConfirmInvoiceEntity confirmInvoiceEntity;*/
 
     private boolean deleted = false;
 

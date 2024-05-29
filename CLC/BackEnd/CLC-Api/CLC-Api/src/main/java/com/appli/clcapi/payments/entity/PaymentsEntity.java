@@ -32,6 +32,8 @@ public class PaymentsEntity {
 //    private Long purchaseInvoice;
 
 
+
+
     public PaymentsEntity(PaymentsDto paymentsDto) {
         this.paymentId = paymentsDto.getPaymentId();
         this.paymentType = paymentsDto.getPaymentType();

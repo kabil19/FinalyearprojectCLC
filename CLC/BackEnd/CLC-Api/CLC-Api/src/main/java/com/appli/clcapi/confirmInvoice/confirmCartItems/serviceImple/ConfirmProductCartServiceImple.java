@@ -29,23 +29,20 @@ public class ConfirmProductCartServiceImple implements ConfirmProductCartService
 
     @Override
     @Transactional
-    public Boolean confirmTheCartItems(Long invoiceId) {
+    public Boolean confirmTheCartItems(Long invoiceId, ConfirmInvoiceEntity confirmInvoice) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try{
             List<ProductCartEntity> listOfProCarts = productCartRepo.findByTempInvoiceEntity_TempInvoiceId(invoiceId);
-            ConfirmInvoiceEntity confirmInvoiceEntity = confirmInvoiceRepo.findById(invoiceId).get();
-            ConfirmInvoiceDto confirmInvoiceDto = new ConfirmInvoiceDto(confirmInvoiceEntity);
-            for(ProductCartEntity aCart: listOfProCarts){
-                StockDto aStockDto = new StockDto(aCart.getStockEntity());
 
+            for(ProductCartEntity aCart: listOfProCarts){
                 ConfirmProductCartEntity confirmProductCartEntity = ConfirmProductCartEntity.builder()
                         .confirmProductCartId(aCart.getProCartId())
                         .discount(aCart.getDiscount())
                         .netAmount(aCart.getNetAmount())
                         .quantity(aCart.getQuantity())
                         .total(aCart.getTotal())
-                        .confirmInvoiceEntity(new ConfirmInvoiceEntity(confirmInvoiceDto))
-                        .stockEntity(new StockEntity(aStockDto)).build();
+                        .confirmInvoiceEntity(confirmInvoice)
+                        .stockEntity(aCart.getStockEntity()).build();
                 confirmProductCartRepo.save(confirmProductCartEntity);
             }
             return true;

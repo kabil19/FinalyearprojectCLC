@@ -4,6 +4,12 @@ import com.appli.clcapi.common.constants.PaymentsConstants;
 import com.appli.clcapi.common.response.NonPaginatedResponse;
 import com.appli.clcapi.payments.dto.PaymentsDto;
 import com.appli.clcapi.payments.entity.PaymentsEntity;
+import com.appli.clcapi.payments.paymentMethod.entity.CardEntity;
+import com.appli.clcapi.payments.paymentMethod.entity.CashEntity;
+import com.appli.clcapi.payments.paymentMethod.entity.ChequeEntity;
+import com.appli.clcapi.payments.paymentMethod.repository.CardRepo;
+import com.appli.clcapi.payments.paymentMethod.repository.CashRepo;
+import com.appli.clcapi.payments.paymentMethod.repository.ChequeRepo;
 import com.appli.clcapi.payments.repository.PaymentsRepo;
 import com.appli.clcapi.payments.service.PaymentsService;
 import com.appli.clcapi.tempInvoice.entity.TempInvoiceEntity;
@@ -24,6 +30,10 @@ public class PaymentsImple implements PaymentsService {
 
     private final PaymentsRepo paymentsRepo;
     private final TempInvoiceRepo tempInvoiceRepo;
+    private final CardRepo cardRepo;
+    private final CashRepo cashRepo;
+    private final ChequeRepo chequeRepo;
+    
     @Override
     @Transactional
     public NonPaginatedResponse addPayment(PaymentsDto paymentsDto) {
@@ -36,10 +46,12 @@ public class PaymentsImple implements PaymentsService {
                     .paidDate(paymentsDto.getPaidDate())
                     .salesInvoice(new TempInvoiceEntity(paymentsDto.getSalesInvoice()))
                     .build();
-            paymentsRepo.save(aPayment);
+            var savedPaymentEntity =  paymentsRepo.save(aPayment);
+            addDetailsToTheRelevantPayMethod(paymentsDto, savedPaymentEntity);
             Optional<TempInvoiceEntity> selectedSalesInvoice = tempInvoiceRepo.findById(paymentsDto.getSalesInvoice().getTempInvoiceId());
             selectedSalesInvoice.get().setPaidAmount(selectedSalesInvoice.get().getPaidAmount() + paymentsDto.getPaidAmount());
             tempInvoiceRepo.save(selectedSalesInvoice.get());
+
             response.setResult(null);
             response.setSuccessMessage(PaymentsConstants.PAYMENT_HAS_BEEN_ADDED);
             response.setStatus(HttpStatus.CREATED);
@@ -50,6 +62,38 @@ public class PaymentsImple implements PaymentsService {
             response.setStatus(HttpStatus.BAD_REQUEST);
         }
         return response;
+    }
+
+    private void addDetailsToTheRelevantPayMethod(PaymentsDto paymentsDto, PaymentsEntity savedPayment) {
+
+        if(paymentsDto.getPaymentType().equalsIgnoreCase("card")){
+            CardEntity aCardPayment = CardEntity.builder()
+                    .cardRefNo(paymentsDto.getCardRefNo())
+                    .paidAmount(paymentsDto.getPaidAmount())
+                    .paidDate(paymentsDto.getPaidDate())
+                    .paymentId(savedPayment.getPaymentId())
+                    .tempInvoiceEntity(savedPayment.getSalesInvoice())
+                    .build();
+            cardRepo.save(aCardPayment);
+        } else if (paymentsDto.getPaymentType().equalsIgnoreCase("cash")) {
+            CashEntity aCashPayment = CashEntity.builder()
+                    .paidAmount(paymentsDto.getPaidAmount())
+                    .paidDate(paymentsDto.getPaidDate())
+                    .paymentId(savedPayment.getPaymentId())
+                    .tempInvoiceEntity(savedPayment.getSalesInvoice())
+                    .build();
+            cashRepo.save(aCashPayment);
+        }else if (paymentsDto.getPaymentType().equalsIgnoreCase("cheque")){
+            ChequeEntity aChequePayment = ChequeEntity.builder()
+                    .paidAmount(paymentsDto.getPaidAmount())
+                    .paidDate(paymentsDto.getPaidDate())
+                    .chequeRefNo(paymentsDto.getChequeRefNo())
+                    .paymentId(savedPayment.getPaymentId())
+                    .chequeDueDate(paymentsDto.getChequeDueDate())
+                    .tempInvoiceEntity(savedPayment.getSalesInvoice())
+                    .build();
+            chequeRepo.save(aChequePayment);
+        }
     }
 
     @Override
@@ -66,7 +110,7 @@ public class PaymentsImple implements PaymentsService {
     public NonPaginatedResponse getAllPayments(Long invoiceId) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try{
-            List<PaymentsEntity> paymentsEntities = paymentsRepo.findBySellInvoice_TempInvoiceId(invoiceId);
+            List<PaymentsEntity> paymentsEntities = paymentsRepo.findBySalesInvoice_TempInvoiceId(invoiceId);
             List<PaymentsDto> paymentsDtos = new ArrayList<>();
             for (PaymentsEntity aPay :paymentsEntities){
                 PaymentsDto aPaymentDto = new PaymentsDto(aPay);
@@ -83,7 +127,5 @@ public class PaymentsImple implements PaymentsService {
     }
 
     @Override
-    public NonPaginatedResponse selectA_Payment() {
-        return null;
-    }
+    public NonPaginatedResponse selectA_Payment() {return null;}
 }

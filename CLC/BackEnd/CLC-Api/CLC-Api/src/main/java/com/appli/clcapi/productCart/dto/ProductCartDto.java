@@ -38,8 +38,8 @@ public class ProductCartDto {
     @JsonProperty("tempInvoiceOBJ")
     private TempInvoiceDto tempInvoiceDto;
 
-    @JsonProperty("confirmInvoiceOBJ")
-    private ConfirmInvoiceDto confirmInvoiceDto;
+//    @JsonProperty("confirmInvoiceOBJ")
+//    private ConfirmInvoiceDto confirmInvoiceDto;
 
     @JsonIgnore
     private boolean deleted = false;

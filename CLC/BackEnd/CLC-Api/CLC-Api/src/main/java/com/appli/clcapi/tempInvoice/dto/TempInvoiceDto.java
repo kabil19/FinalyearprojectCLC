@@ -28,7 +28,7 @@ public class TempInvoiceDto {
     private Double paidAmount;
 
     @JsonProperty("customerOBJ")
-    private CustomerDto customerOBJ; //{custId:1}
+    private CustomerDto customerEntity; //{custId:1}
 
     @JsonProperty("tempInvoiceNumber")
     private Long tempInvoiceNumber;
@@ -42,7 +42,7 @@ public class TempInvoiceDto {
         this.setDate(tempInvoiceEntity.getDate());
         this.setNetAmount(tempInvoiceEntity.getNetAmount());
         this.setPaidAmount(tempInvoiceEntity.getPaidAmount());
-        this.setCustomerOBJ(new CustomerDto(tempInvoiceEntity.getCustomer()));
+        this.setCustomerEntity(new CustomerDto(tempInvoiceEntity.getCustomer()));
         this.setTempInvoiceNumber(tempInvoiceEntity.getTempInvoiceNumber());
     }
 }

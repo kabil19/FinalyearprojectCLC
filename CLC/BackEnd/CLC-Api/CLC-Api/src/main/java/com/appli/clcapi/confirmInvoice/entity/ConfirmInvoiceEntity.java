@@ -4,6 +4,9 @@ import com.appli.clcapi.confirmInvoice.dto.ConfirmInvoiceDto;
 import com.appli.clcapi.confirmInvoice.confirmCartItems.entity.ConfirmProductCartEntity;
 import com.appli.clcapi.customer.entity.CustomerEntity;
 import com.appli.clcapi.payments.entity.PaymentsEntity;
+import com.appli.clcapi.payments.paymentMethod.entity.CardEntity;
+import com.appli.clcapi.payments.paymentMethod.entity.CashEntity;
+import com.appli.clcapi.payments.paymentMethod.entity.ChequeEntity;
 import com.appli.clcapi.productCart.entity.ProductCartEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,8 +30,8 @@ public class ConfirmInvoiceEntity {
     private Double netAmount;
     private Double paidAmount;
 
-    @OneToMany(mappedBy = "confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ProductCartEntity> productCartEntity;
+  /*  @OneToMany(mappedBy = "confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProductCartEntity> productCartEntity;*/
 
     @ManyToOne
     @JoinColumn(name="custId")
@@ -40,6 +43,15 @@ public class ConfirmInvoiceEntity {
     @OneToMany(mappedBy = "confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ConfirmProductCartEntity> confirmProductCartEntity;
 
+    @OneToMany(mappedBy = "confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CardEntity> cardEntity;
+
+    @OneToMany(mappedBy = "confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CashEntity> cashEntity;
+
+    @OneToMany(mappedBy = "confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ChequeEntity> chequeEntity;
+
 
     public ConfirmInvoiceEntity(ConfirmInvoiceDto confirmInvoiceDto) {
         this.confirmInvoiceId = confirmInvoiceDto.getConfirmInvoiceId();
@@ -49,4 +61,7 @@ public class ConfirmInvoiceEntity {
         this.paidAmount = confirmInvoiceDto.getPaidAmount();
         this.customer = new CustomerEntity(confirmInvoiceDto.getCustomerOBJ());
     }
+
+
+
 }
