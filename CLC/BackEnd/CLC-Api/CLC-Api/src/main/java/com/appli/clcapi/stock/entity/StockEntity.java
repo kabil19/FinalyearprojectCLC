@@ -1,7 +1,6 @@
 package com.appli.clcapi.stock.entity;
 
 import com.appli.clcapi.category.entity.CategoryEntity;
-import com.appli.clcapi.confirmInvoice.confirmCartItems.entity.ConfirmProductCartEntity;
 import com.appli.clcapi.productCart.entity.ProductCartEntity;
 import com.appli.clcapi.stock.dto.StockDto;
 import jakarta.persistence.*;
@@ -38,8 +37,9 @@ public class StockEntity {
     @OneToMany(mappedBy = "stockEntity",cascade = CascadeType.ALL)
     private List<ProductCartEntity> productCartEntity;
 
-    @OneToMany(mappedBy = "stockEntity", cascade = CascadeType.ALL)
-    private List<ConfirmProductCartEntity> confirmProductCartEntity;
+
+
+
 
 
     public StockEntity(StockDto stockDto){

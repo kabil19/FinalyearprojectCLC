@@ -6,12 +6,22 @@ import com.appli.clcapi.confirmInvoice.entity.ConfirmInvoiceEntity;
 import com.appli.clcapi.confirmInvoice.repository.ConfirmInvoiceRepo;
 import com.appli.clcapi.confirmInvoice.service.ConfirmInvoiceService;
 import com.appli.clcapi.confirmInvoice.confirmCartItems.service.ConfirmProductCartService;
-import com.appli.clcapi.payments.entity.PaymentsEntity;
-import com.appli.clcapi.payments.paymentMethod.entity.CardEntity;
-import com.appli.clcapi.payments.paymentMethod.repository.CardRepo;
-import com.appli.clcapi.payments.paymentMethod.repository.CashRepo;
-import com.appli.clcapi.payments.paymentMethod.repository.ChequeRepo;
-import com.appli.clcapi.payments.repository.PaymentsRepo;
+import com.appli.clcapi.paymentMethod.confirmPayMethods.entity.ConfirmCardEntity;
+import com.appli.clcapi.paymentMethod.confirmPayMethods.entity.ConfirmCashEntity;
+import com.appli.clcapi.paymentMethod.confirmPayMethods.entity.ConfirmChequeEntity;
+import com.appli.clcapi.paymentMethod.confirmPayMethods.repository.ConfirmCardRepo;
+import com.appli.clcapi.paymentMethod.confirmPayMethods.repository.ConfirmCashRepo;
+import com.appli.clcapi.paymentMethod.confirmPayMethods.repository.ConfirmChequeRepo;
+import com.appli.clcapi.payments.confirmPayments.entity.ConfirmPaymentsEntity;
+import com.appli.clcapi.payments.confirmPayments.repository.ConfirmPaymentsRepo;
+import com.appli.clcapi.payments.tempPayments.entity.TempPaymentsEntity;
+import com.appli.clcapi.paymentMethod.tempPayMethods.entity.TempCardEntity;
+import com.appli.clcapi.paymentMethod.tempPayMethods.entity.TempCashEntity;
+import com.appli.clcapi.paymentMethod.tempPayMethods.entity.TempChequeEntity;
+import com.appli.clcapi.paymentMethod.tempPayMethods.repository.TempCardRepo;
+import com.appli.clcapi.paymentMethod.tempPayMethods.repository.TempCashRepo;
+import com.appli.clcapi.paymentMethod.tempPayMethods.repository.TempChequeRepo;
+import com.appli.clcapi.payments.tempPayments.repository.TempPaymentsRepo;
 import com.appli.clcapi.tempInvoice.entity.TempInvoiceEntity;
 import com.appli.clcapi.tempInvoice.repository.TempInvoiceRepo;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +40,14 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
     private final ConfirmProductCartService confirmProductCartService;
 
     //    PaymentRepos to set the ConfirmInvoiceId (FK)
-    private final PaymentsRepo paymentsRepo;
-    private final CardRepo cardRepo;
-    private final CashRepo cashRepo;
-    private final ChequeRepo chequeRepo;
+    private final TempPaymentsRepo tempPaymentsRepo;
+    private final TempCardRepo tempCardRepo;
+    private final TempCashRepo tempCashRepo;
+    private final TempChequeRepo tempChequeRepo;
+    private final ConfirmPaymentsRepo confirmPaymentsRepo;
+    private final ConfirmCardRepo confirmCardRepo;
+    private final ConfirmCashRepo confirmCashRepo;
+    private final ConfirmChequeRepo confirmChequeRepo;
 
 
     @Override
@@ -46,22 +60,28 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
             ConfirmInvoiceEntity confirmedInvoice = createNewConfirmInvoiceData(selectedTempInvoice);
             Boolean isCartItemsConfirmed = confirmProductCartService.confirmTheCartItems(invoiceId, confirmedInvoice);
             if (isCartItemsConfirmed) {
-                List<PaymentsEntity> selectAllPayments = paymentsRepo.findBySalesInvoice_TempInvoiceId(confirmedInvoice.getConfirmInvoiceId());
-                List<PaymentsEntity> listOfPayments = selectAllPayments.stream().map(
+                List<TempPaymentsEntity> selectAllPayments = tempPaymentsRepo.findByTempSalesInvoice_TempInvoiceId(confirmedInvoice.getConfirmInvoiceId());
+                List<ConfirmPaymentsEntity> listOfPayments = selectAllPayments.stream().map(
                         aPayment -> {
-                            PaymentsEntity aPay = new PaymentsEntity();
+                            ConfirmPaymentsEntity aPay = new ConfirmPaymentsEntity();
                             aPay.setPaymentType(aPayment.getPaymentType());
                             aPay.setPaidDate(aPayment.getPaidDate());
                             aPay.setPaidAmount(aPayment.getPaidAmount());
                             aPay.setConfirmInvoice(confirmedInvoice);
-                            aPay.setSalesInvoice(null);
-                            alterPaymentMethConfirmInvoice(aPayment, confirmedInvoice);
-
                             return aPay;
                         }
                 ).toList();
+                confirmPaymentsRepo.saveAll(listOfPayments);
 
-                paymentsRepo.saveAll(listOfPayments);
+                List<TempCardEntity> tempCardEntities = tempCardRepo.findByTempInvoiceEntity_TempInvoiceId(confirmedInvoice.getConfirmInvoiceId());
+                List<TempCashEntity> tempCashEntities = tempCashRepo.findByTempInvoiceEntity_TempInvoiceId(confirmedInvoice.getConfirmInvoiceId());
+                List<TempChequeEntity> tempChequeEntities = tempChequeRepo.findByTempInvoiceEntity_TempInvoiceId(confirmedInvoice.getConfirmInvoiceId());
+
+                if (!transferToConfirmPayMethods(tempCardEntities, tempCashEntities, tempChequeEntities, confirmedInvoice)) {
+                    response.setStatus(HttpStatus.BAD_REQUEST);
+                    return response;
+                }
+
                 tempInvoiceRepo.deleteById(confirmedInvoice.getConfirmInvoiceId());
 
             }
@@ -76,20 +96,58 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
         return response;
     }
 
-
-    public void alterPaymentMethConfirmInvoice(PaymentsEntity aPayment, ConfirmInvoiceEntity confirmedInvoice) {
-
-        if (aPayment.getPaymentType().equalsIgnoreCase("card")) {
-            List<CardEntity> cardEntities = cardRepo.findByTempInvoiceEntity_TempInvoiceId(confirmedInvoice.getConfirmInvoiceId());
-            for (CardEntity cardEntity : cardEntities) {
-                cardEntity.setConfirmInvoiceEntity(confirmedInvoice);
-                cardEntity.setTempInvoiceEntity(null);
+    private boolean transferToConfirmPayMethods(List<TempCardEntity> tempCardEntities, List<TempCashEntity> tempCashEntities, List<TempChequeEntity> tempChequeEntities, ConfirmInvoiceEntity confirmedInvoice) {
+        try {
+            if (!tempCardEntities.isEmpty()) {
+                List<ConfirmCardEntity> confirmCardList = tempCardEntities.stream()
+                        .map(cardEntityData -> {
+                            ConfirmCardEntity aCard = new ConfirmCardEntity();
+                            aCard.setCardRefNo(cardEntityData.getCardRefNo());
+                            aCard.setConfirmInvoiceEntity(confirmedInvoice);
+                            aCard.setPaidDate(cardEntityData.getPaidDate());
+                            aCard.setPaidAmount(cardEntityData.getPaidAmount());
+                            aCard.setPaymentId(cardEntityData.getPaymentId());
+                            return aCard;
+                        }).toList();
+                confirmCardRepo.saveAll(confirmCardList);
             }
-            cardRepo.saveAll(cardEntities);
+            if (!tempCashEntities.isEmpty()) {
+                List<ConfirmCashEntity> confirmCashList = tempCashEntities.stream()
+                        .map(cashEntity -> {
+                            ConfirmCashEntity aCash = new ConfirmCashEntity();
+                            aCash.setPaidAmount(cashEntity.getPaidAmount());
+                            aCash.setPaidDate(cashEntity.getPaidDate());
+                            aCash.setPaymentId(cashEntity.getPaymentId());
+                            aCash.setConfirmInvoiceEntity(confirmedInvoice);
+                            return aCash;
+                        }).toList();
+                confirmCashRepo.saveAll(confirmCashList);
+            }
+            if (!tempChequeEntities.isEmpty()) {
+                List<ConfirmChequeEntity> confirmChequeList = tempChequeEntities.stream()
+                        .map(chequeEntity -> {
+                            ConfirmChequeEntity aCheque = new ConfirmChequeEntity();
+                            aCheque.setChequeDueDate(chequeEntity.getChequeDueDate());
+                            aCheque.setChequeRefNo(chequeEntity.getChequeRefNo());
+                            aCheque.setPaidAmount(chequeEntity.getPaidAmount());
+                            aCheque.setPaidDate(chequeEntity.getPaidDate());
+                            aCheque.setPaymentId(chequeEntity.getPaymentId());
+                            aCheque.setConfirmInvoiceEntity(confirmedInvoice);
+                            return aCheque;
+                        }).toList();
+                confirmChequeRepo.saveAll(confirmChequeList);
+            }
+
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
 
 
     }
+
 
     private ConfirmInvoiceEntity createNewConfirmInvoiceData(TempInvoiceEntity tempInvoiceEntity) {
 

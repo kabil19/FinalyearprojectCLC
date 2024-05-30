@@ -3,11 +3,10 @@ package com.appli.clcapi.confirmInvoice.entity;
 import com.appli.clcapi.confirmInvoice.dto.ConfirmInvoiceDto;
 import com.appli.clcapi.confirmInvoice.confirmCartItems.entity.ConfirmProductCartEntity;
 import com.appli.clcapi.customer.entity.CustomerEntity;
-import com.appli.clcapi.payments.entity.PaymentsEntity;
-import com.appli.clcapi.payments.paymentMethod.entity.CardEntity;
-import com.appli.clcapi.payments.paymentMethod.entity.CashEntity;
-import com.appli.clcapi.payments.paymentMethod.entity.ChequeEntity;
-import com.appli.clcapi.productCart.entity.ProductCartEntity;
+import com.appli.clcapi.paymentMethod.confirmPayMethods.entity.ConfirmCardEntity;
+import com.appli.clcapi.paymentMethod.confirmPayMethods.entity.ConfirmCashEntity;
+import com.appli.clcapi.paymentMethod.confirmPayMethods.entity.ConfirmChequeEntity;
+import com.appli.clcapi.payments.confirmPayments.entity.ConfirmPaymentsEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,19 +37,19 @@ public class ConfirmInvoiceEntity {
     private CustomerEntity customer;
 
     @OneToMany(mappedBy = "confirmInvoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<PaymentsEntity> paymentsEntity;
+    private List<ConfirmPaymentsEntity> confirmPaymentsEntity;
 
     @OneToMany(mappedBy = "confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ConfirmProductCartEntity> confirmProductCartEntity;
 
     @OneToMany(mappedBy = "confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CardEntity> cardEntity;
+    private List<ConfirmCardEntity> confirmCardEntity;//checked
 
     @OneToMany(mappedBy = "confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CashEntity> cashEntity;
+    private List<ConfirmCashEntity> confirmCashEntity;//checked
 
     @OneToMany(mappedBy = "confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ChequeEntity> chequeEntity;
+    private List<ConfirmChequeEntity> confirmChequeEntity;//checked
 
 
     public ConfirmInvoiceEntity(ConfirmInvoiceDto confirmInvoiceDto) {

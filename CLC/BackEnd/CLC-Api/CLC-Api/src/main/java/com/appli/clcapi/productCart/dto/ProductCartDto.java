@@ -1,6 +1,5 @@
 package com.appli.clcapi.productCart.dto;
 
-import com.appli.clcapi.confirmInvoice.dto.ConfirmInvoiceDto;
 import com.appli.clcapi.productCart.entity.ProductCartEntity;
 import com.appli.clcapi.stock.dto.StockDto;
 import com.appli.clcapi.tempInvoice.dto.TempInvoiceDto;

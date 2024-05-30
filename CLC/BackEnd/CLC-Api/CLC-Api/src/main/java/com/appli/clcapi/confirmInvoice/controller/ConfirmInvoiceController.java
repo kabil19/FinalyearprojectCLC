@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 public class ConfirmInvoiceController {
 
 
-
         private final ConfirmInvoiceService confirmInvoiceService;
         @PostMapping("addToConfirmInvoice")
         public NonPaginatedResponse addToConfirmInvoice(@RequestBody  Long invoiceId)throws Exception{

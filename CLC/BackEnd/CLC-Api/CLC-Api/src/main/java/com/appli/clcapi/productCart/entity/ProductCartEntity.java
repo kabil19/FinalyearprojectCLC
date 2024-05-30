@@ -1,5 +1,4 @@
 package com.appli.clcapi.productCart.entity;
-import com.appli.clcapi.confirmInvoice.entity.ConfirmInvoiceEntity;
 import com.appli.clcapi.stock.entity.StockEntity;
 import com.appli.clcapi.tempInvoice.entity.TempInvoiceEntity;
 import jakarta.persistence.*;
@@ -32,9 +31,6 @@ public class ProductCartEntity {
     @JoinColumn(name = "stockEntityId")
     private StockEntity stockEntity;
 
-   /* @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "confirmInvoiceId")
-    private ConfirmInvoiceEntity confirmInvoiceEntity;*/
 
     private boolean deleted = false;
 

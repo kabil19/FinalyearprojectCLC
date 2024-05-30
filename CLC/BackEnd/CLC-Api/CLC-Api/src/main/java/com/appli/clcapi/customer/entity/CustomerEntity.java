@@ -2,7 +2,6 @@ package com.appli.clcapi.customer.entity;
 
 
 
-import com.appli.clcapi.confirmInvoice.entity.ConfirmInvoiceEntity;
 import com.appli.clcapi.customer.dto.CustomerDto;
 import com.appli.clcapi.tempInvoice.entity.TempInvoiceEntity;
 import jakarta.persistence.*;
@@ -29,15 +28,10 @@ public class CustomerEntity {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TempInvoiceEntity> tempInvoiceEntity;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ConfirmInvoiceEntity> confirmInvoiceEntity;
 
     private boolean deleted = false;
 
-//
-//    public CustomerEntity(Long custId){
-//        this.custId = custId;
-//    }
+
 
     public CustomerEntity(CustomerDto customerDto) {
         this.custId = customerDto.getCustId();
