@@ -40,6 +40,7 @@ public class ProductCartImple implements ProductCartService {
         try{
             Long stockId = productCartDto.getStockDto().getStockId();
             Long tempInvoiceId = productCartDto.getTempInvoiceDto().getTempInvoiceId();
+
             StockEntity stocksFromStockEntity = stockRepo.findById(stockId)
                     .orElseThrow(()-> new IllegalArgumentException("Stock with ID "+ stockId + " not found"));
 
@@ -51,9 +52,7 @@ public class ProductCartImple implements ProductCartService {
             if(itemInCart.isEmpty()) {
                 ProductCartEntity returnedProduct = addNewItem(productCartDto);
 
-                stocksFromStockEntity.setQuantity(newQtyToStock);
-                stockRepo.save(stocksFromStockEntity);
-                stockRepo.flush();
+                updateIntoStockEntity(stocksFromStockEntity, newQtyToStock);
 
                 double currentNetAmountInTempInvoice = tempInvoiceEntity.get().getNetAmount();
                 tempInvoiceEntity.get().setNetAmount(currentNetAmountInTempInvoice + productCartDto.getNetAmount());
@@ -67,11 +66,7 @@ public class ProductCartImple implements ProductCartService {
                 ProductCartEntity itemInCartDetails = itemInCart.get();
                 ProductCartEntity insertedProduct = addMoreQuantity(itemInCartDetails,productCartDto, stocksFromStockEntity, tempInvoiceEntity);
 
-                stocksFromStockEntity.setQuantity(newQtyToStock);
-                stockRepo.save(stocksFromStockEntity);
-                stockRepo.flush();
-
-
+                updateIntoStockEntity(stocksFromStockEntity, newQtyToStock);
 
 
                 response.setSuccessMessage(ProductCartConstants.MORE_QUANTITY_HAS_BEEN_UPDATED_TO_THE_PRODUCT);
@@ -87,6 +82,12 @@ public class ProductCartImple implements ProductCartService {
             response.setStatus(HttpStatus.BAD_REQUEST);
         }
         return response;
+    }
+
+    private void updateIntoStockEntity(StockEntity stocksFromStockEntity, double newQtyToStock) {
+        stocksFromStockEntity.setQuantity(newQtyToStock);
+        stockRepo.save(stocksFromStockEntity);
+        stockRepo.flush();
     }
 
 
@@ -216,10 +217,8 @@ public class ProductCartImple implements ProductCartService {
                     Long stockId = productCartDto.getStockDto().getStockId();
                     Optional<StockEntity> theStockTobeUpdated = stockRepo.findById(stockId);
                     StockEntity stockEntity = theStockTobeUpdated.get();
-                    stockEntity.setQuantity(stockEntity.getQuantity()+ quantityChange );
-                    stockRepo.save(stockEntity);
-                    stockRepo.flush();
-    
+                    updateIntoStockEntity(stockEntity, stockEntity.getQuantity() + quantityChange);
+
                     response.setResult(null);
                     response.setSuccessMessage("The selected Item has been Successfully updated");
                     response.setStatus(HttpStatus.OK);

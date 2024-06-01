@@ -3,10 +3,10 @@ package com.appli.clcapi.confirmInvoice.entity;
 import com.appli.clcapi.confirmInvoice.dto.ConfirmInvoiceDto;
 import com.appli.clcapi.confirmInvoice.confirmCartItems.entity.ConfirmProductCartEntity;
 import com.appli.clcapi.customer.entity.CustomerEntity;
-import com.appli.clcapi.paymentMethod.confirmPayMethods.entity.ConfirmCardEntity;
-import com.appli.clcapi.paymentMethod.confirmPayMethods.entity.ConfirmCashEntity;
-import com.appli.clcapi.paymentMethod.confirmPayMethods.entity.ConfirmChequeEntity;
-import com.appli.clcapi.payments.confirmPayments.entity.ConfirmPaymentsEntity;
+import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmCardEntity;
+import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmCashEntity;
+import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmChequeEntity;
+import com.appli.clcapi.payments.invoicePayments.confirmPayments.entity.ConfirmPaymentsEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

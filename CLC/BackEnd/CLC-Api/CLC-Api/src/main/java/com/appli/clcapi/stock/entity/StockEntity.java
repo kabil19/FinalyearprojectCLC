@@ -2,6 +2,7 @@ package com.appli.clcapi.stock.entity;
 
 import com.appli.clcapi.category.entity.CategoryEntity;
 import com.appli.clcapi.productCart.entity.ProductCartEntity;
+import com.appli.clcapi.purchaseProductCart.tempPurchase.entity.TempPurchaseProductCartEntity;
 import com.appli.clcapi.stock.dto.StockDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,6 +37,8 @@ public class StockEntity {
 
     @OneToMany(mappedBy = "stockEntity",cascade = CascadeType.ALL)
     private List<ProductCartEntity> productCartEntity;
+    @OneToMany(mappedBy = "stockEntity",cascade = CascadeType.ALL)
+    private List<TempPurchaseProductCartEntity> tempPurchaseProductCartEntity;
 
 
 

@@ -1,9 +1,9 @@
 package com.appli.clcapi.tempInvoice.entity;
 import com.appli.clcapi.customer.entity.CustomerEntity;
-import com.appli.clcapi.payments.tempPayments.entity.TempPaymentsEntity;
-import com.appli.clcapi.paymentMethod.tempPayMethods.entity.TempCardEntity;
-import com.appli.clcapi.paymentMethod.tempPayMethods.entity.TempCashEntity;
-import com.appli.clcapi.paymentMethod.tempPayMethods.entity.TempChequeEntity;
+import com.appli.clcapi.payments.invoicePayments.tempPayments.entity.TempPaymentsEntity;
+import com.appli.clcapi.paymentMethod.invoicePayMethods.tempPayMethods.entity.TempCardEntity;
+import com.appli.clcapi.paymentMethod.invoicePayMethods.tempPayMethods.entity.TempCashEntity;
+import com.appli.clcapi.paymentMethod.invoicePayMethods.tempPayMethods.entity.TempChequeEntity;
 import com.appli.clcapi.productCart.entity.ProductCartEntity;
 import com.appli.clcapi.tempInvoice.dto.TempInvoiceDto;
 import jakarta.persistence.*;

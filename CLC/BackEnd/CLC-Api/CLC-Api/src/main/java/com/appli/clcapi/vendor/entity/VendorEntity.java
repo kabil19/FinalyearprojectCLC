@@ -1,6 +1,6 @@
 package com.appli.clcapi.vendor.entity;
 
-import com.appli.clcapi.purchase.entity.PurchaseEntity;
+import com.appli.clcapi.purchase.entity.TempPurchaseEntity;
 import com.appli.clcapi.vendor.dto.VendorDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,11 +23,11 @@ public class VendorEntity {
     private String vendorName;
     private String address;
     private String email;
-    private  Integer contact;
+    private  Long contact;
     private boolean deleted = false;
 
     @OneToMany(mappedBy = "vendorEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY )
-    private List<PurchaseEntity> purchaseEntity;
+    private List<TempPurchaseEntity> tempPurchaseEntity;
 
     public VendorEntity(VendorDto vendorDto) {
         this.setVendorId(vendorDto.getVendorId());

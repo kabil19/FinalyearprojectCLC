@@ -27,7 +27,7 @@ public class VendorDto {
     private String email;
 
     @JsonProperty("contact")
-    private  Integer contact;
+    private  Long contact;
 
     @JsonProperty(value = "deleted")
     @JsonIgnore
