@@ -1,6 +1,8 @@
 package com.appli.clcapi.purchaseProductCart.tempPurchase.serviceImple;
 
 import com.appli.clcapi.common.response.NonPaginatedResponse;
+import com.appli.clcapi.productCart.dto.ProductCartDto;
+import com.appli.clcapi.purchase.dto.TempPurchaseDto;
 import com.appli.clcapi.purchase.entity.TempPurchaseEntity;
 import com.appli.clcapi.purchase.repository.TempPurchaseRepo;
 import com.appli.clcapi.purchaseProductCart.tempPurchase.dto.TempPurchaseProductCartDto;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +30,11 @@ public class TempPurchaseProductCartImple implements TempPurchaseProductCartServ
     @Override
     public NonPaginatedResponse addToTempPurchaseCart(TempPurchaseProductCartDto tempPurchaseProductCartDto) {
         NonPaginatedResponse response = new NonPaginatedResponse();
-        try{
+        try {
 
-           Optional<TempPurchaseEntity> selectedTempPurchaseInvoice =  tempPurchaseRepo.findById(tempPurchaseProductCartDto.getProductCartId());
-           Optional<StockEntity> selectedStockItem = stockRepo.findById(tempPurchaseProductCartDto.getStockDto().getStockId());
+            Optional<TempPurchaseEntity> selectedTempPurchaseInvoice = tempPurchaseRepo.findById(tempPurchaseProductCartDto.getTempPurchaseEntity().getPurchaseId());
+            Optional<StockEntity> selectedStockItem = stockRepo.findById(tempPurchaseProductCartDto.getStockDto().getStockId());
+
             if (selectedStockItem.isEmpty()) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 response.setErrors(List.of("Stock isn't exist!"));
@@ -45,12 +49,20 @@ public class TempPurchaseProductCartImple implements TempPurchaseProductCartServ
                 response.setErrors(List.of("Quantity can't be neither 0 nor less!"));
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 return response;
-
             }
-            createPurchaseCartRecord(tempPurchaseProductCartDto);
+            Optional<TempPurchaseProductCartEntity> existingRecordFromTheCart = tempPurchaseProductCartRepo.
+                    findByStockEntity_StockIdAndTempPurchaseEntity_PurchaseId(
+                            tempPurchaseProductCartDto.getStockDto().getStockId(), tempPurchaseProductCartDto.getTempPurchaseEntity().getPurchaseId()
+                    );
+            Optional<StockEntity> productFromTheStock = stockRepo.findById(tempPurchaseProductCartDto.getStockDto().getStockId());
+            if (existingRecordFromTheCart.isEmpty()) {
+                createPurchaseCartRecord(tempPurchaseProductCartDto, productFromTheStock);
+            } else {
+                addMoreItems(tempPurchaseProductCartDto, productFromTheStock, existingRecordFromTheCart.get(), selectedTempPurchaseInvoice);
+            }
             response.setStatus(HttpStatus.ACCEPTED);
             response.setSuccessMessage("Product is successfully Added into the Cart!");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(HttpStatus.BAD_REQUEST);
             response.setErrors(List.of("Couldn't add the product into the Cart!"));
@@ -58,13 +70,55 @@ public class TempPurchaseProductCartImple implements TempPurchaseProductCartServ
         return response;
     }
 
-    private void createPurchaseCartRecord(TempPurchaseProductCartDto tempPurchaseProductCartDto) {
+    private void addMoreItems(
+            TempPurchaseProductCartDto tempPurchaseProductCartDto,
+            Optional<StockEntity> productFromTheStock,
+            TempPurchaseProductCartEntity existingProductCartRecord,
+            Optional<TempPurchaseEntity> selectedTempPurchaseInvoice) {
+        double newNetAmount = alterCartDetailsAndGetNewNetAmount(
+                tempPurchaseProductCartDto,
+                productFromTheStock,
+                existingProductCartRecord
+        );
+        alterTempPurchase(selectedTempPurchaseInvoice.get(), newNetAmount);
+    }
+
+    private double alterCartDetailsAndGetNewNetAmount(TempPurchaseProductCartDto tempPurchaseProductCartDto,
+                                                      Optional<StockEntity> productFromTheStock,
+                                                      TempPurchaseProductCartEntity existingProductCartRecord) {
+        double existingQtyInCart = existingProductCartRecord.getQuantity();
+        double newQty = tempPurchaseProductCartDto.getQuantity() + existingQtyInCart;
+
+        double newDiscount = tempPurchaseProductCartDto.getDiscount() + existingProductCartRecord.getDiscount();
+
+        double newTotal = productFromTheStock.get().getSellingPrice() * newQty;
+        double newNetAmount = (newTotal) - (newQty * newDiscount);
+
+        existingProductCartRecord.setDiscount(newDiscount);
+        existingProductCartRecord.setQuantity(newQty);
+        existingProductCartRecord.setTotal(newTotal);
+        existingProductCartRecord.setNetAmount(newNetAmount);
+        tempPurchaseProductCartRepo.save(existingProductCartRecord);
+        return newNetAmount;
+    }
+
+    private void alterTempPurchase(TempPurchaseEntity tempPurchaseEntity, double newNetAmount) {
+        double updatedAmount = tempPurchaseEntity.getTotalAmount() + newNetAmount;
+        tempPurchaseEntity.setTotalAmount(updatedAmount);
+        tempPurchaseRepo.save(tempPurchaseEntity);
+    }
+
+
+    private void createPurchaseCartRecord(TempPurchaseProductCartDto tempPurchaseProductCartDto, Optional<StockEntity> productFromTheStock) {
+        double quantity = tempPurchaseProductCartDto.getQuantity();
+        double totalAmount = (productFromTheStock.get().getSellingPrice() * quantity);
+        double netAmount = (totalAmount - (quantity * tempPurchaseProductCartDto.getDiscount()));
         TempPurchaseProductCartEntity newPurchaseCartRecord = TempPurchaseProductCartEntity.builder()
                 .productCartId(tempPurchaseProductCartDto.getProductCartId())
-                .quantity(tempPurchaseProductCartDto.getQuantity())
+                .quantity(quantity)
                 .discount(tempPurchaseProductCartDto.getDiscount())
-                .total(tempPurchaseProductCartDto.getTotal())
-                .netAmount(tempPurchaseProductCartDto.getNetAmount())
+                .total(totalAmount)
+                .netAmount(netAmount)
                 .stockEntity(new StockEntity(tempPurchaseProductCartDto.getStockDto()))
                 .tempPurchaseEntity(new TempPurchaseEntity(tempPurchaseProductCartDto.getTempPurchaseEntity()))
                 .build();
@@ -73,21 +127,119 @@ public class TempPurchaseProductCartImple implements TempPurchaseProductCartServ
 
     @Override
     public NonPaginatedResponse deleteTempPurchaseCartRecord(Long proCartId) {
-        return null;
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        try {
+            tempPurchaseProductCartRepo.deleteById(proCartId);
+            response.setStatus(HttpStatus.ACCEPTED);
+            response.setSuccessMessage("Record is deleted successfully!");
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setErrors(List.of("Couldn't delete the record!"));
+        }
+        return response;
     }
 
     @Override
-    public NonPaginatedResponse getAllTempPurchaseCartItems() {
-        return null;
+    public NonPaginatedResponse getAllTempPurchaseCartItems(Long purchaseId) {
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        try {
+            Optional<TempPurchaseProductCartEntity> purchaseCartItems = tempPurchaseProductCartRepo.findByTempPurchaseEntity_PurchaseId(purchaseId);
+
+            List<TempPurchaseProductCartDto> anItemDto = purchaseCartItems.stream()
+                    .map(TempPurchaseProductCartDto::new)
+                    .toList();
+
+            response.setResult(anItemDto);
+            response.setStatus(HttpStatus.ACCEPTED);
+            response.setSuccessMessage("Purchase Cart records Retrieved!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setErrors(List.of("Couldn't retrieve cart records!"));
+        }
+        return response;
     }
 
     @Override
-    public NonPaginatedResponse selectTempPurchaseRecords(String exitingChar) {
-        return null;
+    public NonPaginatedResponse selectTempPurchaseCartRecords(Long purchaseId, String exitingChar) {
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        try {
+            Optional<TempPurchaseEntity> selectedPurchase = tempPurchaseRepo.findById(purchaseId);
+            List<TempPurchaseProductCartEntity> existingCartDetails = tempPurchaseProductCartRepo.findByStockEntity_ItemNameContaining(exitingChar);
+            if (existingCartDetails.isEmpty()) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Couldn't find item!"));
+                return response;
+            }
+            List<TempPurchaseProductCartDto> cartItemsDto = existingCartDetails.stream()
+                    .map(TempPurchaseProductCartDto::new)
+                    .toList();
+            response.setStatus(HttpStatus.ACCEPTED);
+            response.setErrors(List.of("corresponding details to the given characters found!"));
+            response.setResult(cartItemsDto);
+
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setErrors(List.of("Couldn't find item!"));
+        }
+        return response;
     }
 
     @Override
     public NonPaginatedResponse updateTempPurchaseCartRecord(TempPurchaseProductCartDto tempPurchaseProductCartDto) {
-        return null;
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        try {
+            Optional<TempPurchaseEntity> selectedTempPurchaseInvoice = tempPurchaseRepo.findById(tempPurchaseProductCartDto.getTempPurchaseEntity().getPurchaseId());
+            Optional<StockEntity> selectedStockItem = stockRepo.findById(tempPurchaseProductCartDto.getStockDto().getStockId());
+            if (selectedStockItem.isEmpty()) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Stock isn't exist!"));
+                return response;
+            }
+            if (selectedTempPurchaseInvoice.isEmpty()) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Purchase Invoice isn't exist!"));
+                return response;
+            }
+            if (tempPurchaseProductCartDto.getQuantity() == 0 || tempPurchaseProductCartDto.getQuantity() < 0) {
+                response.setErrors(List.of("Quantity can't be neither 0 nor less!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
+
+            Optional<TempPurchaseProductCartEntity> selectedPurchaseCartRec = tempPurchaseProductCartRepo.findById(tempPurchaseProductCartDto.getProductCartId());
+            if (selectedPurchaseCartRec.isEmpty()) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Record isn't exist!"));
+                return response;
+            }
+            updateCartRecords(tempPurchaseProductCartDto, selectedPurchaseCartRec, selectedStockItem);
+            updatePurchaseInvoiceNetAmount(tempPurchaseProductCartDto, selectedTempPurchaseInvoice, selectedStockItem);
+            response.setStatus(HttpStatus.ACCEPTED);
+            response.setSuccessMessage("Successfully updated the selected item details!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setErrors(List.of("Couldn't update cart record!"));
+            response.setStatus(HttpStatus.BAD_REQUEST);
+        }
+        return response;
+    }
+
+    private void updatePurchaseInvoiceNetAmount(TempPurchaseProductCartDto tempPurchaseProductCartDto, Optional<TempPurchaseEntity> selectedTempPurchaseInvoice, Optional<StockEntity> selectedStockItem) {
+        double total = selectedStockItem.get().getSellingPrice() * tempPurchaseProductCartDto.getQuantity();
+        double totalDiscount = tempPurchaseProductCartDto.getQuantity() * tempPurchaseProductCartDto.getDiscount();
+        selectedTempPurchaseInvoice.get().setTotalAmount(total - totalDiscount);
+        tempPurchaseRepo.save(selectedTempPurchaseInvoice.get());
+    }
+
+    private void updateCartRecords(TempPurchaseProductCartDto tempPurchaseProductCartDto, Optional<TempPurchaseProductCartEntity> selectedPurchaseCartRec,Optional<StockEntity> selectedStockItem) {
+
+        TempPurchaseProductCartEntity selectedProductCartRecDetails = selectedPurchaseCartRec.get();
+        selectedProductCartRecDetails.setDiscount(tempPurchaseProductCartDto.getDiscount());
+        selectedProductCartRecDetails.setQuantity(tempPurchaseProductCartDto.getQuantity());
+        selectedProductCartRecDetails.setTotal(tempPurchaseProductCartDto.getQuantity()*selectedStockItem.get().getSellingPrice());
+        double totalDiscount = tempPurchaseProductCartDto.getDiscount()*tempPurchaseProductCartDto.getQuantity();
+        double totalNetAmount = selectedProductCartRecDetails.getTotal() - totalDiscount;
+        selectedProductCartRecDetails.setNetAmount(totalNetAmount);
+        tempPurchaseProductCartRepo.save(selectedProductCartRecDetails);
     }
 }

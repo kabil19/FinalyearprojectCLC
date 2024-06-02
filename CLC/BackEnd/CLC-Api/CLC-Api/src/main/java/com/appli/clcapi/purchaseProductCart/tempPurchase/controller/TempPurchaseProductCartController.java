@@ -1,8 +1,5 @@
 package com.appli.clcapi.purchaseProductCart.tempPurchase.controller;
-
 import com.appli.clcapi.common.response.NonPaginatedResponse;
-import com.appli.clcapi.productCart.dto.ProductCartDto;
-import com.appli.clcapi.productCart.service.ProductCartService;
 import com.appli.clcapi.purchaseProductCart.tempPurchase.dto.TempPurchaseProductCartDto;
 import com.appli.clcapi.purchaseProductCart.tempPurchase.service.TempPurchaseProductCartService;
 import lombok.RequiredArgsConstructor;
@@ -15,33 +12,29 @@ import org.springframework.web.bind.annotation.*;
 public class TempPurchaseProductCartController {
 
     private final TempPurchaseProductCartService tempPurchaseProductCartService;
-    @PostMapping("register")
+    @PostMapping("addToTempPurchaseCart")
     public NonPaginatedResponse addToTempPurchaseCart(@RequestBody TempPurchaseProductCartDto tempPurchaseProductCartDto)
     {
         return tempPurchaseProductCartService.addToTempPurchaseCart(tempPurchaseProductCartDto);
     }
 
-    @DeleteMapping("delete/{proCartId}")
+    @DeleteMapping("deleteTempPurchaseCartRecord/{proCartId}")
     public NonPaginatedResponse deleteTempPurchaseCartRecord(@PathVariable Long proCartId){
         return tempPurchaseProductCartService.deleteTempPurchaseCartRecord(proCartId);
     }
 
-    @PutMapping("update")
+    @PutMapping("updateTempPurchaseCartRecord")
     public NonPaginatedResponse updateTempPurchaseCartRecord(@RequestBody TempPurchaseProductCartDto tempPurchaseProductCartDto){
         return tempPurchaseProductCartService.updateTempPurchaseCartRecord(tempPurchaseProductCartDto);
     }
 
-    @GetMapping("getAll")
-    public NonPaginatedResponse getAllTempPurchaseCartItems(){
-        return tempPurchaseProductCartService.getAllTempPurchaseCartItems();
+    @GetMapping("getAllTempPurchaseCartItems")
+    public NonPaginatedResponse getAllTempPurchaseCartItems(@RequestBody Long purchaseId){
+        return tempPurchaseProductCartService.getAllTempPurchaseCartItems(purchaseId);
     }
 
-
-
-    @GetMapping("select/{existingChar}")
-    public NonPaginatedResponse selectTempPurchaseRecords( @PathVariable String existingChar){
-        return tempPurchaseProductCartService.selectTempPurchaseRecords( existingChar);
+    @GetMapping("selectTempPurchaseCartRecords/purchaseId/{existingChar}")
+    public NonPaginatedResponse selectTempPurchaseCartRecords(@PathVariable Long purchaseId,@PathVariable String existingChar){
+        return tempPurchaseProductCartService.selectTempPurchaseCartRecords(purchaseId ,existingChar);
     }
-
-
 }
