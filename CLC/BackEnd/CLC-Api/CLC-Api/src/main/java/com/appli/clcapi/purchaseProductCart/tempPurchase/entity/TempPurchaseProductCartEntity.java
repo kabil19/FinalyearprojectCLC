@@ -19,7 +19,7 @@ public class TempPurchaseProductCartEntity {
     private Long productCartId;
     private Double quantity;
     private Double discount;
-    private Double total;
+    private Double grossAmount;
     private Double netAmount;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,7 +34,7 @@ public class TempPurchaseProductCartEntity {
         this.productCartId = tempPurchaseProductCartDto.getProductCartId();
         this.quantity = tempPurchaseProductCartDto.getQuantity();
         this.discount = tempPurchaseProductCartDto.getDiscount();
-        this.total = tempPurchaseProductCartDto.getTotal();
+        this.grossAmount = tempPurchaseProductCartDto.getGrossAmount();
         this.netAmount = tempPurchaseProductCartDto.getNetAmount();
         this.stockEntity = new StockEntity(tempPurchaseProductCartDto.getStockDto());
         this.tempPurchaseEntity = new TempPurchaseEntity(tempPurchaseProductCartDto.getTempPurchaseEntity());

@@ -1,8 +1,6 @@
 package com.appli.clcapi.purchase.controller;
 
 import com.appli.clcapi.common.response.NonPaginatedResponse;
-import com.appli.clcapi.productCart.dto.ProductCartDto;
-import com.appli.clcapi.productCart.service.ProductCartService;
 import com.appli.clcapi.purchase.dto.TempPurchaseDto;
 import com.appli.clcapi.purchase.service.TempPurchaseService;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +20,11 @@ public class TempPurchaseController {
     }
 
     @DeleteMapping("deleteTempPurchase/{purchaseId}")
-    public NonPaginatedResponse delete(@PathVariable Long purchaseId){
+    public NonPaginatedResponse deleteTempPurchase(@PathVariable Long purchaseId){
         return tempPurchaseService.deleteTempPurchase(purchaseId);
     }
-
+    @GetMapping("getAllTempPurchase")
+    public NonPaginatedResponse getAllTempPurchase(){
+        return tempPurchaseService.getAllTempPurchase();
+    }
 }

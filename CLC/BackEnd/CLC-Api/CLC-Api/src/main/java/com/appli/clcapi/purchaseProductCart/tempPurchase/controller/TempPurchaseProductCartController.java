@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/tempPurchase/")
+@RequestMapping(path = "/api/tempPurchaseCart/")
 @CrossOrigin(origins = "http://localhost:4200")
 public class TempPurchaseProductCartController {
 
@@ -33,7 +33,7 @@ public class TempPurchaseProductCartController {
         return tempPurchaseProductCartService.getAllTempPurchaseCartItems(purchaseId);
     }
 
-    @GetMapping("selectTempPurchaseCartRecords/purchaseId/{existingChar}")
+    @GetMapping("selectTempPurchaseCartRecords/{purchaseId}/{existingChar}")
     public NonPaginatedResponse selectTempPurchaseCartRecords(@PathVariable Long purchaseId,@PathVariable String existingChar){
         return tempPurchaseProductCartService.selectTempPurchaseCartRecords(purchaseId ,existingChar);
     }

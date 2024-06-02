@@ -6,15 +6,13 @@ import com.appli.clcapi.purchase.dto.TempPurchaseDto;
 import com.appli.clcapi.purchase.entity.TempPurchaseEntity;
 import com.appli.clcapi.purchase.repository.TempPurchaseRepo;
 import com.appli.clcapi.purchase.service.TempPurchaseService;
-import com.appli.clcapi.vendor.dto.VendorDto;
 import com.appli.clcapi.vendor.entity.VendorEntity;
 import com.appli.clcapi.vendor.repository.VendorRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -76,21 +74,30 @@ public class TempPurchaseServiceImple implements TempPurchaseService {
         return response;
     }
 
-    public NonPaginatedResponse getAll(){
+    @Override
+    public NonPaginatedResponse getAllTempPurchase() {
         NonPaginatedResponse response = new NonPaginatedResponse();
-        TempPurchaseDto purchaseDto = new TempPurchaseDto();
-        List<TempPurchaseEntity> tempPurchaseEntity = tempPurchaseRepo.findAll();
-        response.setResult(tempPurchaseEntity.stream().map(
-                aTempPurchase ->{
-                    TempPurchaseDto tempPurchaseDto = new TempPurchaseDto();
-                    tempPurchaseDto.setPurchaseId(aTempPurchase.getPurchaseId());
-                    tempPurchaseDto.setPurchaseInvoiceNO(aTempPurchase.getPurchaseInvoiceNO());
-                    tempPurchaseDto.setVendorDto(new VendorDto(aTempPurchase.getVendorEntity()));
-                    return tempPurchaseDto;
-                }
-        ).toList());
-        response.setStatus(HttpStatus.ACCEPTED);
-        response.setSuccessMessage("TempPurchase is retrieved");
+
+        try{
+            List<TempPurchaseEntity> selectPurchase = tempPurchaseRepo.findAll();
+            if(selectPurchase.isEmpty()){
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("No purchase data exists!"));
+                return response;
+            }
+            List<TempPurchaseDto> purchaseDto = selectPurchase.stream().
+                    map(TempPurchaseDto::new)
+                    .toList();
+            response.setStatus(HttpStatus.ACCEPTED);
+            response.setResult(purchaseDto);
+            response.setSuccessMessage("Purchase Retrieved!");
+        }catch(Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setErrors(List.of("couldn't retrieve"));
+        }
         return response;
     }
+
+
 }

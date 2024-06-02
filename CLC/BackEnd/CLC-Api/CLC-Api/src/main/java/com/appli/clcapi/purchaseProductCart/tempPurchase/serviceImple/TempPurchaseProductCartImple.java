@@ -1,15 +1,12 @@
 package com.appli.clcapi.purchaseProductCart.tempPurchase.serviceImple;
 
 import com.appli.clcapi.common.response.NonPaginatedResponse;
-import com.appli.clcapi.productCart.dto.ProductCartDto;
-import com.appli.clcapi.purchase.dto.TempPurchaseDto;
 import com.appli.clcapi.purchase.entity.TempPurchaseEntity;
 import com.appli.clcapi.purchase.repository.TempPurchaseRepo;
 import com.appli.clcapi.purchaseProductCart.tempPurchase.dto.TempPurchaseProductCartDto;
 import com.appli.clcapi.purchaseProductCart.tempPurchase.entity.TempPurchaseProductCartEntity;
 import com.appli.clcapi.purchaseProductCart.tempPurchase.repository.TempPurchaseProductCartRepo;
 import com.appli.clcapi.purchaseProductCart.tempPurchase.service.TempPurchaseProductCartService;
-import com.appli.clcapi.stock.dto.StockDto;
 import com.appli.clcapi.stock.entity.StockEntity;
 import com.appli.clcapi.stock.repository.StockRepo;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -96,7 +92,7 @@ public class TempPurchaseProductCartImple implements TempPurchaseProductCartServ
 
         existingProductCartRecord.setDiscount(newDiscount);
         existingProductCartRecord.setQuantity(newQty);
-        existingProductCartRecord.setTotal(newTotal);
+        existingProductCartRecord.setGrossAmount(newTotal);
         existingProductCartRecord.setNetAmount(newNetAmount);
         tempPurchaseProductCartRepo.save(existingProductCartRecord);
         return newNetAmount;
@@ -111,13 +107,13 @@ public class TempPurchaseProductCartImple implements TempPurchaseProductCartServ
 
     private void createPurchaseCartRecord(TempPurchaseProductCartDto tempPurchaseProductCartDto, Optional<StockEntity> productFromTheStock) {
         double quantity = tempPurchaseProductCartDto.getQuantity();
-        double totalAmount = (productFromTheStock.get().getSellingPrice() * quantity);
-        double netAmount = (totalAmount - (quantity * tempPurchaseProductCartDto.getDiscount()));
+        double gross = (productFromTheStock.get().getSellingPrice() * quantity);
+        double netAmount = (gross - (quantity * tempPurchaseProductCartDto.getDiscount()));
         TempPurchaseProductCartEntity newPurchaseCartRecord = TempPurchaseProductCartEntity.builder()
                 .productCartId(tempPurchaseProductCartDto.getProductCartId())
                 .quantity(quantity)
                 .discount(tempPurchaseProductCartDto.getDiscount())
-                .total(totalAmount)
+                .grossAmount(gross)
                 .netAmount(netAmount)
                 .stockEntity(new StockEntity(tempPurchaseProductCartDto.getStockDto()))
                 .tempPurchaseEntity(new TempPurchaseEntity(tempPurchaseProductCartDto.getTempPurchaseEntity()))
@@ -236,9 +232,9 @@ public class TempPurchaseProductCartImple implements TempPurchaseProductCartServ
         TempPurchaseProductCartEntity selectedProductCartRecDetails = selectedPurchaseCartRec.get();
         selectedProductCartRecDetails.setDiscount(tempPurchaseProductCartDto.getDiscount());
         selectedProductCartRecDetails.setQuantity(tempPurchaseProductCartDto.getQuantity());
-        selectedProductCartRecDetails.setTotal(tempPurchaseProductCartDto.getQuantity()*selectedStockItem.get().getSellingPrice());
+        selectedProductCartRecDetails.setGrossAmount(tempPurchaseProductCartDto.getQuantity()*selectedStockItem.get().getSellingPrice());
         double totalDiscount = tempPurchaseProductCartDto.getDiscount()*tempPurchaseProductCartDto.getQuantity();
-        double totalNetAmount = selectedProductCartRecDetails.getTotal() - totalDiscount;
+        double totalNetAmount = selectedProductCartRecDetails.getGrossAmount() - totalDiscount;
         selectedProductCartRecDetails.setNetAmount(totalNetAmount);
         tempPurchaseProductCartRepo.save(selectedProductCartRecDetails);
     }

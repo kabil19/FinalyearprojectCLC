@@ -1,7 +1,6 @@
 package com.appli.clcapi.purchaseProductCart.tempPurchase.dto;
 
 import com.appli.clcapi.purchase.dto.TempPurchaseDto;
-import com.appli.clcapi.purchase.entity.TempPurchaseEntity;
 import com.appli.clcapi.purchaseProductCart.tempPurchase.entity.TempPurchaseProductCartEntity;
 import com.appli.clcapi.stock.dto.StockDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,8 +20,8 @@ public class TempPurchaseProductCartDto {
     private Double quantity;
     @JsonProperty("discount")
     private Double discount;
-    @JsonProperty("total")
-    private Double total;
+    @JsonProperty("grossAmount")
+    private Double grossAmount;
     @JsonProperty("netAmount")
     private Double netAmount;
     @JsonProperty("stockOBJ")
@@ -34,7 +33,7 @@ public class TempPurchaseProductCartDto {
         this.productCartId = tempPurchaseProductCartEntity.getProductCartId();
         this.quantity = tempPurchaseProductCartEntity.getQuantity();
         this.discount = tempPurchaseProductCartEntity.getDiscount();
-        this.total = tempPurchaseProductCartEntity.getTotal();
+        this.grossAmount = tempPurchaseProductCartEntity.getGrossAmount();
         this.netAmount = tempPurchaseProductCartEntity.getNetAmount();
         this.stockDto = new StockDto(tempPurchaseProductCartEntity.getStockEntity());
         this.tempPurchaseEntity = new TempPurchaseDto(tempPurchaseProductCartEntity.getTempPurchaseEntity());

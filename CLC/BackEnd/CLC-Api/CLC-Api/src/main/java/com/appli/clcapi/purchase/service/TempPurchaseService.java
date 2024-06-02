@@ -7,4 +7,5 @@ public interface TempPurchaseService {
     NonPaginatedResponse addToTempPurchase(TempPurchaseDto tempPurchaseDto);
 
     NonPaginatedResponse deleteTempPurchase(Long purchaseId);
+    NonPaginatedResponse getAllTempPurchase();
 }
