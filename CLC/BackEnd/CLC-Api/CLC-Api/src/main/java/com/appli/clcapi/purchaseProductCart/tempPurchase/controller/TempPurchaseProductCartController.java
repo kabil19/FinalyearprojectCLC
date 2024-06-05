@@ -28,8 +28,8 @@ public class TempPurchaseProductCartController {
         return tempPurchaseProductCartService.updateTempPurchaseCartRecord(tempPurchaseProductCartDto);
     }
 
-    @GetMapping("getAllTempPurchaseCartItems")
-    public NonPaginatedResponse getAllTempPurchaseCartItems(@RequestBody Long purchaseId){
+    @GetMapping("getAllTempPurchaseCartItems/{purchaseId}")
+    public NonPaginatedResponse getAllTempPurchaseCartItems(@PathVariable Long purchaseId){
         return tempPurchaseProductCartService.getAllTempPurchaseCartItems(purchaseId);
     }
 

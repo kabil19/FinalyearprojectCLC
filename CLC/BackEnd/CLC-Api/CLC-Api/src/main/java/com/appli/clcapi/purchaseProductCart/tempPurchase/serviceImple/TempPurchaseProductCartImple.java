@@ -139,7 +139,7 @@ public class TempPurchaseProductCartImple implements TempPurchaseProductCartServ
     public NonPaginatedResponse getAllTempPurchaseCartItems(Long purchaseId) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
-            Optional<TempPurchaseProductCartEntity> purchaseCartItems = tempPurchaseProductCartRepo.findByTempPurchaseEntity_PurchaseId(purchaseId);
+            List<TempPurchaseProductCartEntity> purchaseCartItems = tempPurchaseProductCartRepo.findAll();
 
             List<TempPurchaseProductCartDto> anItemDto = purchaseCartItems.stream()
                     .map(TempPurchaseProductCartDto::new)
