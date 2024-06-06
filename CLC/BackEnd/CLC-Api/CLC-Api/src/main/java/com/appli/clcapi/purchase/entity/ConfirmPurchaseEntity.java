@@ -1,11 +1,9 @@
 package com.appli.clcapi.purchase.entity;
 
 
-import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmCardEntity;
 import com.appli.clcapi.paymentMethod.purchasePayMethods.entity.PurchasePayCardEntity;
 import com.appli.clcapi.paymentMethod.purchasePayMethods.entity.PurchasePayCashEntity;
 import com.appli.clcapi.paymentMethod.purchasePayMethods.entity.PurchasePayChequeEntity;
-import com.appli.clcapi.payments.invoicePayments.confirmPayments.entity.ConfirmPaymentsEntity;
 import com.appli.clcapi.payments.purchasePayment.entity.PurchasePaymentEntity;
 import com.appli.clcapi.vendor.entity.VendorEntity;
 import jakarta.persistence.*;
@@ -22,7 +20,6 @@ import java.util.List;
 @Builder
 public class ConfirmPurchaseEntity {
     @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long confirmPurchaseId;
 
     private Long purchaseInvoice;
@@ -49,5 +46,7 @@ public class ConfirmPurchaseEntity {
     @OneToMany(mappedBy = "confirmPurchaseEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PurchasePayCashEntity> purchasePayCashEntity;
 
+    @OneToMany(mappedBy = "confirmPurchaseEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY )
+    private List<ConfirmPurchaseProductCartEntity> confirmPurchaseProductCartEntity;
 
 }
