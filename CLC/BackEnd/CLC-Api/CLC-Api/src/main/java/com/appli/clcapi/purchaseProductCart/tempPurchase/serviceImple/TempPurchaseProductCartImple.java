@@ -99,8 +99,7 @@ public class TempPurchaseProductCartImple implements TempPurchaseProductCartServ
     }
 
     private void alterTempPurchase(TempPurchaseEntity tempPurchaseEntity, double newNetAmount) {
-        double updatedAmount = tempPurchaseEntity.getTotalAmount() + newNetAmount;
-        tempPurchaseEntity.setTotalAmount(updatedAmount);
+        tempPurchaseEntity.setTotalAmount(newNetAmount);
         tempPurchaseRepo.save(tempPurchaseEntity);
     }
 
@@ -119,12 +118,27 @@ public class TempPurchaseProductCartImple implements TempPurchaseProductCartServ
                 .tempPurchaseEntity(new TempPurchaseEntity(tempPurchaseProductCartDto.getTempPurchaseEntity()))
                 .build();
         tempPurchaseProductCartRepo.save(newPurchaseCartRecord);
+        isNetAmountUpdatedOnTempPurchase(tempPurchaseProductCartDto);
+    }
+
+    private Boolean isNetAmountUpdatedOnTempPurchase(TempPurchaseProductCartDto tempPurchaseProductCartDto) {
+        Optional<TempPurchaseEntity> selectedPurchase = tempPurchaseRepo.findById(tempPurchaseProductCartDto.getTempPurchaseEntity().getPurchaseId());
+        if(selectedPurchase.isPresent()){
+            selectedPurchase.get().setTotalAmount(selectedPurchase.get().getTotalAmount()+ tempPurchaseProductCartDto.getNetAmount());
+            tempPurchaseRepo.save(selectedPurchase.get());
+            return true;
+        }
+        return false;
     }
 
     @Override
     public NonPaginatedResponse deleteTempPurchaseCartRecord(Long proCartId) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
+            Optional<TempPurchaseProductCartEntity> tempPurchaseProductCartEntity = tempPurchaseProductCartRepo.findById(proCartId);
+            Optional<TempPurchaseEntity> tempPurchaseEntity = tempPurchaseRepo.findById(tempPurchaseProductCartEntity.get().getTempPurchaseEntity().getPurchaseId());
+            tempPurchaseEntity.get().setTotalAmount(tempPurchaseEntity.get().getTotalAmount()-tempPurchaseProductCartEntity.get().getNetAmount());
+            tempPurchaseRepo.save(tempPurchaseEntity.get());
             tempPurchaseProductCartRepo.deleteById(proCartId);
             response.setStatus(HttpStatus.ACCEPTED);
             response.setSuccessMessage("Record is deleted successfully!");
