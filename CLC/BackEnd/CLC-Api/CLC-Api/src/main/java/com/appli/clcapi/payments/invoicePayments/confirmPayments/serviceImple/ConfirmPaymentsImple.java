@@ -26,31 +26,31 @@ public class ConfirmPaymentsImple implements ConfirmPaymentsService {
     @Override
     @Transactional
    public NonPaginatedResponse addPayment(ConfirmPaymentsDto confirmPaymentsDto) {
-       /* NonPaginatedResponse response = new NonPaginatedResponse();
-        try {
-            ConfirmPaymentsEntity aPayment = ConfirmPaymentsEntity.builder()
-                    .paymentId(confirmPaymentsDto.getPaymentId())
-                    .paymentType(confirmPaymentsDto.getPaymentType())
-                    .paidAmount(confirmPaymentsDto.getPaidAmount())
-                    .paidDate(confirmPaymentsDto.getPaidDate())
-                    .salesInvoice(new TempInvoiceEntity(confirmPaymentsDto.getSalesInvoice()))
-                    .build();
-            var savedPaymentEntity =  paymentsRepo.save(aPayment);
-            addDetailsToTheRelevantPayMethod(confirmPaymentsDto, savedPaymentEntity);
-            Optional<TempInvoiceEntity> selectedSalesInvoice = tempInvoiceRepo.findById(confirmPaymentsDto.getSalesInvoice().getTempInvoiceId());
-            selectedSalesInvoice.get().setPaidAmount(selectedSalesInvoice.get().getPaidAmount() + confirmPaymentsDto.getPaidAmount());
-            tempInvoiceRepo.save(selectedSalesInvoice.get());
-
-            response.setResult(null);
-            response.setSuccessMessage(PaymentsConstants.PAYMENT_HAS_BEEN_ADDED);
-            response.setStatus(HttpStatus.CREATED);
-
-        } catch (Exception e) {
-            response.setSuccessMessage(null);
-            response.setErrors(Arrays.asList("An error occurred"));
-            response.setStatus(HttpStatus.BAD_REQUEST);
-        }
-        return response;*/
+//        NonPaginatedResponse response = new NonPaginatedResponse();
+//        try {
+//            ConfirmPaymentsEntity aPayment = ConfirmPaymentsEntity.builder()
+//                    .paymentId(confirmPaymentsDto.getPaymentId())
+//                    .paymentType(confirmPaymentsDto.getPaymentType())
+//                    .paidAmount(confirmPaymentsDto.getPaidAmount())
+//                    .paidDate(confirmPaymentsDto.getPaidDate())
+//                    .salesInvoice(new TempInvoiceEntity(confirmPaymentsDto.getSalesInvoice()))
+//                    .build();
+//            var savedPaymentEntity =  paymentsRepo.save(aPayment);
+//            addDetailsToTheRelevantPayMethod(confirmPaymentsDto, savedPaymentEntity);
+//            Optional<TempInvoiceEntity> selectedSalesInvoice = tempInvoiceRepo.findById(confirmPaymentsDto.getSalesInvoice().getTempInvoiceId());
+//            selectedSalesInvoice.get().setPaidAmount(selectedSalesInvoice.get().getPaidAmount() + confirmPaymentsDto.getPaidAmount());
+//            tempInvoiceRepo.save(selectedSalesInvoice.get());
+//
+//            response.setResult(null);
+//            response.setSuccessMessage(PaymentsConstants.PAYMENT_HAS_BEEN_ADDED);
+//            response.setStatus(HttpStatus.CREATED);
+//
+//        } catch (Exception e) {
+//            response.setSuccessMessage(null);
+//            response.setErrors(Arrays.asList("An error occurred"));
+//            response.setStatus(HttpStatus.BAD_REQUEST);
+//        }
+//        return response;
         return null;
     }
 

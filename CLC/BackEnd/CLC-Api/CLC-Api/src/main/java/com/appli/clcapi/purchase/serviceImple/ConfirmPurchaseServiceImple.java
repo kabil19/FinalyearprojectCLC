@@ -30,10 +30,7 @@ import java.util.Optional;
 public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
     private final TempPurchaseRepo tempPurchaseRepo;
     private final ConfirmPurchaseRepo confirmPurchaseRepo;
-    private final PurchasePaymentRepo purchasePaymentRepo;
-    private final PurchasePayCardRepo purchasePayCardRepo;
-    private final PurchasePayCashRepo purchasePayCashRepo;
-    private final PurchasePayChequeRepo purchasePayChequeRepo;
+
     private final ConfirmPurchaseProductCartRepo confirmPurchaseProductCartRepo;
     private final TempPurchaseProductCartRepo tempPurchaseProductCartRepo;
     @Override

@@ -1,5 +1,6 @@
 package com.appli.clcapi.vendor.entity;
 
+import com.appli.clcapi.payments.purchasePayment.entity.PurchasePaymentEntity;
 import com.appli.clcapi.purchase.entity.TempPurchaseEntity;
 import com.appli.clcapi.vendor.dto.VendorDto;
 import jakarta.persistence.*;
@@ -29,6 +30,8 @@ public class VendorEntity {
     @OneToMany(mappedBy = "vendorEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY )
     private List<TempPurchaseEntity> tempPurchaseEntity;
 
+    @OneToMany(mappedBy = "vendorEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY )
+    private List<PurchasePaymentEntity> purchasePaymentEntity;
     public VendorEntity(VendorDto vendorDto) {
         this.setVendorId(vendorDto.getVendorId());
         this.setVendorName(vendorDto.getVendorName());

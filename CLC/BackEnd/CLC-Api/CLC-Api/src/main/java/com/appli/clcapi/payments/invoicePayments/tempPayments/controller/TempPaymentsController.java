@@ -35,10 +35,10 @@ public class TempPaymentsController {
         return paymentsService.getAllPayments(invoiceId);
     }
 
-    @GetMapping("select/{invoiceId}/{existingChar}")
-    public NonPaginatedResponse select(@PathVariable Long paymentId, @PathVariable String existingChar){
-        return paymentsService.selectA_Payment();
-    }
+//    @GetMapping("select/{invoiceId}/{existingChar}")
+//    public NonPaginatedResponse select(@PathVariable Long paymentId, @PathVariable String existingChar){
+//        return paymentsService.selectA_Payment();
+//    }
 
 
 

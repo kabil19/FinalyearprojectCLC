@@ -28,6 +28,8 @@ public class ConfirmPaymentsDto {
     private Date chequeDueDate;
     @JsonProperty("cardRefNo")
     private Long cardRefNo;
+    @JsonProperty("isComplete")
+    private Boolean isComplete;
 //    private Long purchaseInvoice;
 
 

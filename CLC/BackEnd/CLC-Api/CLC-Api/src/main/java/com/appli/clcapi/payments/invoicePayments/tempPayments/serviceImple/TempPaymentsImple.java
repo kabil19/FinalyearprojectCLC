@@ -50,7 +50,8 @@ public class TempPaymentsImple implements TempPaymentsService {
             selectedSalesInvoice.get().setPaidAmount(selectedSalesInvoice.get().getPaidAmount() + tempPaymentsDto.getPaidAmount());
             tempInvoiceRepo.save(selectedSalesInvoice.get());
 
-            response.setResult(null);
+            TempPaymentsDto storedVal = new TempPaymentsDto(savedPaymentEntity);
+            response.setResult(storedVal);
             response.setSuccessMessage(PaymentsConstants.PAYMENT_HAS_BEEN_ADDED);
             response.setStatus(HttpStatus.CREATED);
 
@@ -73,7 +74,7 @@ public class TempPaymentsImple implements TempPaymentsService {
                     .tempInvoiceEntity(savedPayment.getTempSalesInvoice())
                     .build();
             tempCardRepo.save(aCardPayment);
-        } else if (tempPaymentsDto.getPaymentType().equalsIgnoreCase("cash")) {
+        } if (tempPaymentsDto.getPaymentType().equalsIgnoreCase("cash")) {
             TempCashEntity aCashPayment = TempCashEntity.builder()
                     .paidAmount(tempPaymentsDto.getPaidAmount())
                     .paidDate(now)
@@ -81,7 +82,7 @@ public class TempPaymentsImple implements TempPaymentsService {
                     .tempInvoiceEntity(savedPayment.getTempSalesInvoice())
                     .build();
             tempCashRepo.save(aCashPayment);
-        }else if (tempPaymentsDto.getPaymentType().equalsIgnoreCase("cheque")){
+        }if (tempPaymentsDto.getPaymentType().equalsIgnoreCase("cheque")){
             TempChequeEntity aChequePayment = TempChequeEntity.builder()
                     .paidAmount(tempPaymentsDto.getPaidAmount())
                     .paidDate(now)
