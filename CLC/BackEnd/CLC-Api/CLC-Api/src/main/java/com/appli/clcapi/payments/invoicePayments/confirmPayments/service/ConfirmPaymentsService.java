@@ -5,15 +5,15 @@ import com.appli.clcapi.payments.invoicePayments.confirmPayments.dto.ConfirmPaym
 
 public interface ConfirmPaymentsService {
 
-    NonPaginatedResponse addPayment(ConfirmPaymentsDto confirmPaymentsDto);
+    NonPaginatedResponse addConfirmInvoiceToConfirmPayments(ConfirmPaymentsDto confirmPaymentsDto);
 
-    NonPaginatedResponse deletePayment(Long payId);
+   /* NonPaginatedResponse deletePayment(Long payId);
 
     NonPaginatedResponse updatePayment(ConfirmPaymentsDto confirmPaymentsDto);
 
     NonPaginatedResponse getAllPayments(Long invoiceId);
 
-    NonPaginatedResponse selectA_Payment();
+    NonPaginatedResponse selectA_Payment();*/
 
 
 }

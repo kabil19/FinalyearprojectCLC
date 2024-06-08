@@ -33,7 +33,7 @@ public class ConfirmPurchaseEntity {
 
     private Double totalAmount;
 
-
+    private Boolean isComplete = false;
     //Payment Entity-->  Pay(m)----->confirmPurchase(1)
     @OneToMany(mappedBy = "confirmPurchaseEntity")
     private List<PurchasePaymentEntity> purchasePaymentEntity;

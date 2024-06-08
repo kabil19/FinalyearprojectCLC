@@ -15,12 +15,12 @@ public class ConfirmPaymentsController {
 
     private final ConfirmPaymentsService confirmPaymentsService;
     @PostMapping("addPayment")
-    public NonPaginatedResponse addPayment(@RequestBody ConfirmPaymentsDto paymentDto)
+    public NonPaginatedResponse addConfirmInvoiceToConfirmPayments(@RequestBody ConfirmPaymentsDto paymentDto)
     {
-        return confirmPaymentsService.addPayment(paymentDto);
+        return confirmPaymentsService.addConfirmInvoiceToConfirmPayments(paymentDto);
     }
 
-    @DeleteMapping("deletePayment/{paymentId}")
+    /*@DeleteMapping("deletePayment/{paymentId}")
     public NonPaginatedResponse deletePayment(@PathVariable Long paymentId){
         return confirmPaymentsService.deletePayment(paymentId);
     }
@@ -38,7 +38,7 @@ public class ConfirmPaymentsController {
     @GetMapping("select/{invoiceId}/{existingChar}")
     public NonPaginatedResponse select(@PathVariable Long paymentId, @PathVariable String existingChar){
         return confirmPaymentsService.selectA_Payment();
-    }
+    }*/
 
 
 

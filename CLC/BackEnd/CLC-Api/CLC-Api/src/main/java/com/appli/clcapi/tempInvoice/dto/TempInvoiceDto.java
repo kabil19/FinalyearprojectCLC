@@ -35,6 +35,9 @@ public class TempInvoiceDto {
 
     @JsonProperty("finalized")
     private Boolean finalized;
+
+    @JsonProperty("finalized")
+    private Boolean isComplete;
     //table get
     public TempInvoiceDto(TempInvoiceEntity tempInvoiceEntity){
         this.setFinalized(tempInvoiceEntity.getFinalized());

@@ -37,7 +37,7 @@ public class TempInvoiceEntity {
 
     @OneToMany(mappedBy = "tempInvoiceEntity" ,cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductCartEntity> productCartEntity;
-
+    private Boolean isComplete;
 
     @ManyToOne
     @JoinColumn(name="custId", nullable = false)

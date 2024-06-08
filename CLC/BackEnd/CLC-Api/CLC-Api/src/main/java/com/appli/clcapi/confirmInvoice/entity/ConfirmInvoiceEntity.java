@@ -31,7 +31,7 @@ public class ConfirmInvoiceEntity {
 
   /*  @OneToMany(mappedBy = "confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductCartEntity> productCartEntity;*/
-    private Boolean isComplete;
+    private Boolean isComplete =false;
 
     @ManyToOne
     @JoinColumn(name="custId")

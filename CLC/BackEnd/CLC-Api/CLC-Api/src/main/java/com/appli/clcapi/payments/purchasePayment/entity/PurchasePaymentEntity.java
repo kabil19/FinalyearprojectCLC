@@ -1,6 +1,5 @@
 package com.appli.clcapi.payments.purchasePayment.entity;
 
-import com.appli.clcapi.confirmInvoice.entity.ConfirmInvoiceEntity;
 import com.appli.clcapi.purchase.entity.ConfirmPurchaseEntity;
 import com.appli.clcapi.vendor.entity.VendorEntity;
 import jakarta.persistence.*;
@@ -22,6 +21,7 @@ public class PurchasePaymentEntity {
     private String paymentType;
     private Date paidDate;
     private Double paidAmount;
+
     @ManyToOne
     @JoinColumn(name="confirmPurchaseId")
     private ConfirmPurchaseEntity confirmPurchaseEntity;

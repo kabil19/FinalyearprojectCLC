@@ -2,10 +2,7 @@ package com.appli.clcapi.purchase.dto;
 
 import com.appli.clcapi.purchase.entity.ConfirmPurchaseEntity;
 import com.appli.clcapi.vendor.dto.VendorDto;
-import com.appli.clcapi.vendor.entity.VendorEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,7 +27,8 @@ public class ConfirmPurchaseDto {
     private Double paidAmount;
     @JsonProperty("totalAmount")
     private Double totalAmount;
-
+    @JsonProperty("totalAmount")
+    private Boolean isComplete;
     public ConfirmPurchaseDto(ConfirmPurchaseEntity confirmPurchaseEntity) {
         this.confirmPurchaseId = confirmPurchaseEntity.getConfirmPurchaseId();
         this.purchaseInvoice = confirmPurchaseEntity.getPurchaseInvoice();

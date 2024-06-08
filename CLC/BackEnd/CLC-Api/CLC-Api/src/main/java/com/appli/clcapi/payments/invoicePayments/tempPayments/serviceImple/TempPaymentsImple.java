@@ -47,11 +47,14 @@ public class TempPaymentsImple implements TempPaymentsService {
             addDetailsToTheRelevantPayMethod(tempPaymentsDto, savedPaymentEntity);
 
             Optional<TempInvoiceEntity> selectedSalesInvoice = tempInvoiceRepo.findById(tempPaymentsDto.getTempSalesInvoice().getTempInvoiceId());
-            selectedSalesInvoice.get().setPaidAmount(selectedSalesInvoice.get().getPaidAmount() + tempPaymentsDto.getPaidAmount());
-            tempInvoiceRepo.save(selectedSalesInvoice.get());
-
-            TempPaymentsDto storedVal = new TempPaymentsDto(savedPaymentEntity);
-            response.setResult(storedVal);
+            double totalPaidAmount = tempPaymentsDto.getPaidAmount() + selectedSalesInvoice.get().getPaidAmount();
+            selectedSalesInvoice.get().setPaidAmount(totalPaidAmount);
+            if(totalPaidAmount == (selectedSalesInvoice.get().getNetAmount())){
+                selectedSalesInvoice.get().setIsComplete(true);
+                tempInvoiceRepo.save(selectedSalesInvoice.get());
+            }
+//            TempPaymentsDto storedVal = new TempPaymentsDto(savedPaymentEntity);
+            response.setResult(tempPaymentsDto);
             response.setSuccessMessage(PaymentsConstants.PAYMENT_HAS_BEEN_ADDED);
             response.setStatus(HttpStatus.CREATED);
 
