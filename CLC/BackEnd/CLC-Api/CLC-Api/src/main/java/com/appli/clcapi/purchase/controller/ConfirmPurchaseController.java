@@ -12,10 +12,16 @@ import org.springframework.web.bind.annotation.*;
 public class ConfirmPurchaseController {
     private final ConfirmPurchaseService confirmPurchaseService;
 
+
     @PostMapping("addToConfirmPurchase")
     public NonPaginatedResponse addToConfirmPurchase(@RequestBody Long purchaseId)
     {
         return confirmPurchaseService.addToConfirmThePurchase(purchaseId);
+    }
+    @GetMapping("getAllConfirmPurchaseInvoices")
+    public NonPaginatedResponse getAllConfirmPurchaseInvoices()
+    {
+        return confirmPurchaseService.getAllConfirmPurchaseInvoices();
     }
 
 }

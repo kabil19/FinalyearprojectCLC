@@ -21,8 +21,8 @@ public class TempPurchaseDto {
     @JsonProperty("purchasedDate")
     private Date purchasedDate;
 
-    @JsonProperty("totalAmount")
-    private Double totalAmount;
+    @JsonProperty("netAmount")
+    private Double netAmount;
 
    /*     @JsonProperty("paidAmount")
     private Double paidAmount;*/
@@ -34,7 +34,7 @@ public class TempPurchaseDto {
         this.purchaseId = tempPurchaseEntity.getPurchaseId();
         this.purchaseInvoiceNO = tempPurchaseEntity.getPurchaseInvoiceNO();
         this.purchasedDate = tempPurchaseEntity.getPurchasedDate();
-        this.totalAmount = tempPurchaseEntity.getTotalAmount();
+        this.netAmount = tempPurchaseEntity.getNetAmount();
 //        this.paidAmount = tempPurchaseEntity.getPaidAmount();
         this.vendorDto = new VendorDto(tempPurchaseEntity.getVendorEntity());
     }

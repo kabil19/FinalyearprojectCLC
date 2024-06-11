@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Setter
 @Getter
@@ -36,7 +37,7 @@ public class TempInvoiceDto {
     @JsonProperty("finalized")
     private Boolean finalized;
 
-    @JsonProperty("finalized")
+    @JsonProperty("isComplete")
     private Boolean isComplete;
     //table get
     public TempInvoiceDto(TempInvoiceEntity tempInvoiceEntity){
@@ -47,5 +48,8 @@ public class TempInvoiceDto {
         this.setPaidAmount(tempInvoiceEntity.getPaidAmount());
         this.setCustomerEntity(new CustomerDto(tempInvoiceEntity.getCustomer()));
         this.setTempInvoiceNumber(tempInvoiceEntity.getTempInvoiceNumber());
+        this.setIsComplete(tempInvoiceEntity.getIsComplete());
     }
+
+
 }

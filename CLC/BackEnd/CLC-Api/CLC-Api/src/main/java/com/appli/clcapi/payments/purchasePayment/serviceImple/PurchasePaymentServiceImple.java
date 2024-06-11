@@ -69,7 +69,7 @@ public class PurchasePaymentServiceImple implements PurchasePaymentService {
         );
         if (confirmPurchaseEntity.isPresent()){
             double totalPaidAmount = confirmPurchaseEntity.get().getPaidAmount() + purchasePaymentDto.getPaidAmount();
-            if(totalPaidAmount == confirmPurchaseEntity.get().getTotalAmount()){
+            if(totalPaidAmount == confirmPurchaseEntity.get().getNetAmount()){
                 confirmPurchaseEntity.get().setIsComplete(true);
                 confirmPurchaseEntity.get().setPaidAmount(totalPaidAmount);
                 confirmPurchaseRepo.save(confirmPurchaseEntity.get());

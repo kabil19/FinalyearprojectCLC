@@ -37,7 +37,8 @@ public class TempInvoiceEntity {
 
     @OneToMany(mappedBy = "tempInvoiceEntity" ,cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductCartEntity> productCartEntity;
-    private Boolean isComplete;
+
+    private Boolean isComplete = false;
 
     @ManyToOne
     @JoinColumn(name="custId", nullable = false)
@@ -63,6 +64,7 @@ public class TempInvoiceEntity {
         this.setNetAmount(tempInvoiceDto.getNetAmount());
         this.setPaidAmount(tempInvoiceDto.getPaidAmount());
         this.setCustomer(new CustomerEntity(tempInvoiceDto.getCustomerEntity()));
+       this.setIsComplete(tempInvoiceDto.getIsComplete());
     }
 
 

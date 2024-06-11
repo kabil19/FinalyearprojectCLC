@@ -4,5 +4,7 @@ import com.appli.clcapi.common.response.NonPaginatedResponse;
 
 public interface ConfirmPurchaseService {
 
+
     NonPaginatedResponse addToConfirmThePurchase(Long purchaseId);
+    NonPaginatedResponse getAllConfirmPurchaseInvoices();
 }

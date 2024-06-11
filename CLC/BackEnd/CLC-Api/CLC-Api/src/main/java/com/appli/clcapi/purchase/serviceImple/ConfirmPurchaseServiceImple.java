@@ -1,12 +1,7 @@
 package com.appli.clcapi.purchase.serviceImple;
-
 import com.appli.clcapi.common.constants.ConfirmPurchaseConsonants;
 import com.appli.clcapi.common.response.NonPaginatedResponse;
-import com.appli.clcapi.paymentMethod.purchasePayMethods.repository.PurchasePayCardRepo;
-import com.appli.clcapi.paymentMethod.purchasePayMethods.repository.PurchasePayCashRepo;
-import com.appli.clcapi.paymentMethod.purchasePayMethods.repository.PurchasePayChequeRepo;
-import com.appli.clcapi.payments.purchasePayment.entity.PurchasePaymentEntity;
-import com.appli.clcapi.payments.purchasePayment.repository.PurchasePaymentRepo;
+import com.appli.clcapi.purchase.dto.ConfirmPurchaseDto;
 import com.appli.clcapi.purchase.entity.ConfirmPurchaseEntity;
 import com.appli.clcapi.purchase.entity.ConfirmPurchaseProductCartEntity;
 import com.appli.clcapi.purchase.entity.TempPurchaseEntity;
@@ -20,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +32,7 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
     public NonPaginatedResponse addToConfirmThePurchase(Long purchaseId) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try{
-            Optional<TempPurchaseEntity> selectTempPurchase = getTempPurchaseEntity(purchaseId);
+            Optional<TempPurchaseEntity> selectTempPurchase =tempPurchaseRepo.findById(purchaseId);
             if (selectTempPurchase.isEmpty()) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 response.setErrors(List.of("Purchase isn't exist!"));
@@ -60,7 +54,7 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
     }
 
     private boolean isConfirmPurchaseCartCreated(ConfirmPurchaseEntity confirmPurchaseEntity) {
-        NonPaginatedResponse response = new NonPaginatedResponse();
+
         try{
             List<TempPurchaseProductCartEntity> tempPurchaseProductCartEntity = tempPurchaseProductCartRepo.
                     findByTempPurchaseEntity_PurchaseId(confirmPurchaseEntity.getConfirmPurchaseId());
@@ -95,17 +89,33 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
                 .confirmPurchaseId(purchaseId)
                 .purchaseInvoice(selectTempPurchase.get().getPurchaseInvoiceNO())
                 .purchaseDate(now)
+                .isComplete(false)
                 .vendorEntity(selectTempPurchase.get().getVendorEntity())
                 .paidAmount(0.0)
-                .totalAmount(selectTempPurchase.get().getTotalAmount())
+                .netAmount(selectTempPurchase.get().getNetAmount())
                 .build();
         return  confirmPurchaseRepo.save(newConfirmPurchase);
 
     }
 
-    private Optional<TempPurchaseEntity> getTempPurchaseEntity(Long purchaseId) {
-        return tempPurchaseRepo.findById(purchaseId);
+    @Override
+    public NonPaginatedResponse getAllConfirmPurchaseInvoices(){
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        try {
+            List<ConfirmPurchaseEntity> confirmedPurchaseEntities = confirmPurchaseRepo.findAll();
+            List<ConfirmPurchaseDto> confirmedPurchases = confirmedPurchaseEntities.stream()
+                    .map(ConfirmPurchaseDto::new)
+                    .toList();
+            response.setResult(confirmedPurchases);
+            response.setStatus(HttpStatus.ACCEPTED);
+            response.setSuccessMessage("Confirmed Purchase invoice records Retrieved!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setErrors(List.of("Couldn't retrieve purchase records!"));
+        }
+        return response;
     }
+
 
 
 

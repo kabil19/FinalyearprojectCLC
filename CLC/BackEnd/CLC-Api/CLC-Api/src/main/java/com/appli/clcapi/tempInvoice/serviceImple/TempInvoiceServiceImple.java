@@ -1,5 +1,6 @@
 package com.appli.clcapi.tempInvoice.serviceImple;
 
+import com.appli.clcapi.common.response.NonPaginatedResponse;
 import com.appli.clcapi.customer.entity.CustomerEntity;
 import com.appli.clcapi.customer.repository.CustomerRepo;
 import com.appli.clcapi.tempInvoice.dto.TempInvoiceDto;
@@ -29,6 +30,7 @@ public class TempInvoiceServiceImple implements TempInvoiceService {
                     .netAmount(tempInvoiceDto.getNetAmount())
                     .paidAmount(tempInvoiceDto.getPaidAmount())
                     .finalized(false)
+                    .isComplete(false)
                     .tempInvoiceNumber(tempInvoiceDto.getTempInvoiceNumber())
                     .customer(new CustomerEntity(tempInvoiceDto.getCustomerEntity()))
                     .build();
@@ -103,4 +105,20 @@ public class TempInvoiceServiceImple implements TempInvoiceService {
         }
         return new ResponseEntity<>(listOfDtoForView,HttpStatus.OK);
     }
+
+    @Override
+    public NonPaginatedResponse getTempInvoiceById(Long id) {
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        try{
+            Optional<TempInvoiceEntity> invoiceEntity = tempInvoiceRepo.findById(id);
+            TempInvoiceDto tempInvoiceDto = new TempInvoiceDto(invoiceEntity.get());
+            response.setResult(tempInvoiceDto);
+            response.setSuccessMessage("Temp Invoice is retrieved!");
+        }catch (Exception e){
+            response.setErrors(List.of("Couldn't retrieve!"));
+        }
+        return response;
+    }
+
+
 }

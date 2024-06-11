@@ -106,7 +106,11 @@ public class ProductCartImple implements ProductCartService {
         return productCartRepo.save(aProductIntoCart);
     }
 
-    private ProductCartEntity addMoreQuantity(ProductCartEntity existingItemsDetails, ProductCartDto productCartDto, StockEntity stocksFromStockEntity, Optional<TempInvoiceEntity> tempInvoiceEntity) {
+    private ProductCartEntity addMoreQuantity(ProductCartEntity existingItemsDetails,
+                                              ProductCartDto productCartDto,
+                                              StockEntity stocksFromStockEntity,
+                                              Optional<TempInvoiceEntity> tempInvoiceEntity)
+    {
         Double updatedQty = existingItemsDetails.getQuantity() + productCartDto.getQuantity();
         existingItemsDetails.setQuantity(updatedQty);
         Double discount = existingItemsDetails.getDiscount() + productCartDto.getDiscount();

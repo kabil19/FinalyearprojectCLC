@@ -34,7 +34,7 @@ public class TempPurchaseServiceImple implements TempPurchaseService {
                             .purchasedDate(tempPurchaseDto.getPurchasedDate())
                             .purchaseInvoiceNO(tempPurchaseDto.getPurchaseInvoiceNO())
                             .vendorEntity(new VendorEntity(tempPurchaseDto.getVendorDto()))
-                            .totalAmount(0.00)
+                            .netAmount(0.00)
                             .build();
                     response.setResult(tempPurchaseRepo.save(aTempPurchase));
                     response.setSuccessMessage(TempPurchaseConstants.PURCHASE_HAS_BEEN_CREATED);

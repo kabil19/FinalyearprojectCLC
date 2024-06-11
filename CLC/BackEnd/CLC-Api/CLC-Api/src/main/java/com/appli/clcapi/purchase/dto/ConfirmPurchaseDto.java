@@ -25,9 +25,9 @@ public class ConfirmPurchaseDto {
     private VendorDto vendorEntity;
     @JsonProperty("paidAmount")
     private Double paidAmount;
-    @JsonProperty("totalAmount")
-    private Double totalAmount;
-    @JsonProperty("totalAmount")
+    @JsonProperty("netAmount")
+    private Double netAmount;
+    @JsonProperty("isComplete")
     private Boolean isComplete;
     public ConfirmPurchaseDto(ConfirmPurchaseEntity confirmPurchaseEntity) {
         this.confirmPurchaseId = confirmPurchaseEntity.getConfirmPurchaseId();
@@ -35,6 +35,7 @@ public class ConfirmPurchaseDto {
         this.purchaseDate = confirmPurchaseEntity.getPurchaseDate();
         this.vendorEntity = new VendorDto(confirmPurchaseEntity.getVendorEntity());
         this.paidAmount = confirmPurchaseEntity.getPaidAmount();
-        this.totalAmount = confirmPurchaseEntity.getTotalAmount();
+        this.netAmount = confirmPurchaseEntity.getNetAmount();
+        this.isComplete = confirmPurchaseEntity.getIsComplete();
     }
 }

@@ -19,4 +19,9 @@ public class ConfirmInvoiceController {
         }
 
 
+    @GetMapping("getAllConfirmedInvoices")
+    public NonPaginatedResponse getAllConfirmedInvoices()throws Exception{
+        return confirmInvoiceService.getAllConfirmedInvoices();
+    }
+
 }

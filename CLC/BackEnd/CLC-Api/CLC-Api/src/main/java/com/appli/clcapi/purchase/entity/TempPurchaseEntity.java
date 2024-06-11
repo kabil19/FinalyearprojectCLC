@@ -24,7 +24,7 @@ public class TempPurchaseEntity {
 
     private Date purchasedDate;
 
-    private Double totalAmount;
+    private Double netAmount;
 
 //    private Double paidAmount;
 
@@ -42,6 +42,6 @@ public class TempPurchaseEntity {
         this.setVendorEntity(new VendorEntity(tempPurchaseDto.getVendorDto()));
 //        this.setPaidAmount(tempPurchaseDto.getPaidAmount());
         this.setPurchaseInvoiceNO(tempPurchaseDto.getPurchaseInvoiceNO());
-        this.setTotalAmount(tempPurchaseDto.getTotalAmount());
+        this.setNetAmount(tempPurchaseDto.getNetAmount());
     }
 }

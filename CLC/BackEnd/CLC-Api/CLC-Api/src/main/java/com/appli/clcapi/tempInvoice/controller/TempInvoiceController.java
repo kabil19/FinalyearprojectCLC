@@ -1,6 +1,7 @@
 package com.appli.clcapi.tempInvoice.controller;
 
 
+import com.appli.clcapi.common.response.NonPaginatedResponse;
 import com.appli.clcapi.tempInvoice.dto.TempInvoiceDto;
 import com.appli.clcapi.tempInvoice.service.TempInvoiceService;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,11 @@ public class TempInvoiceController {
         @GetMapping("getAll")
         public ResponseEntity<List<?>> getAll()throws Exception{
             return tempInvoiceService.getAll();
+        }
+
+        @GetMapping("getTempInvoiceById/{invoiceId}")
+        public NonPaginatedResponse getTempInvoiceById(@PathVariable Long invoiceId)throws Exception{
+            return tempInvoiceService.getTempInvoiceById(invoiceId);
         }
 
         @GetMapping("select/{existingChar}")

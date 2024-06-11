@@ -31,7 +31,7 @@ public class ConfirmPurchaseEntity {
 
     private Double paidAmount;
 
-    private Double totalAmount;
+    private Double netAmount;
 
     private Boolean isComplete = false;
     //Payment Entity-->  Pay(m)----->confirmPurchase(1)
@@ -56,7 +56,7 @@ public class ConfirmPurchaseEntity {
         this.purchaseDate = confirmPurchaseDto.getPurchaseDate();
         this.vendorEntity = new VendorEntity(confirmPurchaseDto.getVendorEntity());
         this.paidAmount = confirmPurchaseDto.getPaidAmount();
-        this.totalAmount = confirmPurchaseDto.getTotalAmount();
-
+        this.netAmount = confirmPurchaseDto.getNetAmount();
+        this.isComplete = confirmPurchaseDto.getIsComplete();
     }
 }

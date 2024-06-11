@@ -60,6 +60,7 @@ public class ConfirmInvoiceEntity {
         this.netAmount = confirmInvoiceDto.getNetAmount();
         this.paidAmount = confirmInvoiceDto.getPaidAmount();
         this.customer = new CustomerEntity(confirmInvoiceDto.getCustomerOBJ());
+        this.isComplete = confirmInvoiceDto.getIsComplete();
     }
 
 

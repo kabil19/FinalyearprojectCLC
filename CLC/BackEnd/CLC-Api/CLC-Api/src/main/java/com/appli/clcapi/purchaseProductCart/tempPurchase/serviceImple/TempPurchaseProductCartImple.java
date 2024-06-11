@@ -99,7 +99,7 @@ public class TempPurchaseProductCartImple implements TempPurchaseProductCartServ
     }
 
     private void alterTempPurchase(TempPurchaseEntity tempPurchaseEntity, double newNetAmount) {
-        tempPurchaseEntity.setTotalAmount(newNetAmount);
+        tempPurchaseEntity.setNetAmount(newNetAmount);
         tempPurchaseRepo.save(tempPurchaseEntity);
     }
 
@@ -124,7 +124,7 @@ public class TempPurchaseProductCartImple implements TempPurchaseProductCartServ
     private Boolean isNetAmountUpdatedOnTempPurchase(TempPurchaseProductCartDto tempPurchaseProductCartDto) {
         Optional<TempPurchaseEntity> selectedPurchase = tempPurchaseRepo.findById(tempPurchaseProductCartDto.getTempPurchaseEntity().getPurchaseId());
         if(selectedPurchase.isPresent()){
-            selectedPurchase.get().setTotalAmount(selectedPurchase.get().getTotalAmount()+ tempPurchaseProductCartDto.getNetAmount());
+            selectedPurchase.get().setNetAmount(selectedPurchase.get().getNetAmount()+ tempPurchaseProductCartDto.getNetAmount());
             tempPurchaseRepo.save(selectedPurchase.get());
             return true;
         }
@@ -137,7 +137,7 @@ public class TempPurchaseProductCartImple implements TempPurchaseProductCartServ
         try {
             Optional<TempPurchaseProductCartEntity> tempPurchaseProductCartEntity = tempPurchaseProductCartRepo.findById(proCartId);
             Optional<TempPurchaseEntity> tempPurchaseEntity = tempPurchaseRepo.findById(tempPurchaseProductCartEntity.get().getTempPurchaseEntity().getPurchaseId());
-            tempPurchaseEntity.get().setTotalAmount(tempPurchaseEntity.get().getTotalAmount()-tempPurchaseProductCartEntity.get().getNetAmount());
+            tempPurchaseEntity.get().setNetAmount(tempPurchaseEntity.get().getNetAmount()-tempPurchaseProductCartEntity.get().getNetAmount());
             tempPurchaseRepo.save(tempPurchaseEntity.get());
             tempPurchaseProductCartRepo.deleteById(proCartId);
             response.setStatus(HttpStatus.ACCEPTED);
@@ -237,7 +237,7 @@ public class TempPurchaseProductCartImple implements TempPurchaseProductCartServ
     private void updatePurchaseInvoiceNetAmount(TempPurchaseProductCartDto tempPurchaseProductCartDto, Optional<TempPurchaseEntity> selectedTempPurchaseInvoice, Optional<StockEntity> selectedStockItem) {
         double total = selectedStockItem.get().getSellingPrice() * tempPurchaseProductCartDto.getQuantity();
         double totalDiscount = tempPurchaseProductCartDto.getQuantity() * tempPurchaseProductCartDto.getDiscount();
-        selectedTempPurchaseInvoice.get().setTotalAmount(total - totalDiscount);
+        selectedTempPurchaseInvoice.get().setNetAmount(total - totalDiscount);
         tempPurchaseRepo.save(selectedTempPurchaseInvoice.get());
     }
 

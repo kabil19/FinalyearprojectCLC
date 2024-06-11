@@ -11,7 +11,7 @@ import lombok.*;
 @Setter
 @Builder
 @Entity
-@Table(name="confirm_pro_cart_tbl")
+@Table(name="confirm_invoice_pro_cart_tbl")
 @AllArgsConstructor
 @NoArgsConstructor
 public class ConfirmProductCartEntity {
