@@ -1,6 +1,7 @@
 package com.appli.clcapi.payments.invoicePayments.confirmPayments.dto;
 
 import com.appli.clcapi.confirmInvoice.dto.ConfirmInvoiceDto;
+import com.appli.clcapi.payments.invoicePayments.confirmPayments.entity.ConfirmPaymentsEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -20,7 +21,7 @@ public class ConfirmPaymentsDto {
     private Date paidDate;
     @JsonProperty("paidAmount")
     private Double paidAmount;
-    @JsonProperty("confirmInvoiceDto")
+    @JsonProperty("confirmInvoiceOBJ")
     private ConfirmInvoiceDto confirmInvoiceDto;
     @JsonProperty("chequeRefNo")
     private Long chequeRefNo;
@@ -28,9 +29,15 @@ public class ConfirmPaymentsDto {
     private Date chequeDueDate;
     @JsonProperty("cardRefNo")
     private Long cardRefNo;
-    @JsonProperty("isComplete")
-    private Boolean isComplete;
+
 //    private Long purchaseInvoice;
 
+    public ConfirmPaymentsDto(ConfirmPaymentsEntity confirmPaymentsEntity) {
+        this.setPaymentId(confirmPaymentsEntity.getPaymentId());
+        this.setConfirmInvoiceDto(new ConfirmInvoiceDto(confirmPaymentsEntity.getConfirmInvoice()));
+        this.setPaymentType(confirmPaymentsEntity.getPaymentType());
+        this.setPaidAmount(confirmPaymentsEntity.getPaidAmount());
+        this.setPaidDate(confirmPaymentsEntity.getPaidDate());
+    }
 
 }

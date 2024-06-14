@@ -40,6 +40,7 @@ public class TempInvoiceEntity {
 
     private Boolean isComplete = false;
 
+
     @ManyToOne
     @JoinColumn(name="custId", nullable = false)
     private CustomerEntity customer;

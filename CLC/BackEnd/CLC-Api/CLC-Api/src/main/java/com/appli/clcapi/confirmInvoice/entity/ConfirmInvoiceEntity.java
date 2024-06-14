@@ -7,6 +7,7 @@ import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmCashEntity;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmChequeEntity;
 import com.appli.clcapi.payments.invoicePayments.confirmPayments.entity.ConfirmPaymentsEntity;
+import com.appli.clcapi.payments.invoicePayments.receipt.entity.ConfirmSalesInvoiceReceiptEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,6 +37,9 @@ public class ConfirmInvoiceEntity {
     @ManyToOne
     @JoinColumn(name="custId")
     private CustomerEntity customer;
+
+    @OneToMany(mappedBy ="confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ConfirmSalesInvoiceReceiptEntity> confirmSalesInvoiceReceiptEntity;
 
     @OneToMany(mappedBy = "confirmInvoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ConfirmPaymentsEntity> confirmPaymentsEntity;

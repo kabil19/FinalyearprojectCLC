@@ -30,7 +30,8 @@ public class TempPaymentsImple implements TempPaymentsService {
     private final TempCardRepo tempCardRepo;
     private final TempCashRepo tempCashRepo;
     private final TempChequeRepo tempChequeRepo;
-    
+
+
     @Override
     @Transactional
     public NonPaginatedResponse addPayment(TempPaymentsDto tempPaymentsDto) {
@@ -53,7 +54,9 @@ public class TempPaymentsImple implements TempPaymentsService {
                 selectedSalesInvoice.get().setIsComplete(true);
                 tempInvoiceRepo.save(selectedSalesInvoice.get());
             }
-//            TempPaymentsDto storedVal = new TempPaymentsDto(savedPaymentEntity);
+
+
+
             response.setResult(tempPaymentsDto);
             response.setSuccessMessage(PaymentsConstants.PAYMENT_HAS_BEEN_ADDED);
             response.setStatus(HttpStatus.CREATED);
@@ -65,6 +68,8 @@ public class TempPaymentsImple implements TempPaymentsService {
         }
         return response;
     }
+
+
 
     private void addDetailsToTheRelevantPayMethod(TempPaymentsDto tempPaymentsDto, TempPaymentsEntity savedPayment) {
     Date now = new Date();

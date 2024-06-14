@@ -5,7 +5,8 @@ import com.appli.clcapi.payments.invoicePayments.confirmPayments.dto.ConfirmPaym
 
 public interface ConfirmPaymentsService {
 
-    NonPaginatedResponse addConfirmInvoiceToConfirmPayments(ConfirmPaymentsDto confirmPaymentsDto);
+    NonPaginatedResponse makePaymentToConfirmInvoice(ConfirmPaymentsDto confirmPaymentsDto);
+    NonPaginatedResponse getAllConfirmPaymentsOfConfirmInvoice(Long confirmSalesInvoiceId);
 
    /* NonPaginatedResponse deletePayment(Long payId);
 

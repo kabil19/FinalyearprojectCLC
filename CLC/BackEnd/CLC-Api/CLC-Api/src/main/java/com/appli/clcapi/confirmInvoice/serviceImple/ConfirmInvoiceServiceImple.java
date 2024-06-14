@@ -23,8 +23,6 @@ import com.appli.clcapi.paymentMethod.invoicePayMethods.tempPayMethods.repositor
 import com.appli.clcapi.paymentMethod.invoicePayMethods.tempPayMethods.repository.TempCashRepo;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.tempPayMethods.repository.TempChequeRepo;
 import com.appli.clcapi.payments.invoicePayments.tempPayments.repository.TempPaymentsRepo;
-import com.appli.clcapi.purchase.dto.ConfirmPurchaseDto;
-import com.appli.clcapi.purchase.entity.ConfirmPurchaseEntity;
 import com.appli.clcapi.tempInvoice.entity.TempInvoiceEntity;
 import com.appli.clcapi.tempInvoice.repository.TempInvoiceRepo;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +57,6 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
             TempInvoiceEntity selectedTempInvoice = tempInvoiceRepo.findById(invoiceId).get();
-
             ConfirmInvoiceEntity confirmedInvoice = createNewConfirmInvoiceData(selectedTempInvoice);
             Boolean isCartItemsConfirmed = confirmProductCartService.confirmTheCartItems(invoiceId, confirmedInvoice);
             if (isCartItemsConfirmed) {
@@ -75,7 +72,6 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
                         }
                 ).toList();
                 confirmPaymentsRepo.saveAll(listOfPayments);
-
                 List<TempCardEntity> tempCardEntities = tempCardRepo.findByTempInvoiceEntity_TempInvoiceId(confirmedInvoice.getConfirmInvoiceId());
                 List<TempCashEntity> tempCashEntities = tempCashRepo.findByTempInvoiceEntity_TempInvoiceId(confirmedInvoice.getConfirmInvoiceId());
                 List<TempChequeEntity> tempChequeEntities = tempChequeRepo.findByTempInvoiceEntity_TempInvoiceId(confirmedInvoice.getConfirmInvoiceId());
@@ -84,7 +80,6 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
                     response.setStatus(HttpStatus.BAD_REQUEST);
                     return response;
                 }
-
                 tempInvoiceRepo.deleteById(confirmedInvoice.getConfirmInvoiceId());
 
             }
@@ -98,6 +93,8 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
         }
         return response;
     }
+
+
 
 
     private boolean transferToConfirmPayMethods(List<TempCardEntity> tempCardEntities, List<TempCashEntity> tempCashEntities, List<TempChequeEntity> tempChequeEntities, ConfirmInvoiceEntity confirmedInvoice) {
@@ -162,7 +159,7 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
         confirmInvoiceEntity.setPaidAmount(tempInvoiceEntity.getPaidAmount());
         confirmInvoiceEntity.setNetAmount(tempInvoiceEntity.getNetAmount());
         confirmInvoiceEntity.setCustomer(tempInvoiceEntity.getCustomer());
-        confirmInvoiceEntity.setIsComplete(false);
+        confirmInvoiceEntity.setIsComplete(tempInvoiceEntity.getIsComplete());
         return confirmInvoiceRepo.save(confirmInvoiceEntity);
     }
 
@@ -172,6 +169,7 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
         try {
             List<ConfirmInvoiceEntity> confirmedSalesInvoiceEntities =confirmInvoiceRepo.findAll();
             List<ConfirmInvoiceDto> confirmedSalesInvoice = confirmedSalesInvoiceEntities.stream()
+                    .filter(ConfirmInvoiceEntity -> !ConfirmInvoiceEntity.getIsComplete())
                     .map(ConfirmInvoiceDto::new)
                     .toList();
             response.setResult(confirmedSalesInvoice);

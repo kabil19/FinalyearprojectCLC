@@ -8,16 +8,16 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/ConfirmPayments/")
+@RequestMapping(path = "/api/ConfirmSalesInvoicePayments/")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ConfirmPaymentsController {
 
 
     private final ConfirmPaymentsService confirmPaymentsService;
-    @PostMapping("addPayment")
-    public NonPaginatedResponse addConfirmInvoiceToConfirmPayments(@RequestBody ConfirmPaymentsDto paymentDto)
+    @PostMapping("makePaymentToConfirmInvoice")
+    public NonPaginatedResponse makePaymentToConfirmInvoice(@RequestBody ConfirmPaymentsDto paymentDto)
     {
-        return confirmPaymentsService.addConfirmInvoiceToConfirmPayments(paymentDto);
+        return confirmPaymentsService.makePaymentToConfirmInvoice(paymentDto);
     }
 
     /*@DeleteMapping("deletePayment/{paymentId}")
@@ -28,18 +28,18 @@ public class ConfirmPaymentsController {
     @PutMapping("updatePayment")
     public NonPaginatedResponse updatePayment(@RequestBody ConfirmPaymentsDto confirmPaymentsDto){
         return confirmPaymentsService.updatePayment(confirmPaymentsDto);
-    }
-
-    @GetMapping("getAllPayments/{invoiceId}")
-    public NonPaginatedResponse getAllPayments(@PathVariable Long invoiceId){
-        return confirmPaymentsService.getAllPayments(invoiceId);
-    }
-
-    @GetMapping("select/{invoiceId}/{existingChar}")
-    public NonPaginatedResponse select(@PathVariable Long paymentId, @PathVariable String existingChar){
-        return confirmPaymentsService.selectA_Payment();
     }*/
 
+    @GetMapping("getAllConfirmPaymentsOfConfirmInvoice/{confirmSalesInvoiceId}")
+    public NonPaginatedResponse getAllConfirmPaymentsOfConfirmInvoices(@PathVariable Long confirmSalesInvoiceId){
+        return confirmPaymentsService.getAllConfirmPaymentsOfConfirmInvoice(confirmSalesInvoiceId);
+    }
+
+   /* @GetMapping("select/{invoiceId}/{existingChar}")
+    public NonPaginatedResponse select(@PathVariable Long paymentId, @PathVariable String existingChar){
+        return confirmPaymentsService.selectA_Payment();
+    }
+*/
 
 
 }
