@@ -23,7 +23,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +44,17 @@ public class ConfirmPaymentsImple implements ConfirmPaymentsService {
         NonPaginatedResponse response = new NonPaginatedResponse();
         Date now = new Date();
         try {
+            Optional<ConfirmInvoiceEntity> confirmedInvoice = confirmInvoiceRepo.findById(confirmPaymentsDto.getConfirmInvoiceDto().getConfirmInvoiceId());
+            if ((confirmedInvoice.get().getPaidAmount()) + confirmPaymentsDto.getPaidAmount() > confirmedInvoice.get().getNetAmount()) {
+                response.setErrors(List.of("Payment exceeds the total!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
+            NonPaginatedResponse paymentSourceStatus = checkPaymentSource(confirmPaymentsDto, response);
+            if (paymentSourceStatus.getStatus().isSameCodeAs(HttpStatus.BAD_REQUEST)) {
+                return paymentSourceStatus;
+            }
+
             ConfirmPaymentsEntity aPayment = ConfirmPaymentsEntity.builder()
                     .paymentId(confirmPaymentsDto.getPaymentId())
                     .paymentType(confirmPaymentsDto.getPaymentType())
@@ -55,6 +65,7 @@ public class ConfirmPaymentsImple implements ConfirmPaymentsService {
             var savedPaymentEntity = confirmSalesInvoicePaymentsRepo.save(aPayment);
 
             addDetailsToTheRelevantPayMethod(confirmPaymentsDto, savedPaymentEntity);
+
 
             Optional<ConfirmInvoiceEntity> selectedConfirmedInvoice = confirmInvoiceRepo.findById(confirmPaymentsDto.getConfirmInvoiceDto().getConfirmInvoiceId());
             double totalPaidAmount = selectedConfirmedInvoice.get().getPaidAmount() + confirmPaymentsDto.getPaidAmount();
@@ -71,26 +82,48 @@ public class ConfirmPaymentsImple implements ConfirmPaymentsService {
             response.setStatus(HttpStatus.CREATED);
         } catch (Exception e) {
             response.setSuccessMessage(null);
-            response.setErrors(Arrays.asList("An error occurred"));
+//            response.setErrors(List.of("An error occurred"));
             response.setStatus(HttpStatus.BAD_REQUEST);
         }
         return response;
     }
 
+    private NonPaginatedResponse checkPaymentSource(ConfirmPaymentsDto confirmPaymentsDto, NonPaginatedResponse response) {
+        if (confirmPaymentsDto.getPaymentType().equalsIgnoreCase("card")) {
+            boolean isExists = confirmCardRepo.existsById(confirmPaymentsDto.getCardRefNo());
+            if (isExists) {
+                response.setErrors(List.of("Card ref No. already exists!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
+        }
+        if (confirmPaymentsDto.getPaymentType().equalsIgnoreCase("cheque")) {
+            boolean isExists = confirmChequeRepo.existsById(confirmPaymentsDto.getChequeRefNo());
+            if (isExists) {
+                response.setErrors(List.of("Cheque ref No. already exists!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
+        }
+        response.setStatus(HttpStatus.OK);
+        return response;
+    }
+
     private ConfirmSalesInvoiceReceiptEntity addToConfirmSalesInvoiceReceipt(ConfirmPaymentsDto confirmPaymentsDto, ConfirmInvoiceEntity confirmInvoice) {
+        Date now = new Date();
         ConfirmSalesInvoiceReceiptEntity aReceipt = ConfirmSalesInvoiceReceiptEntity.builder()
                 .confirmInvoiceEntity(confirmInvoice)
                 .paymentType(confirmPaymentsDto.getPaymentType())
                 .paidAmount(confirmPaymentsDto.getPaidAmount())
-                .paidDate(confirmPaymentsDto.getPaidDate())
+                .paidDate(now)
                 .build();
-        ConfirmSalesInvoiceReceiptEntity savedReceipt =  confirmSalesInvoiceReceiptRepo.save(aReceipt);
-        return savedReceipt;
+        return confirmSalesInvoiceReceiptRepo.save(aReceipt);
     }
 
     private void addDetailsToTheRelevantPayMethod(ConfirmPaymentsDto confirmPaymentsDto, ConfirmPaymentsEntity savedPayment) {
 
         if (confirmPaymentsDto.getPaymentType().equalsIgnoreCase("card")) {
+
             ConfirmCardEntity aCardPayment = ConfirmCardEntity.builder()
                     .cardRefNo(confirmPaymentsDto.getCardRefNo())
                     .paidAmount(confirmPaymentsDto.getPaidAmount())
@@ -118,7 +151,6 @@ public class ConfirmPaymentsImple implements ConfirmPaymentsService {
                     .build();
             confirmChequeRepo.save(aChequePayment);
         }
-
     }
 
    /* @Override

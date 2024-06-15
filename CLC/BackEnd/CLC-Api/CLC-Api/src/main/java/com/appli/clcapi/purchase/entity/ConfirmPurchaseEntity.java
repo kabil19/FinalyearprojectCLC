@@ -5,6 +5,7 @@ import com.appli.clcapi.paymentMethod.purchasePayMethods.entity.PurchasePayCardE
 import com.appli.clcapi.paymentMethod.purchasePayMethods.entity.PurchasePayCashEntity;
 import com.appli.clcapi.paymentMethod.purchasePayMethods.entity.PurchasePayChequeEntity;
 import com.appli.clcapi.payments.purchasePayment.entity.PurchasePaymentEntity;
+import com.appli.clcapi.payments.purchasePayment.voucher.entity.VoucherEntity;
 import com.appli.clcapi.purchase.dto.ConfirmPurchaseDto;
 import com.appli.clcapi.vendor.entity.VendorEntity;
 import jakarta.persistence.*;
@@ -49,6 +50,9 @@ public class ConfirmPurchaseEntity {
 
     @OneToMany(mappedBy = "confirmPurchaseEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY )
     private List<ConfirmPurchaseProductCartEntity> confirmPurchaseProductCartEntity;
+
+    @OneToMany(mappedBy = "confirmPurchaseEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY )
+    private List<VoucherEntity> voucherEntity;
 
     public ConfirmPurchaseEntity(ConfirmPurchaseDto confirmPurchaseDto) {
         this.confirmPurchaseId = confirmPurchaseDto.getConfirmPurchaseId();

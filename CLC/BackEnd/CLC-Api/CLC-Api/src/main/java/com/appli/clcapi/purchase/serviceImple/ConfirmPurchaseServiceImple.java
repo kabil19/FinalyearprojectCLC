@@ -32,6 +32,7 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
     public NonPaginatedResponse addToConfirmThePurchase(Long purchaseId) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try{
+
             Optional<TempPurchaseEntity> selectTempPurchase =tempPurchaseRepo.findById(purchaseId);
             if (selectTempPurchase.isEmpty()) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
@@ -40,10 +41,12 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
             }
 
             ConfirmPurchaseEntity confirmPurchaseRecord = createConfirmPurchase(purchaseId, selectTempPurchase);
-            isConfirmPurchaseCartCreated(confirmPurchaseRecord);
-            tempPurchaseRepo.deleteById(purchaseId);
-            response.setStatus(HttpStatus.ACCEPTED);
-            response.setSuccessMessage(ConfirmPurchaseConsonants.PURCHASE_HAS_BEEN_CONFIRMED);
+            if(isConfirmPurchaseCartCreated(confirmPurchaseRecord)){
+                tempPurchaseRepo.deleteById(purchaseId);
+                response.setStatus(HttpStatus.ACCEPTED);
+                response.setSuccessMessage(ConfirmPurchaseConsonants.PURCHASE_HAS_BEEN_CONFIRMED);
+            }
+
 
         }catch (Exception e){
             e.printStackTrace();
@@ -70,6 +73,7 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
                             .discount(aTemp.getDiscount())
                             .build();
                     confirmPurchaseProductCartRepo.save(aConfirmRec);
+                    return true;
                 }
             }else {
                 return false;
@@ -104,6 +108,7 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
         try {
             List<ConfirmPurchaseEntity> confirmedPurchaseEntities = confirmPurchaseRepo.findAll();
             List<ConfirmPurchaseDto> confirmedPurchases = confirmedPurchaseEntities.stream()
+                    .filter(ConfirmPurchaseEntity -> !ConfirmPurchaseEntity.getIsComplete())
                     .map(ConfirmPurchaseDto::new)
                     .toList();
             response.setResult(confirmedPurchases);

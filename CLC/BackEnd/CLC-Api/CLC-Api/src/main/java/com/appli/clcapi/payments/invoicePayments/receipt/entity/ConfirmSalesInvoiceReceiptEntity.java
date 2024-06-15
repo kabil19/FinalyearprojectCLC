@@ -30,6 +30,6 @@ public class ConfirmSalesInvoiceReceiptEntity {
         this.setPaidAmount(confirmSalesInvoiceReceiptDto.getPaidAmount());
         this.setConfirmInvoiceEntity(new ConfirmInvoiceEntity(confirmSalesInvoiceReceiptDto.getConfirmInvoiceDto()));
         this.setPaymentType(confirmSalesInvoiceReceiptDto.getPaymentType());
-        this.setPaidDate(new Date());
+        this.setPaidDate(confirmSalesInvoiceReceiptDto.getPaidDate());
     }
 }
