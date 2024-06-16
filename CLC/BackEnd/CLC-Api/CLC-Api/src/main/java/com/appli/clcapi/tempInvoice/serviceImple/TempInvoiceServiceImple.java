@@ -44,9 +44,9 @@ public class TempInvoiceServiceImple implements TempInvoiceService {
 
         @Override
     public ResponseEntity<String> delete(Long tempInvoiceId) {
-            Optional<TempInvoiceEntity> aUser = tempInvoiceRepo.findById(tempInvoiceId);
-            if (aUser.isPresent()) {
-                if (!aUser.get().getFinalized()) {
+            Optional<TempInvoiceEntity> aTempInvoice = tempInvoiceRepo.findById(tempInvoiceId);
+            if (aTempInvoice.isPresent()) {
+                if (!aTempInvoice.get().getFinalized()) {
                     tempInvoiceRepo.deleteById(tempInvoiceId);
                     return new ResponseEntity<>("deleted", HttpStatus.OK);
                 }

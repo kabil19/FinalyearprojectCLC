@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,12 +26,13 @@ public class StockServiceImple implements StockService {
 
     @Override
     public ResponseEntity<String> register(StockDto stockDto) {
+        Date now = new Date();
         try{
             StockEntity aStock = StockEntity.builder()
                     .stockId(stockDto.getStockId())
                     .categoryEntity(new CategoryEntity(stockDto.getCategoryOBJ().getCategoryId()))
                     .itemName(stockDto.getItemName())
-                    .arrivalDate(stockDto.getArrivalDate())
+                    .arrivalDate(now)
                     .quantity(stockDto.getQuantity())
                     .materialColour(stockDto.getMaterialColour())
                     .remarks(stockDto.getRemarks())
