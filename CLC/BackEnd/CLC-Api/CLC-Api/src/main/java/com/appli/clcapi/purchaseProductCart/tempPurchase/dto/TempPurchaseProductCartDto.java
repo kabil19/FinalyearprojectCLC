@@ -20,6 +20,10 @@ public class TempPurchaseProductCartDto {
     private Double quantity;
     @JsonProperty("discount")
     private Double discount;
+    @JsonProperty("purchasePrice")
+    private Double purchasePrice;
+    @JsonProperty("sellingPrice")
+    private Double sellingPrice;
     @JsonProperty("grossAmount")
     private Double grossAmount;
     @JsonProperty("netAmount")
@@ -37,5 +41,7 @@ public class TempPurchaseProductCartDto {
         this.netAmount = tempPurchaseProductCartEntity.getNetAmount();
         this.stockDto = new StockDto(tempPurchaseProductCartEntity.getStockEntity());
         this.tempPurchaseEntity = new TempPurchaseDto(tempPurchaseProductCartEntity.getTempPurchaseEntity());
+        this.purchasePrice = tempPurchaseProductCartEntity.getPurchasePrice();
+        this.sellingPrice = tempPurchaseProductCartEntity.getSellingPrice();
     }
 }

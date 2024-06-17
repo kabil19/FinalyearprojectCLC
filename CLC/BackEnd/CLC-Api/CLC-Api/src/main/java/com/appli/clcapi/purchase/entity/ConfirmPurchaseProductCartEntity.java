@@ -16,6 +16,8 @@ public class ConfirmPurchaseProductCartEntity {
     private Long productCartId;
     private Double quantity;
     private Double discount;
+    private Double purchasePrice;
+    private Double sellingPrice;
     private Double grossAmount;
     private Double netAmount;
     @ManyToOne(fetch = FetchType.LAZY)

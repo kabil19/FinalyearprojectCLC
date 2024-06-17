@@ -21,6 +21,8 @@ public class TempPurchaseProductCartEntity {
     private Double discount;
     private Double grossAmount;
     private Double netAmount;
+    private Double purchasePrice;
+    private Double sellingPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stockEntityId")
@@ -38,5 +40,7 @@ public class TempPurchaseProductCartEntity {
         this.netAmount = tempPurchaseProductCartDto.getNetAmount();
         this.stockEntity = new StockEntity(tempPurchaseProductCartDto.getStockDto());
         this.tempPurchaseEntity = new TempPurchaseEntity(tempPurchaseProductCartDto.getTempPurchaseEntity());
+        this.sellingPrice = tempPurchaseProductCartDto.getPurchasePrice();
+        this.purchasePrice = tempPurchaseProductCartDto.getPurchasePrice();
     }
 }

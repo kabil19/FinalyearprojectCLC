@@ -19,6 +19,10 @@ public class ConfirmPurchaseProductCartDto {
     private Double quantity;
     @JsonProperty("discount")
     private Double discount;
+    @JsonProperty("purchasePrice")
+    private Double purchasePrice;
+    @JsonProperty("sellingPrice")
+    private Double sellingPrice;
     @JsonProperty("grossAmount")
     private Double grossAmount;
     @JsonProperty("netAmount")

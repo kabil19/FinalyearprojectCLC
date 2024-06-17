@@ -11,6 +11,8 @@ import com.appli.clcapi.purchase.repository.TempPurchaseRepo;
 import com.appli.clcapi.purchase.service.ConfirmPurchaseService;
 import com.appli.clcapi.purchaseProductCart.tempPurchase.entity.TempPurchaseProductCartEntity;
 import com.appli.clcapi.purchaseProductCart.tempPurchase.repository.TempPurchaseProductCartRepo;
+import com.appli.clcapi.stock.entity.StockEntity;
+import com.appli.clcapi.stock.repository.StockRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
 
     private final ConfirmPurchaseProductCartRepo confirmPurchaseProductCartRepo;
     private final TempPurchaseProductCartRepo tempPurchaseProductCartRepo;
+    private final StockRepo stockRepo;
     @Override
     @Transactional
     public NonPaginatedResponse addToConfirmThePurchase(Long purchaseId) {
@@ -68,11 +71,14 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
                             .quantity(aTemp.getQuantity())
                             .confirmPurchaseEntity(confirmPurchaseEntity)
                             .grossAmount(aTemp.getGrossAmount())
+                            .purchasePrice(aTemp.getPurchasePrice())
+                            .sellingPrice(aTemp.getSellingPrice())
                             .netAmount(aTemp.getNetAmount())
                             .stockEntity(aTemp.getStockEntity())
                             .discount(aTemp.getDiscount())
                             .build();
-                    confirmPurchaseProductCartRepo.save(aConfirmRec);
+                    ConfirmPurchaseProductCartEntity anItem =  confirmPurchaseProductCartRepo.save(aConfirmRec);
+                    alterStockItem(anItem);
                     return true;
                 }
             }else {
@@ -84,6 +90,17 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
             return false;
         }
         return false;
+    }
+
+    private void alterStockItem(ConfirmPurchaseProductCartEntity anItem) {
+        Optional<StockEntity> stockItem = stockRepo.findById(anItem.getStockEntity().getStockId());
+        if(stockItem.isPresent()){
+            if(stockItem.get().getSellingPrice() < anItem.getSellingPrice()){
+                stockItem.get().setSellingPrice(anItem.getSellingPrice());
+                stockItem.get().setPurchasePrice(anItem.getPurchasePrice());
+                stockRepo.save(stockItem.get());
+            }
+        }
     }
 
     private ConfirmPurchaseEntity createConfirmPurchase(Long purchaseId, Optional<TempPurchaseEntity> selectTempPurchase) {
