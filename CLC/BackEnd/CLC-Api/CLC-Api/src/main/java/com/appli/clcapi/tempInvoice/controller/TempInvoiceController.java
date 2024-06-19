@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/tempInvoice/")
-@CrossOrigin(origins = "*")
+@CrossOrigin("http://localhost:4200")
 public class TempInvoiceController {
 
         private final TempInvoiceService tempInvoiceService;

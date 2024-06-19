@@ -4,17 +4,15 @@ import com.appli.clcapi.user.dto.GetUserReqDto;
 import com.appli.clcapi.user.dto.UserDto;
 import com.appli.clcapi.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/user/")
-@CrossOrigin(origins = "*")
+@CrossOrigin("http://localhost:4200")
 public class UserController {
 
 private final UserService userService ;

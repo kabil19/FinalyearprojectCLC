@@ -138,6 +138,23 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
         return response;
     }
 
+    public NonPaginatedResponse searchConfirmPurchaseInvoices(String characters){
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        try{
+            List<ConfirmPurchaseEntity> confirmedPurchaseEntities = confirmPurchaseRepo.searchByVendorNameOrPurchaseInvoiceOrPurchaseDate(characters);
+            List<ConfirmPurchaseDto> confirmedPurchases = confirmedPurchaseEntities.stream()
+                    .filter(ConfirmPurchaseEntity -> !ConfirmPurchaseEntity.getIsComplete())
+                    .map(ConfirmPurchaseDto::new)
+                    .toList();
+            response.setResult(confirmedPurchases);
+            response.setStatus(HttpStatus.ACCEPTED);
+            response.setSuccessMessage("Selected Confirmed Purchase invoice records Retrieved!");
+        }catch (Exception e){
+            e.printStackTrace();
+            response.setErrors(List.of("Couldn't retrieve the selected purchase records!"));
+        }
+        return response;
+    }
 
 
 

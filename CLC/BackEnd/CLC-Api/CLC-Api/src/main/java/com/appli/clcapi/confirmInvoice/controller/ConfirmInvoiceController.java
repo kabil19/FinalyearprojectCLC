@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/confirmInvoice/")
-@CrossOrigin(origins = "*")
+@CrossOrigin("http://localhost:4200")
 public class ConfirmInvoiceController {
 
 
         private final ConfirmInvoiceService confirmInvoiceService;
         @PostMapping("addToConfirmInvoice")
-        public NonPaginatedResponse addToConfirmInvoice(@RequestBody  Long invoiceId)throws Exception{
+        public NonPaginatedResponse addToConfirmInvoice(@RequestBody  Long invoiceId){
             return confirmInvoiceService.insertIntoConfirmInvoice(invoiceId);
         }
 
@@ -23,5 +23,12 @@ public class ConfirmInvoiceController {
     public NonPaginatedResponse getAllConfirmedInvoices()throws Exception{
         return confirmInvoiceService.getAllConfirmedInvoices();
     }
+
+    @GetMapping("searchConfirmedSalesInvoice/{searchCharacter}")
+    public NonPaginatedResponse searchConfirmedSalesInvoice(@PathVariable String searchCharacter)
+    {
+        return confirmInvoiceService.searchConfirmedSalesInvoice(searchCharacter);
+    }
+
 
 }

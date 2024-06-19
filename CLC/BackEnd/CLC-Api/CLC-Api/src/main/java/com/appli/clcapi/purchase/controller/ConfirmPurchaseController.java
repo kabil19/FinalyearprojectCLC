@@ -24,4 +24,10 @@ public class ConfirmPurchaseController {
         return confirmPurchaseService.getAllConfirmPurchaseInvoices();
     }
 
+    @GetMapping("searchConfirmInvoice/{searchCharacter}")
+    public NonPaginatedResponse searchConfirmInvoice(@PathVariable String searchCharacter)
+    {
+        return confirmPurchaseService.searchConfirmPurchaseInvoices(searchCharacter);
+    }
+
 }

@@ -7,4 +7,5 @@ public interface ConfirmPurchaseService {
 
     NonPaginatedResponse addToConfirmThePurchase(Long purchaseId);
     NonPaginatedResponse getAllConfirmPurchaseInvoices();
+    NonPaginatedResponse searchConfirmPurchaseInvoices(String searchCharacter);
 }

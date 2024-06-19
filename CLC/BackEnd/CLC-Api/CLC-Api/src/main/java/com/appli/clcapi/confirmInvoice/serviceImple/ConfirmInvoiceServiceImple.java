@@ -23,6 +23,7 @@ import com.appli.clcapi.paymentMethod.invoicePayMethods.tempPayMethods.repositor
 import com.appli.clcapi.paymentMethod.invoicePayMethods.tempPayMethods.repository.TempCashRepo;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.tempPayMethods.repository.TempChequeRepo;
 import com.appli.clcapi.payments.invoicePayments.tempPayments.repository.TempPaymentsRepo;
+
 import com.appli.clcapi.tempInvoice.entity.TempInvoiceEntity;
 import com.appli.clcapi.tempInvoice.repository.TempInvoiceRepo;
 import lombok.RequiredArgsConstructor;
@@ -178,6 +179,23 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
         } catch (Exception e) {
             e.printStackTrace();
             response.setErrors(List.of("Couldn't retrieve Sales invoice records!"));
+        }
+        return response;
+    }
+    public NonPaginatedResponse searchConfirmedSalesInvoice(String characters){
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        try {
+            List<ConfirmInvoiceEntity> confirmedSalesInvoiceEntities =confirmInvoiceRepo.searchByCustomerNameOrInvoiceNoOrInvoiceDate(characters);
+            List<ConfirmInvoiceDto> confirmedSalesInvoice = confirmedSalesInvoiceEntities.stream()
+                    .filter(ConfirmInvoiceEntity -> !ConfirmInvoiceEntity.getIsComplete())
+                    .map(ConfirmInvoiceDto::new)
+                    .toList();
+            response.setResult(confirmedSalesInvoice);
+            response.setStatus(HttpStatus.ACCEPTED);
+            response.setSuccessMessage("Selected Confirmed Sales invoice records Retrieved!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setErrors(List.of("Couldn't retrieve the selected Sales invoice records!"));
         }
         return response;
     }

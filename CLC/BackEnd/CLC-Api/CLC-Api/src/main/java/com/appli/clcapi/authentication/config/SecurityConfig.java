@@ -11,13 +11,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     public static final String[] WHITE_LIST_APIS = {"/api/authentication/**","/v3/api-docs/**", "/swagger-resources/**",
-            "/swagger-ui/**", "/webjars/**","/api/**"};
+            "/swagger-ui/**", "/webjars/**"};
     private final JwtAuthFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
 
@@ -25,7 +27,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .csrf(AbstractHttpConfigurer::disable);
+                .csrf(AbstractHttpConfigurer::disable)
+                        .cors(withDefaults());
         http
                 .authorizeHttpRequests(
                         (authReq)->authReq
