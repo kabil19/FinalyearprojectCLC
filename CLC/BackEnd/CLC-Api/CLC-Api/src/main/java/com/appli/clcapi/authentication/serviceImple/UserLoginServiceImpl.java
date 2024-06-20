@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserloginServiceImple implements UserLoginService {
+public class UserLoginServiceImpl implements UserLoginService {
     private final AuthenticationManager authenticationManager;
     private final UserLoginRepo userLoginRepo;
     private final JwtService jwtService;

@@ -1,5 +1,6 @@
 package com.appli.clcapi.user.entity;
 
+import com.appli.clcapi.common.enums.Roles;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,9 +25,8 @@ public class UserEntity implements UserDetails {
     private String lastname;
     private String username;
     private String gender;
-    private String role;
+    private Roles role;
     private String email;
-    private String confirmPw;
     private String password;
     private boolean deleted = false;
 

@@ -1,6 +1,7 @@
 package com.appli.clcapi.authentication.config;
 
 import com.appli.clcapi.authentication.service.jwtService.JwtService;
+import com.appli.clcapi.user.entity.UserEntity;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,7 +40,7 @@ private final UserDetailsService userDetailsService;
     jwtToken = authHeader.substring(7);
     String username = jwtService.extractUsername(jwtToken);
         if(username != null && SecurityContextHolder.getContext().getAuthentication()==null){
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+            UserEntity userDetails = (UserEntity) this.userDetailsService.loadUserByUsername(username);
             if(jwtService.isTokenValid(jwtToken,userDetails)){
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails,

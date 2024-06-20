@@ -12,9 +12,9 @@ public interface UserService{
 
     NonPaginatedResponse register(UserDto userDto)throws Exception;
 
-    List<GetUserReqDto> getAllUsers() throws Exception;
+    List<GetUserReqDto> getAllActiveUsers() throws Exception;
 
-    String deleteUser(Long userId);
+    NonPaginatedResponse deleteUser(Long userId);
 
     String updateUser(UserDto userDto);
 

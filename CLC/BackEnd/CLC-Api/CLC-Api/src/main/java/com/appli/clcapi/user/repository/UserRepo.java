@@ -21,5 +21,5 @@ public interface UserRepo extends JpaRepository<UserEntity,Long> {
 
     List<UserEntity> findAllByDeletedEquals(boolean state);
 
-    Optional findByUsernameAndDeletedEquals(String username, boolean state);
+    Optional<UserEntity> findByUsernameAndDeletedEquals(String username, boolean state);
 }

@@ -1,5 +1,6 @@
 package com.appli.clcapi.user.dto;
 
+import com.appli.clcapi.common.enums.Roles;
 import com.appli.clcapi.user.entity.UserEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.management.relation.Role;
 
 @Data
 @Builder
@@ -29,7 +32,7 @@ public class GetUserReqDto {
     private String gender;
 
     @JsonProperty("role")
-    private String role;
+    private Roles role;
 
     @JsonProperty("email")
     private String email;

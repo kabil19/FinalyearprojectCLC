@@ -1,10 +1,12 @@
 package com.appli.clcapi.user.controller;
+import com.appli.clcapi.common.enums.Roles;
 import com.appli.clcapi.common.response.NonPaginatedResponse;
 import com.appli.clcapi.user.dto.GetUserReqDto;
 import com.appli.clcapi.user.dto.UserDto;
 import com.appli.clcapi.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +25,11 @@ private final UserService userService ;
     @GetMapping(path="getAll")
     public List<GetUserReqDto> getAllUsers() throws Exception
     {
-      return  userService.getAllUsers();
+      return  userService.getAllActiveUsers();
     }
     @DeleteMapping("delete/{userId}")
-    public String deleteUser(@PathVariable Long userId ) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public NonPaginatedResponse deleteUser(@PathVariable Long userId ) {
         return userService.deleteUser(userId);
     }
 
