@@ -16,7 +16,7 @@ public interface UserService{
 
     NonPaginatedResponse deleteUser(Long userId);
 
-    String updateUser(UserDto userDto);
+    NonPaginatedResponse updateUser(UserDto userDto);
 
     ArrayList<GetUserReqDto> selectUsers(String existingChars);
 }

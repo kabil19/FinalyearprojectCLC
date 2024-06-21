@@ -6,11 +6,12 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 
-public interface StockRepo extends PagingAndSortingRepository<StockEntity,Long>,JpaRepository<StockEntity, Long> {
+public interface StockRepo extends PagingAndSortingRepository<StockEntity, Long>, JpaRepository<StockEntity, Long> {
 
     List<StockEntity> findAllByDeletedEquals(boolean state);
-       List<StockEntity> findAllByMaterialColourContainingIgnoreCaseOrItemNameContainingIgnoreCaseOrRemarksContainingIgnoreCase
-                (String color,String name,String remarks);
+
+    List<StockEntity> findAllByMaterialColourContainingIgnoreCaseOrItemNameContainingIgnoreCaseOrRemarksContainingIgnoreCase
+            (String color, String name, String remarks);
 
 
     /*List<StockEntity> findAllByMaterialColourContainingIgnoreCaseOrMaterialTypeContainingIgnoreCaseOrRemarksContainingIgnoreCaseOrMaterialNameCategoryName

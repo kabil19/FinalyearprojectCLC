@@ -1,4 +1,5 @@
 package com.appli.clcapi.purchase.serviceImple;
+
 import com.appli.clcapi.common.constants.ConfirmPurchaseConsonants;
 import com.appli.clcapi.common.response.NonPaginatedResponse;
 import com.appli.clcapi.purchase.dto.ConfirmPurchaseDto;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -30,13 +32,14 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
     private final ConfirmPurchaseProductCartRepo confirmPurchaseProductCartRepo;
     private final TempPurchaseProductCartRepo tempPurchaseProductCartRepo;
     private final StockRepo stockRepo;
+
     @Override
     @Transactional
     public NonPaginatedResponse addToConfirmThePurchase(Long purchaseId) {
         NonPaginatedResponse response = new NonPaginatedResponse();
-        try{
+        try {
 
-            Optional<TempPurchaseEntity> selectTempPurchase =tempPurchaseRepo.findById(purchaseId);
+            Optional<TempPurchaseEntity> selectTempPurchase = tempPurchaseRepo.findById(purchaseId);
             if (selectTempPurchase.isEmpty()) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 response.setErrors(List.of("Purchase isn't exist!"));
@@ -44,14 +47,14 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
             }
 
             ConfirmPurchaseEntity confirmPurchaseRecord = createConfirmPurchase(purchaseId, selectTempPurchase);
-            if(isConfirmPurchaseCartCreated(confirmPurchaseRecord)){
+            if (isConfirmPurchaseCartCreated(confirmPurchaseRecord)) {
                 tempPurchaseRepo.deleteById(purchaseId);
                 response.setStatus(HttpStatus.ACCEPTED);
                 response.setSuccessMessage(ConfirmPurchaseConsonants.PURCHASE_HAS_BEEN_CONFIRMED);
             }
 
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             response.setErrors(List.of("Couldn't confirm the purchase"));
             response.setStatus(HttpStatus.BAD_REQUEST);
@@ -61,10 +64,10 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
 
     private boolean isConfirmPurchaseCartCreated(ConfirmPurchaseEntity confirmPurchaseEntity) {
 
-        try{
+        try {
             List<TempPurchaseProductCartEntity> tempPurchaseProductCartEntity = tempPurchaseProductCartRepo.
                     findByTempPurchaseEntity_PurchaseId(confirmPurchaseEntity.getConfirmPurchaseId());
-            if(!tempPurchaseProductCartEntity.isEmpty()){
+            if (!tempPurchaseProductCartEntity.isEmpty()) {
                 for (TempPurchaseProductCartEntity aTemp : tempPurchaseProductCartEntity) {
                     ConfirmPurchaseProductCartEntity aConfirmRec = ConfirmPurchaseProductCartEntity.builder()
                             .productCartId(aTemp.getProductCartId())
@@ -77,50 +80,59 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
                             .stockEntity(aTemp.getStockEntity())
                             .discount(aTemp.getDiscount())
                             .build();
-                    ConfirmPurchaseProductCartEntity anItem =  confirmPurchaseProductCartRepo.save(aConfirmRec);
-                    alterStockItem(anItem);
-                    return true;
+                    ConfirmPurchaseProductCartEntity anItem = confirmPurchaseProductCartRepo.save(aConfirmRec);
+                    confirmPurchaseProductCartRepo.save(anItem);
                 }
-            }else {
+                List<ConfirmPurchaseProductCartEntity> confirmedProductsCartItems = confirmPurchaseProductCartRepo.
+                        findByConfirmPurchaseEntity_ConfirmPurchaseId(confirmPurchaseEntity.getConfirmPurchaseId());
+                alterStockItem(confirmedProductsCartItems);
+                return true;
+            } else {
                 return false;
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-        return false;
     }
 
-    private void alterStockItem(ConfirmPurchaseProductCartEntity anItem) {
-        Optional<StockEntity> stockItem = stockRepo.findById(anItem.getStockEntity().getStockId());
-        if(stockItem.isPresent()){
-            if(stockItem.get().getSellingPrice() < anItem.getSellingPrice()){
-                stockItem.get().setSellingPrice(anItem.getSellingPrice());
-                stockItem.get().setPurchasePrice(anItem.getPurchasePrice());
-                stockRepo.save(stockItem.get());
+    private void alterStockItem(List<ConfirmPurchaseProductCartEntity> confirmedProductsCartItems) {
+        for (ConfirmPurchaseProductCartEntity cartItem : confirmedProductsCartItems) {
+            Optional<StockEntity> stockItem = stockRepo.findById(cartItem.getStockEntity().getStockId());
+            if (stockItem.isPresent()) {
+                if (stockItem.get().getSellingPrice() < cartItem.getSellingPrice()) {
+                    stockItem.get().setSellingPrice(cartItem.getSellingPrice());
+                    stockItem.get().setPurchasePrice(cartItem.getPurchasePrice());
+                    stockItem.get().setQuantity(stockItem.get().getQuantity() + cartItem.getQuantity());
+                    stockRepo.save(stockItem.get());
+                }
             }
+
         }
     }
-
     private ConfirmPurchaseEntity createConfirmPurchase(Long purchaseId, Optional<TempPurchaseEntity> selectTempPurchase) {
         //       have to find the total, after adding the confirmPurchaseCart,
         Date now = new Date();
-        ConfirmPurchaseEntity newConfirmPurchase = ConfirmPurchaseEntity.builder()
-                .confirmPurchaseId(purchaseId)
-                .purchaseInvoice(selectTempPurchase.get().getPurchaseInvoiceNO())
-                .purchaseDate(now)
-                .isComplete(false)
-                .vendorEntity(selectTempPurchase.get().getVendorEntity())
-                .paidAmount(0.0)
-                .netAmount(selectTempPurchase.get().getNetAmount())
-                .build();
-        return  confirmPurchaseRepo.save(newConfirmPurchase);
+        if(selectTempPurchase.isPresent()){
+            ConfirmPurchaseEntity newConfirmPurchase = ConfirmPurchaseEntity.builder()
+                    .confirmPurchaseId(purchaseId)
+                    .purchaseInvoice(selectTempPurchase.get().getPurchaseInvoiceNO())
+                    .purchaseDate(now)
+                    .isComplete(false)
+                    .vendorEntity(selectTempPurchase.get().getVendorEntity())
+                    .paidAmount(0.0)
+                    .netAmount(selectTempPurchase.get().getNetAmount())
+                    .build();
+            return confirmPurchaseRepo.save(newConfirmPurchase);
+        }else {
+            return null;
+        }
 
     }
 
     @Override
-    public NonPaginatedResponse getAllConfirmPurchaseInvoices(){
+    public NonPaginatedResponse getAllConfirmPurchaseInvoices() {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
             List<ConfirmPurchaseEntity> confirmedPurchaseEntities = confirmPurchaseRepo.findAll();
@@ -138,9 +150,9 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
         return response;
     }
 
-    public NonPaginatedResponse searchConfirmPurchaseInvoices(String characters){
+    public NonPaginatedResponse searchConfirmPurchaseInvoices(String characters) {
         NonPaginatedResponse response = new NonPaginatedResponse();
-        try{
+        try {
             List<ConfirmPurchaseEntity> confirmedPurchaseEntities = confirmPurchaseRepo.searchByVendorNameOrPurchaseInvoiceOrPurchaseDate(characters);
             List<ConfirmPurchaseDto> confirmedPurchases = confirmedPurchaseEntities.stream()
                     .filter(ConfirmPurchaseEntity -> !ConfirmPurchaseEntity.getIsComplete())
@@ -149,13 +161,12 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
             response.setResult(confirmedPurchases);
             response.setStatus(HttpStatus.ACCEPTED);
             response.setSuccessMessage("Selected Confirmed Purchase invoice records Retrieved!");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             response.setErrors(List.of("Couldn't retrieve the selected purchase records!"));
         }
         return response;
     }
-
 
 
 }

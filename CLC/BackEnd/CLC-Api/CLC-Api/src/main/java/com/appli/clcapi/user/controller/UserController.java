@@ -1,5 +1,4 @@
 package com.appli.clcapi.user.controller;
-import com.appli.clcapi.common.enums.Roles;
 import com.appli.clcapi.common.response.NonPaginatedResponse;
 import com.appli.clcapi.user.dto.GetUserReqDto;
 import com.appli.clcapi.user.dto.UserDto;
@@ -34,7 +33,7 @@ private final UserService userService ;
     }
 
     @PutMapping("update")
-    private String update(@RequestBody UserDto userDto)
+    private NonPaginatedResponse update(@RequestBody UserDto userDto)
     {
         return  userService.updateUser(userDto);
     }

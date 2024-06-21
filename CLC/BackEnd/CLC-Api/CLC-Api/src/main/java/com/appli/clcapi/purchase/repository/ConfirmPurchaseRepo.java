@@ -10,18 +10,13 @@ import java.util.List;
 
 @Repository
 public interface ConfirmPurchaseRepo extends JpaRepository<ConfirmPurchaseEntity, Long> {
-//    @Query("SELECT cpe FROM confirm_purchase_tbl cpe " +
-//            "JOIN cpe.vendorEntity ve " +
-//            "WHERE ve.vendorName LIKE %:searchCharacter% " +
-//            "OR CAST(cpe.purchaseInvoice AS string) LIKE %:searchCharacter%"+
-//            "OR FUNCTION('',cpe.purchaseDate, '%Y-%m-%d') LIKE %:searchString%")
-//    List<ConfirmPurchaseEntity> searchByVendorNameOrPurchaseInvoiceNoOrPurchaseDate(@PathVariable("searchCharacter") String searchCharacter);
+
 @Query("SELECT cpe FROM confirm_purchase_tbl cpe " +
         "JOIN cpe.vendorEntity ve " +
         "WHERE ve.vendorName LIKE %:searchCharacter% " +
         "OR CAST(cpe.purchaseInvoice AS string) LIKE %:searchCharacter% " +
         "OR FUNCTION('DATE_FORMAT', cpe.purchaseDate, '%Y-%m-%d %H:%i:%s')LIKE %:searchCharacter% ")
-List<ConfirmPurchaseEntity> searchByVendorNameOrPurchaseInvoiceOrPurchaseDate(@PathVariable("searchCharacter") String searchCharacter);
+    List<ConfirmPurchaseEntity> searchByVendorNameOrPurchaseInvoiceOrPurchaseDate(@PathVariable("searchCharacter") String searchCharacter);
 
 
 }

@@ -18,7 +18,7 @@ public class CurrentUserService {
         String currentUsername = authentication.getName();
 
         return userLoginRepo.findByUsername(currentUsername)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
 
     }
 }
