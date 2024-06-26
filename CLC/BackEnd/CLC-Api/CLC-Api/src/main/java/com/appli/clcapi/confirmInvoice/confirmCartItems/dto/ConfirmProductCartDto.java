@@ -3,7 +3,6 @@ package com.appli.clcapi.confirmInvoice.confirmCartItems.dto;
 import com.appli.clcapi.confirmInvoice.dto.ConfirmInvoiceDto;
 import com.appli.clcapi.confirmInvoice.confirmCartItems.entity.ConfirmProductCartEntity;
 import com.appli.clcapi.stock.dto.StockDto;
-import com.appli.clcapi.tempInvoice.dto.TempInvoiceDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,8 +33,8 @@ public class ConfirmProductCartDto {
     @JsonProperty("netAmount")
     private Double netAmount;
 
-    @JsonProperty("tempInvoiceOBJ")
-    private TempInvoiceDto tempInvoiceDto;
+//    @JsonProperty("tempInvoiceOBJ")
+//    private TempInvoiceDto tempInvoiceDto;
 
     @JsonProperty("confirmInvoiceOBJ")
     private ConfirmInvoiceDto confirmInvoiceDto;
@@ -48,7 +47,7 @@ public class ConfirmProductCartDto {
         this.discount = confirmProductCartEntity.getDiscount();
         this.total = confirmProductCartEntity.getTotal();
         this.netAmount = confirmProductCartEntity.getNetAmount();
-        this.tempInvoiceDto = new TempInvoiceDto(confirmProductCartEntity.getTempInvoiceEntity());
+//        this.tempInvoiceDto = new TempInvoiceDto(confirmProductCartEntity.getTempInvoiceEntity());
         this.confirmInvoiceDto = new ConfirmInvoiceDto(confirmProductCartEntity.getConfirmInvoiceEntity());
     }
 

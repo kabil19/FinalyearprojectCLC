@@ -38,7 +38,7 @@ public class ProductCartController {
 
     @GetMapping("getAll/{invoiceId}")
     public NonPaginatedResponse getAll(@PathVariable Long invoiceId){
-        return productCartService.getAll(invoiceId);
+        return productCartService.getAllTempProCartItemsByInvoiceId(invoiceId);
     }
 
 

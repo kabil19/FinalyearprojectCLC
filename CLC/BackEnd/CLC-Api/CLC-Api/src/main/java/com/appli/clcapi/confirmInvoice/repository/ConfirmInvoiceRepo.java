@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -17,5 +18,7 @@ public interface ConfirmInvoiceRepo extends JpaRepository<ConfirmInvoiceEntity, 
             "OR FUNCTION('DATE_FORMAT', cie.date, '%Y-%m-%d %H:%i:%s')LIKE %:searchCharacter% ")
     List<ConfirmInvoiceEntity> searchByCustomerNameOrInvoiceNoOrInvoiceDate(@PathVariable("searchCharacter") String searchCharacter);
 
+    ConfirmInvoiceEntity findByInvoiceNumber(long invoiceNo);
 
+    List<ConfirmInvoiceEntity> findByDateBetween(Date start, Date end);
 }

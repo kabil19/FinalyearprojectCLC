@@ -3,7 +3,6 @@ package com.appli.clcapi.confirmInvoice.confirmCartItems.entity;
 import com.appli.clcapi.confirmInvoice.entity.ConfirmInvoiceEntity;
 import com.appli.clcapi.confirmInvoice.confirmCartItems.dto.ConfirmProductCartDto;
 import com.appli.clcapi.stock.entity.StockEntity;
-import com.appli.clcapi.tempInvoice.entity.TempInvoiceEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,9 +22,11 @@ public class ConfirmProductCartEntity {
     private Double total;
     private Double netAmount;
 
+/*
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="tempInvoiceId")
     private TempInvoiceEntity tempInvoiceEntity;
+*/
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stockEntityId")
@@ -41,7 +42,7 @@ public class ConfirmProductCartEntity {
         this.discount = confirmProductCartDto.getDiscount();
         this.total = confirmProductCartDto.getTotal();
         this.netAmount = confirmProductCartDto.getNetAmount();
-        this.tempInvoiceEntity = new TempInvoiceEntity(confirmProductCartDto.getTempInvoiceDto());
+//        this.tempInvoiceEntity = new TempInvoiceEntity(confirmProductCartDto.getTempInvoiceDto());
         this.stockEntity = new StockEntity(confirmProductCartDto.getStockDto());
         this.confirmInvoiceEntity = new ConfirmInvoiceEntity(confirmProductCartDto.getConfirmInvoiceDto());
     }

@@ -89,7 +89,7 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
             response.setResult(null);
         } catch (Exception e) {
             e.printStackTrace();
-            response.setErrors(Arrays.asList("Couldn't Confirm the selected invoice"));
+            response.setErrors(List.of("Couldn't Confirm the selected invoice"));
             response.setStatus(HttpStatus.BAD_GATEWAY);
         }
         return response;
@@ -161,6 +161,7 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
         confirmInvoiceEntity.setNetAmount(tempInvoiceEntity.getNetAmount());
         confirmInvoiceEntity.setCustomer(tempInvoiceEntity.getCustomer());
         confirmInvoiceEntity.setIsComplete(tempInvoiceEntity.getIsComplete());
+        confirmInvoiceEntity.setAdvancePayment(tempInvoiceEntity.getPaidAmount());
         return confirmInvoiceRepo.save(confirmInvoiceEntity);
     }
 
@@ -173,6 +174,21 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
                     .filter(ConfirmInvoiceEntity -> !ConfirmInvoiceEntity.getIsComplete())
                     .map(ConfirmInvoiceDto::new)
                     .toList();
+            response.setResult(confirmedSalesInvoice);
+            response.setStatus(HttpStatus.ACCEPTED);
+            response.setSuccessMessage("Confirmed Sales invoice records Retrieved!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setErrors(List.of("Couldn't retrieve Sales invoice records!"));
+        }
+        return response;
+    }
+
+    public NonPaginatedResponse getConfirmedInvoiceByInvoiceNumber(long invoiceNo){
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        try {
+           ConfirmInvoiceEntity confirmedSalesInvoiceEntity =confirmInvoiceRepo.findByInvoiceNumber(invoiceNo);
+            ConfirmInvoiceDto confirmedSalesInvoice = new ConfirmInvoiceDto(confirmedSalesInvoiceEntity);
             response.setResult(confirmedSalesInvoice);
             response.setStatus(HttpStatus.ACCEPTED);
             response.setSuccessMessage("Confirmed Sales invoice records Retrieved!");

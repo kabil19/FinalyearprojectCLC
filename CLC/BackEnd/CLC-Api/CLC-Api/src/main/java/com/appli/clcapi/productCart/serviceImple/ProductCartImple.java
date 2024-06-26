@@ -78,7 +78,7 @@ public class ProductCartImple implements ProductCartService {
         }catch (Exception e){
             logger.error("An error occurred while registering product cart", e);
             response.setSuccessMessage(null);
-            response.setErrors(Arrays.asList("An error occurred while registering product cart"));
+            response.setErrors(List.of("An error occurred while registering product cart"));
             response.setStatus(HttpStatus.BAD_REQUEST);
         }
         return response;
@@ -165,7 +165,7 @@ public class ProductCartImple implements ProductCartService {
         return response;
     }
     @Override
-    public NonPaginatedResponse getAll(Long invoiceId){
+    public NonPaginatedResponse getAllTempProCartItemsByInvoiceId(Long invoiceId){
         NonPaginatedResponse response = new NonPaginatedResponse();
         try{
             List<ProductCartEntity> cartList = productCartRepo.findByTempInvoiceEntity_TempInvoiceId(invoiceId);
@@ -180,7 +180,7 @@ public class ProductCartImple implements ProductCartService {
         }
         catch (Exception e){
           response.setStatus(HttpStatus.BAD_REQUEST);
-          response.setErrors(Arrays.asList("couldn't find any Data"));
+          response.setErrors(List.of("couldn't find any Data"));
         }
         return response;
     }
@@ -229,7 +229,7 @@ public class ProductCartImple implements ProductCartService {
                     return response;
                 }else{
                     response.setResult(null);
-                    response.setErrors(Arrays.asList("Unsuccessful"));
+                    response.setErrors(List.of("Unsuccessful"));
                     response.setStatus(HttpStatus.NOT_FOUND);
                     return response;
                 }
@@ -250,7 +250,7 @@ public class ProductCartImple implements ProductCartService {
             response.setSuccessMessage("Searched Item has been found");
 
         }catch (Exception e){
-            response.setErrors(Arrays.asList(e.toString()));
+            response.setErrors(List.of(e.toString()));
             response.setStatus(HttpStatus.BAD_REQUEST);
             response.setResult(null);
         }

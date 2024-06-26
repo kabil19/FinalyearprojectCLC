@@ -8,7 +8,7 @@ import com.appli.clcapi.productCart.dto.ProductCartDto;
 public interface ProductCartService {
      NonPaginatedResponse addToCart(ProductCartDto productCartDto) ;
      NonPaginatedResponse delete(Long proCartId) ;
-     NonPaginatedResponse getAll(Long invoiceId);
+     NonPaginatedResponse getAllTempProCartItemsByInvoiceId(Long invoiceId);
      NonPaginatedResponse select(Long invoiceId, String exitingChar);
      NonPaginatedResponse update(ProductCartDto productCartDto);
 
