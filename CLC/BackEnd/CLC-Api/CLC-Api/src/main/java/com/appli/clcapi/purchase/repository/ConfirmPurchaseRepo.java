@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -17,6 +18,8 @@ public interface ConfirmPurchaseRepo extends JpaRepository<ConfirmPurchaseEntity
         "OR CAST(cpe.purchaseInvoice AS string) LIKE %:searchCharacter% " +
         "OR FUNCTION('DATE_FORMAT', cpe.purchaseDate, '%Y-%m-%d %H:%i:%s')LIKE %:searchCharacter% ")
     List<ConfirmPurchaseEntity> searchByVendorNameOrPurchaseInvoiceOrPurchaseDate(@PathVariable("searchCharacter") String searchCharacter);
+
+    List<ConfirmPurchaseEntity> findByPurchaseDateBetween(LocalDateTime start, LocalDateTime end);
 
 
 }

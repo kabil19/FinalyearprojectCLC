@@ -4,7 +4,7 @@ import com.appli.clcapi.tempInvoice.entity.TempInvoiceEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -19,7 +19,7 @@ public class TempCardEntity {
     private Long cardRefNo;
 
     private Double paidAmount;
-    private Date paidDate;
+    private LocalDateTime paidDate;
 
     private Long paymentId;
 

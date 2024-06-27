@@ -9,7 +9,9 @@ import com.appli.clcapi.tempInvoice.dto.TempInvoiceDto;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+
+import java.time.LocalDateTime;
+
 import java.util.List;
 
 
@@ -27,7 +29,7 @@ public class TempInvoiceEntity {
 
     private Long tempInvoiceNumber;
 
-    private Date date;
+    private LocalDateTime date;
 
     private Double netAmount;
 

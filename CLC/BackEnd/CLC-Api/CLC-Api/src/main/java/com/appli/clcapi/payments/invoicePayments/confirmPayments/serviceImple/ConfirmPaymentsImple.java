@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +60,7 @@ public class ConfirmPaymentsImple implements ConfirmPaymentsService {
                     .paymentId(confirmPaymentsDto.getPaymentId())
                     .paymentType(confirmPaymentsDto.getPaymentType())
                     .paidAmount(confirmPaymentsDto.getPaidAmount())
-                    .paidDate(now)
+                    .paidDate(LocalDateTime.now())
                     .confirmInvoice(new ConfirmInvoiceEntity(confirmPaymentsDto.getConfirmInvoiceDto()))
                     .build();
             var savedPaymentEntity = confirmSalesInvoicePaymentsRepo.save(aPayment);

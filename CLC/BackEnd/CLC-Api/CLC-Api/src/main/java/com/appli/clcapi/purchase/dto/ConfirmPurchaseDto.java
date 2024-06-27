@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -20,7 +20,7 @@ public class ConfirmPurchaseDto {
     @JsonProperty("purchaseInvoice")
     private Long purchaseInvoice;
     @JsonProperty("purchaseDate")
-    private Date purchaseDate;
+    private LocalDateTime purchaseDate;
     @JsonProperty("vendorOBJ")
     private VendorDto vendorEntity;
     @JsonProperty("paidAmount")

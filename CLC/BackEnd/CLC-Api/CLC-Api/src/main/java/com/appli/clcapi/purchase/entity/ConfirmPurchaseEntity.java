@@ -11,7 +11,7 @@ import com.appli.clcapi.vendor.entity.VendorEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -25,7 +25,7 @@ public class ConfirmPurchaseEntity {
     private Long confirmPurchaseId;
 
     private Long purchaseInvoice;
-    private Date purchaseDate;
+    private LocalDateTime purchaseDate;
     @ManyToOne
     @JoinColumn(name = "vendorId")
     private VendorEntity vendorEntity;

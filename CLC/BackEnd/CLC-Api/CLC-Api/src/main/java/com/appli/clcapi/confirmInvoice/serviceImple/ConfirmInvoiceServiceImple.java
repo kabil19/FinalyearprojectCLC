@@ -31,6 +31,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -156,7 +157,7 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
         ConfirmInvoiceEntity confirmInvoiceEntity = new ConfirmInvoiceEntity();
         confirmInvoiceEntity.setConfirmInvoiceId(tempInvoiceEntity.getTempInvoiceId());
         confirmInvoiceEntity.setInvoiceNumber(tempInvoiceEntity.getTempInvoiceNumber());
-        confirmInvoiceEntity.setDate(new Date());
+        confirmInvoiceEntity.setDate(LocalDateTime.now());
         confirmInvoiceEntity.setPaidAmount(tempInvoiceEntity.getPaidAmount());
         confirmInvoiceEntity.setNetAmount(tempInvoiceEntity.getNetAmount());
         confirmInvoiceEntity.setCustomer(tempInvoiceEntity.getCustomer());

@@ -5,6 +5,7 @@ import com.appli.clcapi.payments.invoicePayments.confirmPayments.dto.ConfirmPaym
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -19,7 +20,7 @@ public class ConfirmPaymentsEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long paymentId;
     private String paymentType;
-    private Date paidDate;
+    private LocalDateTime paidDate;
     private Double paidAmount;
 
 

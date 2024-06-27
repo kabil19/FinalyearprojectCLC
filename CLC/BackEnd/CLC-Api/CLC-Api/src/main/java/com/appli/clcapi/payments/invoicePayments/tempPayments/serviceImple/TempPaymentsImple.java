@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -51,7 +52,7 @@ public class TempPaymentsImple implements TempPaymentsService {
             TempPaymentsEntity aPayment = TempPaymentsEntity.builder()
                     .paymentType(tempPaymentsDto.getPaymentType())
                     .paidAmount(tempPaymentsDto.getPaidAmount())
-                    .paidDate(new Date())
+                    .paidDate(LocalDateTime.now())
                     .tempSalesInvoice(new TempInvoiceEntity(tempPaymentsDto.getTempSalesInvoice()))
                     .build();
             var savedPaymentEntity = tempPaymentsRepo.save(aPayment);
@@ -104,7 +105,7 @@ public class TempPaymentsImple implements TempPaymentsService {
     }
 
     private void addDetailsToTheRelevantPayMethod(TempPaymentsDto tempPaymentsDto, TempPaymentsEntity savedPayment) {
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         if (tempPaymentsDto.getPaymentType().equalsIgnoreCase("card")) {
             TempCardEntity aCardPayment = TempCardEntity.builder()
                     .cardRefNo(tempPaymentsDto.getCardRefNo())

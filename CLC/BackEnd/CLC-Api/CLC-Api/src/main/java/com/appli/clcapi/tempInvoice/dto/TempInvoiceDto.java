@@ -6,8 +6,7 @@ import com.appli.clcapi.tempInvoice.entity.TempInvoiceEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
-import java.util.Date;
-import java.util.Optional;
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -20,7 +19,7 @@ public class TempInvoiceDto {
     private Long tempInvoiceId; // null
 
     @JsonProperty("date")
-    private Date date; //24/01/2024
+    private LocalDateTime date; //24/01/2024
 
     @JsonProperty("netAmount")
     private Double netAmount; //10000

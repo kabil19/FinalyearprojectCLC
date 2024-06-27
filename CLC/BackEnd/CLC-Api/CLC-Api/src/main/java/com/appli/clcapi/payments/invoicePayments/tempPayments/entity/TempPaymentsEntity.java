@@ -5,7 +5,7 @@ import com.appli.clcapi.tempInvoice.entity.TempInvoiceEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -19,7 +19,7 @@ public class TempPaymentsEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long paymentId;
     private String paymentType;
-    private Date paidDate;
+    private LocalDateTime paidDate;
     private Double paidAmount;
     @ManyToOne
     @JoinColumn(name="tempInvoiceId")

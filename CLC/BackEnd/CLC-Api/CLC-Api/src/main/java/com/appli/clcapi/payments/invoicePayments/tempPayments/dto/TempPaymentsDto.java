@@ -5,7 +5,7 @@ import com.appli.clcapi.tempInvoice.dto.TempInvoiceDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -18,7 +18,7 @@ public class TempPaymentsDto {
     @JsonProperty("paymentType")
     private String paymentType;
     @JsonProperty("paidDate")
-    private Date paidDate;
+    private LocalDateTime paidDate;
     @JsonProperty("paidAmount")
     private Double paidAmount;
     @JsonProperty("salesInvoice")
@@ -26,7 +26,7 @@ public class TempPaymentsDto {
     @JsonProperty("chequeRefNo")
     private Long chequeRefNo;
     @JsonProperty("chequeDueDate")
-    private Date chequeDueDate;
+    private LocalDateTime chequeDueDate;
     @JsonProperty("cardRefNo")
     private Long cardRefNo;
 //    private Long purchaseInvoice;

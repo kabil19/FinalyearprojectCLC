@@ -4,7 +4,7 @@ import com.appli.clcapi.tempInvoice.entity.TempInvoiceEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,9 +20,9 @@ public class TempChequeEntity {
 
     private Double paidAmount;
 
-    private Date paidDate;
+    private LocalDateTime paidDate;
 
-    private Date chequeDueDate;
+    private LocalDateTime chequeDueDate;
 
     private Long paymentId;
 

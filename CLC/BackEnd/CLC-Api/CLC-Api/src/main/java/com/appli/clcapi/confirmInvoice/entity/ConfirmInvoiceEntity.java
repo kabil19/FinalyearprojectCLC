@@ -11,7 +11,7 @@ import com.appli.clcapi.payments.invoicePayments.receipt.entity.ConfirmSalesInvo
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -26,7 +26,7 @@ public class ConfirmInvoiceEntity {
     @Id
     private Long confirmInvoiceId;
     private Long invoiceNumber;
-    private Date date;
+    private LocalDateTime date;
     private Double netAmount;
     private Double paidAmount;
     private Double advancePayment;

@@ -9,7 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -42,7 +43,7 @@ public class StockDto {
     private Double reorderQty;
 
     @JsonProperty("arrivalDate")
-    private Date arrivalDate;
+    private LocalDateTime arrivalDate;
 
     @JsonIgnore
     private boolean deleted = false;

@@ -2,8 +2,9 @@ package com.appli.clcapi.report.service;
 
 import com.appli.clcapi.common.response.NonPaginatedResponse;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public interface ReportService {
-    NonPaginatedResponse selectSalesReportWithInRange(Date start, Date end);
+    NonPaginatedResponse selectSalesReportWithInRange(LocalDateTime start,LocalDateTime end);
+    NonPaginatedResponse selectPurchaseReportWithInRange(LocalDateTime start,LocalDateTime end);
 }

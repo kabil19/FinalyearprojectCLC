@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 @Data
 @Builder
@@ -20,7 +21,7 @@ public class ConfirmChequeDto {
     private Double paidAmount;
 
     @JsonProperty("paidDate")
-    private Date paidDate;
+    private LocalDateTime paidDate;
 
     @JsonProperty("chequeDueDate")
     private Date chequeDueDate;

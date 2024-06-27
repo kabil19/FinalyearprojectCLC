@@ -19,7 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -113,12 +113,12 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
     }
     private ConfirmPurchaseEntity createConfirmPurchase(Long purchaseId, Optional<TempPurchaseEntity> selectTempPurchase) {
         //       have to find the total, after adding the confirmPurchaseCart,
-        Date now = new Date();
+
         if(selectTempPurchase.isPresent()){
             ConfirmPurchaseEntity newConfirmPurchase = ConfirmPurchaseEntity.builder()
                     .confirmPurchaseId(purchaseId)
                     .purchaseInvoice(selectTempPurchase.get().getPurchaseInvoiceNO())
-                    .purchaseDate(now)
+                    .purchaseDate(LocalDateTime.now())
                     .isComplete(false)
                     .vendorEntity(selectTempPurchase.get().getVendorEntity())
                     .paidAmount(0.0)

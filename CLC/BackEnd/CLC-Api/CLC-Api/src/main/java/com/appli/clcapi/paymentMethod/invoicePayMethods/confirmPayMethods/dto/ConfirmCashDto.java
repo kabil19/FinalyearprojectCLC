@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 @Data
 @Builder
 @NoArgsConstructor
@@ -19,7 +19,7 @@ public class ConfirmCashDto {
     @JsonProperty("paidAmount")
     private Double paidAmount;
     @JsonProperty("paidDate")
-    private Date paidDate;
+    private LocalDateTime paidDate;
     @JsonProperty("paymentId")
     private Long paymentId;
 

@@ -4,7 +4,7 @@ import com.appli.clcapi.confirmInvoice.entity.ConfirmInvoiceEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -23,9 +23,9 @@ public class ConfirmChequeEntity {
 
     private Double paidAmount;
 
-    private Date paidDate;
+    private LocalDateTime paidDate;
 
-    private Date chequeDueDate;
+    private LocalDateTime chequeDueDate;
 
     private Long paymentId;
 

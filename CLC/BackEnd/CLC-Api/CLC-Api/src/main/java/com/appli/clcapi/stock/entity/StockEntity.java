@@ -7,7 +7,7 @@ import com.appli.clcapi.stock.dto.StockDto;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -30,7 +30,7 @@ public class StockEntity {
     private Double purchasePrice;
     private Double sellingPrice;
     private Double reorderQty;
-    private Date arrivalDate;
+    private LocalDateTime arrivalDate;
     private Boolean deleted = false;
     //image
     private String remarks;
