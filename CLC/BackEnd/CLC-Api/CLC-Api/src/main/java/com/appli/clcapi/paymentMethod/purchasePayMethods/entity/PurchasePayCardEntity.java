@@ -1,12 +1,12 @@
 package com.appli.clcapi.paymentMethod.purchasePayMethods.entity;
 
-import com.appli.clcapi.confirmInvoice.entity.ConfirmInvoiceEntity;
+
 import com.appli.clcapi.purchase.entity.ConfirmPurchaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+
 
 @Getter
 @Setter

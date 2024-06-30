@@ -1,8 +1,6 @@
 package com.appli.clcapi.payments.purchasePayment.voucher.service;
 
 import com.appli.clcapi.common.response.NonPaginatedResponse;
-import com.appli.clcapi.payments.invoicePayments.receipt.dto.ConfirmSalesInvoiceReceiptDto;
-import com.appli.clcapi.payments.invoicePayments.receipt.entity.ConfirmSalesInvoiceReceiptEntity;
 import com.appli.clcapi.payments.purchasePayment.voucher.dto.VoucherDto;
 import com.appli.clcapi.payments.purchasePayment.voucher.entity.VoucherEntity;
 import com.appli.clcapi.payments.purchasePayment.voucher.repository.VoucherRepo;

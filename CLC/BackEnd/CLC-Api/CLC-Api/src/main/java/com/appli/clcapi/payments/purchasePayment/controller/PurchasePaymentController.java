@@ -1,7 +1,6 @@
 package com.appli.clcapi.payments.purchasePayment.controller;
 
 import com.appli.clcapi.common.response.NonPaginatedResponse;
-import com.appli.clcapi.payments.invoicePayments.tempPayments.dto.TempPaymentsDto;
 import com.appli.clcapi.payments.purchasePayment.dto.PurchasePaymentDto;
 import com.appli.clcapi.payments.purchasePayment.service.PurchasePaymentService;
 import lombok.RequiredArgsConstructor;

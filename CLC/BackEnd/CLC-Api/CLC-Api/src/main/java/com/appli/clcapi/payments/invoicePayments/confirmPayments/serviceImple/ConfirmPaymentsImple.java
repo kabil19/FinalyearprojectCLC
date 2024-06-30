@@ -46,10 +46,12 @@ public class ConfirmPaymentsImple implements ConfirmPaymentsService {
 
         try {
             Optional<ConfirmInvoiceEntity> confirmedInvoice = confirmInvoiceRepo.findById(confirmPaymentsDto.getConfirmInvoiceDto().getConfirmInvoiceId());
-            if ((confirmedInvoice.get().getPaidAmount()) + confirmPaymentsDto.getPaidAmount() > confirmedInvoice.get().getNetAmount()) {
-                response.setErrors(List.of("Payment exceeds the total!"));
-                response.setStatus(HttpStatus.BAD_REQUEST);
-                return response;
+            if(confirmedInvoice.isPresent()) {
+                if ((confirmedInvoice.get().getPaidAmount()) + confirmPaymentsDto.getPaidAmount() > confirmedInvoice.get().getNetAmount()) {
+                    response.setErrors(List.of("Payment exceeds the total!"));
+                    response.setStatus(HttpStatus.BAD_REQUEST);
+                    return response;
+                }
             }
             NonPaginatedResponse paymentSourceStatus = checkPaymentSource(confirmPaymentsDto, response);
             if (paymentSourceStatus.getStatus().isSameCodeAs(HttpStatus.BAD_REQUEST)) {
@@ -69,18 +71,21 @@ public class ConfirmPaymentsImple implements ConfirmPaymentsService {
 
 
             Optional<ConfirmInvoiceEntity> selectedConfirmedInvoice = confirmInvoiceRepo.findById(confirmPaymentsDto.getConfirmInvoiceDto().getConfirmInvoiceId());
-            double totalPaidAmount = selectedConfirmedInvoice.get().getPaidAmount() + confirmPaymentsDto.getPaidAmount();
-            selectedConfirmedInvoice.get().setPaidAmount(totalPaidAmount);
+            if(selectedConfirmedInvoice.isPresent()) {
+                double totalPaidAmount = selectedConfirmedInvoice.get().getPaidAmount() + confirmPaymentsDto.getPaidAmount();
+                selectedConfirmedInvoice.get().setPaidAmount(totalPaidAmount);
 
-            if (totalPaidAmount == (selectedConfirmedInvoice.get().getNetAmount())) {
-                selectedConfirmedInvoice.get().setIsComplete(true);
-                confirmInvoiceRepo.save(selectedConfirmedInvoice.get());
+                if (totalPaidAmount == (selectedConfirmedInvoice.get().getNetAmount())) {
+                    selectedConfirmedInvoice.get().setIsComplete(true);
+                    confirmInvoiceRepo.save(selectedConfirmedInvoice.get());
+                }
+
+                ConfirmSalesInvoiceReceiptEntity aReceipt = addToConfirmSalesInvoiceReceipt(confirmPaymentsDto, selectedConfirmedInvoice.get());
+                ConfirmSalesInvoiceReceiptDto aReceiptDto = new ConfirmSalesInvoiceReceiptDto(aReceipt);
+                response.setResult(aReceiptDto);
+                response.setSuccessMessage(PaymentsConstants.PAYMENT_HAS_BEEN_ADDED);
+                response.setStatus(HttpStatus.CREATED);
             }
-            ConfirmSalesInvoiceReceiptEntity aReceipt = addToConfirmSalesInvoiceReceipt(confirmPaymentsDto, selectedConfirmedInvoice.get());
-            ConfirmSalesInvoiceReceiptDto aReceiptDto = new ConfirmSalesInvoiceReceiptDto(aReceipt);
-            response.setResult(aReceiptDto);
-            response.setSuccessMessage(PaymentsConstants.PAYMENT_HAS_BEEN_ADDED);
-            response.setStatus(HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
             response.setSuccessMessage(null);
