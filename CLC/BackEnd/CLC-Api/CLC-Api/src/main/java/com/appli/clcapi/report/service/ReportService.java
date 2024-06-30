@@ -7,4 +7,7 @@ import java.time.LocalDateTime;
 public interface ReportService {
     NonPaginatedResponse selectSalesReportWithInRange(LocalDateTime start,LocalDateTime end);
     NonPaginatedResponse selectPurchaseReportWithInRange(LocalDateTime start,LocalDateTime end);
+
+    NonPaginatedResponse selectAllPurchaseInvoicePaymentsWithInRange(LocalDateTime start,LocalDateTime end);
+    NonPaginatedResponse selectAllSalesInvoicePaymentsWithInRange(LocalDateTime start,LocalDateTime end);
 }

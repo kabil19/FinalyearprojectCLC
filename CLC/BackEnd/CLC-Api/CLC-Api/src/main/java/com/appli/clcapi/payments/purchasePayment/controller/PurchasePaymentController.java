@@ -30,10 +30,12 @@ public class PurchasePaymentController {
         return purchasePaymentService.updatePurchaseInvoicePayment(purchasePaymentDto);
     }
 
-    @GetMapping("getAllPurchaseInvoicePayments/{purchaseId}")
-    public NonPaginatedResponse getAllPurchaseInvoicePayments(@PathVariable Long purchaseId){
-        return purchasePaymentService.getAllPurchaseInvoicePayments(purchaseId);
+
+    @GetMapping("getAllPurchaseInvoicePayments/{purchaseInvoiceId}")
+    public NonPaginatedResponse getAllPurchaseInvoicePayments(@PathVariable Long purchaseInvoiceId){
+        return purchasePaymentService.getAllPurchaseInvoicePayments(purchaseInvoiceId);
     }
+
 
 //    @GetMapping("selectPurchaseInvoicePayment/{invoiceId}/{existingChar}")
 //    public NonPaginatedResponse selectPurchaseInvoicePayment(@PathVariable Long paymentId, @PathVariable String existingChar){

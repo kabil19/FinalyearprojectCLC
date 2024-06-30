@@ -4,6 +4,7 @@ import com.appli.clcapi.purchase.entity.ConfirmPurchaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -20,7 +21,7 @@ public class PurchasePayCashEntity {
 
     private Double paidAmount;
 
-    private Date paidDate;
+    private LocalDateTime paidDate;
 
     private Long paymentId;
     @ManyToOne(fetch = FetchType.LAZY)

@@ -4,6 +4,7 @@ import com.appli.clcapi.payments.invoicePayments.confirmPayments.entity.ConfirmP
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -11,6 +12,7 @@ public interface ConfirmPaymentsRepo extends JpaRepository<ConfirmPaymentsEntity
 
 
 List<ConfirmPaymentsEntity> findByConfirmInvoice_ConfirmInvoiceId(Long id);
+List<ConfirmPaymentsEntity> findByPaidDateBetween(LocalDateTime start, LocalDateTime end);
 
 
 

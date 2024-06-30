@@ -4,6 +4,12 @@ import com.appli.clcapi.payments.purchasePayment.entity.PurchasePaymentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Repository
 public interface PurchasePaymentRepo extends JpaRepository<PurchasePaymentEntity, Long> {
+
+    List<PurchasePaymentEntity> findByConfirmPurchaseEntity_ConfirmPurchaseId(long confirmPurchaseInvoiceId);
+    List<PurchasePaymentEntity> findByPaidDateBetween(LocalDateTime start, LocalDateTime end);
 }

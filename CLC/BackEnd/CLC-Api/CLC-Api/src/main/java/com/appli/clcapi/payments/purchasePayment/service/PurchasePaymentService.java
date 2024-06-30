@@ -12,5 +12,5 @@ public interface PurchasePaymentService {
 
     public NonPaginatedResponse updatePurchaseInvoicePayment(PurchasePaymentDto purchasePaymentDto);
 
-    NonPaginatedResponse getAllPurchaseInvoicePayments(Long purchaseId);
+    NonPaginatedResponse getAllPurchaseInvoicePayments(Long purchaseInvoiceId);
 }

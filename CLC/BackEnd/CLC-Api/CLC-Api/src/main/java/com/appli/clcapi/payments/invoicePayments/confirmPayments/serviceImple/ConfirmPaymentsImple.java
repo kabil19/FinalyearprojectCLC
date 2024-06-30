@@ -43,7 +43,7 @@ public class ConfirmPaymentsImple implements ConfirmPaymentsService {
     @Transactional
     public NonPaginatedResponse makePaymentToConfirmInvoice(ConfirmPaymentsDto confirmPaymentsDto) {
         NonPaginatedResponse response = new NonPaginatedResponse();
-        Date now = new Date();
+
         try {
             Optional<ConfirmInvoiceEntity> confirmedInvoice = confirmInvoiceRepo.findById(confirmPaymentsDto.getConfirmInvoiceDto().getConfirmInvoiceId());
             if ((confirmedInvoice.get().getPaidAmount()) + confirmPaymentsDto.getPaidAmount() > confirmedInvoice.get().getNetAmount()) {
@@ -82,6 +82,7 @@ public class ConfirmPaymentsImple implements ConfirmPaymentsService {
             response.setSuccessMessage(PaymentsConstants.PAYMENT_HAS_BEEN_ADDED);
             response.setStatus(HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             response.setSuccessMessage(null);
 //            response.setErrors(List.of("An error occurred"));
             response.setStatus(HttpStatus.BAD_REQUEST);
@@ -154,15 +155,6 @@ public class ConfirmPaymentsImple implements ConfirmPaymentsService {
         }
     }
 
-   /* @Override
-    public NonPaginatedResponse deletePayment(Long payId) {
-        return null;
-    }
-
-    @Override
-    public NonPaginatedResponse updatePayment(ConfirmPaymentsDto confirmPaymentsDto) {
-        return null;
-    }*/
 
     @Override
     public NonPaginatedResponse getAllConfirmPaymentsOfConfirmInvoice(Long confirmSalesInvoiceId) {
@@ -172,18 +164,21 @@ public class ConfirmPaymentsImple implements ConfirmPaymentsService {
             List<ConfirmPaymentsDto> aConfirmedSalesInvoicePayment = confirmedSalesInvoicePaymentRecords.stream()
                     .map(ConfirmPaymentsDto::new)
                     .toList();
-
+            if(aConfirmedSalesInvoicePayment.isEmpty()){
+                response.setErrors(List.of("No Payments has been made for the selected Sales Invoice!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
             response.setResult(aConfirmedSalesInvoicePayment);
             response.setStatus(HttpStatus.ACCEPTED);
-            response.setSuccessMessage("Payment Records for the confirm sales invoice are Retrieved!");
+            response.setSuccessMessage("Payment Records for the  Sales invoice are Retrieved!");
         } catch (Exception e) {
             e.printStackTrace();
-            response.setErrors(List.of("Couldn't retrieve the Payment Records for the confirm sales invoice!"));
+            response.setErrors(List.of("Couldn't retrieve the Payment Records for the Sales invoice!"));
         }
         return response;
     }
 
-   /* @Override
-    public NonPaginatedResponse selectA_Payment() {return null;}*/
+
 
 }

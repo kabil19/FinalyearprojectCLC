@@ -1,4 +1,5 @@
 package com.appli.clcapi.payments.purchasePayment.serviceImple;
+
 import com.appli.clcapi.common.response.NonPaginatedResponse;
 import com.appli.clcapi.paymentMethod.purchasePayMethods.entity.PurchasePayCardEntity;
 import com.appli.clcapi.paymentMethod.purchasePayMethods.entity.PurchasePayCashEntity;
@@ -20,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -39,40 +42,40 @@ public class PurchasePaymentServiceImple implements PurchasePaymentService {
     @Transactional
     public NonPaginatedResponse addToPurchaseInvoicePayment(PurchasePaymentDto purchasePaymentDto) {
         NonPaginatedResponse response = new NonPaginatedResponse();
-        Date now = new Date();
-        try{
+
+        try {
             NonPaginatedResponse paidAmountValidity = checkPaidAmountValid(purchasePaymentDto, response);
-            if (paidAmountValidity.getStatus().isSameCodeAs(HttpStatus.BAD_REQUEST)){
+            if (paidAmountValidity.getStatus().isSameCodeAs(HttpStatus.BAD_REQUEST)) {
                 return paidAmountValidity;
             }
             NonPaginatedResponse paymentSourceStatus = checkPaymentSource(purchasePaymentDto, response);
-            if(paymentSourceStatus.getStatus().isSameCodeAs(HttpStatus.BAD_REQUEST)){
+            if (paymentSourceStatus.getStatus().isSameCodeAs(HttpStatus.BAD_REQUEST)) {
                 return paymentSourceStatus;
             }
 
             PurchasePaymentEntity aPayment = PurchasePaymentEntity.builder()
                     .paymentType(purchasePaymentDto.getPaymentType())
-                    .paidDate(now)
+                    .paidDate(LocalDateTime.now())
                     .paidAmount(purchasePaymentDto.getPaidAmount())
                     .confirmPurchaseEntity(new ConfirmPurchaseEntity(purchasePaymentDto.getConfirmPurchaseDto()))
                     .vendorEntity(new VendorEntity(purchasePaymentDto.getVendorDto()))
                     .build();
-            PurchasePaymentEntity savedPaymentEntity =  purchasePaymentRepo.save(aPayment);
+            PurchasePaymentEntity savedPaymentEntity = purchasePaymentRepo.save(aPayment);
 
             addDetailsToTheRelevantPayMethod(purchasePaymentDto, savedPaymentEntity);
-            VoucherEntity aVoucher = addToVoucherEntity(savedPaymentEntity ,purchasePaymentDto);
-            if(isFieldsOnConfirmPurchaseUpdated(purchasePaymentDto)){
-               response.setResult(new VoucherDto(aVoucher));
-               response.setSuccessMessage("Payment has been made for the purchase invoice:- "+purchasePaymentDto.getConfirmPurchaseDto().getPurchaseInvoice());
-               response.setStatus(HttpStatus.ACCEPTED);
-               return response;
+            VoucherEntity aVoucher = addToVoucherEntity(savedPaymentEntity, purchasePaymentDto);
+            if (isFieldsOnConfirmPurchaseUpdated(purchasePaymentDto)) {
+                response.setResult(new VoucherDto(aVoucher));
+                response.setSuccessMessage("Payment has been made for the purchase invoice:- " + purchasePaymentDto.getConfirmPurchaseDto().getPurchaseInvoice());
+                response.setStatus(HttpStatus.ACCEPTED);
+                return response;
             }
             response.setStatus(HttpStatus.BAD_REQUEST);
             response.setErrors(List.of("Couldn't update the payment to the invoice"));
-        }catch (Exception e){
+        } catch (Exception e) {
             response.setStatus(HttpStatus.BAD_REQUEST);
 //            response.setErrors(List.of("Couldn't add the payment details"));
-       }
+        }
         return response;
     }
 
@@ -105,20 +108,20 @@ public class PurchasePaymentServiceImple implements PurchasePaymentService {
                 .paidDate(now)
                 .paymentType(purchasePaymentDto.getPaymentType())
                 .build();
-       return voucherRepo.save(aVoucher);
+        return voucherRepo.save(aVoucher);
     }
 
     private NonPaginatedResponse checkPaidAmountValid(PurchasePaymentDto purchasePaymentDto, NonPaginatedResponse response) {
-        Optional<ConfirmPurchaseEntity> confirmPurchaseEntity =  confirmPurchaseRepo.findById(
+        Optional<ConfirmPurchaseEntity> confirmPurchaseEntity = confirmPurchaseRepo.findById(
                 purchasePaymentDto.getConfirmPurchaseDto().getConfirmPurchaseId()
         );
-        if(confirmPurchaseEntity.isPresent()){
-            if(purchasePaymentDto.getPaidAmount()+confirmPurchaseEntity.get().getPaidAmount() > confirmPurchaseEntity.get().getNetAmount()){
+        if (confirmPurchaseEntity.isPresent()) {
+            if (purchasePaymentDto.getPaidAmount() + confirmPurchaseEntity.get().getPaidAmount() > confirmPurchaseEntity.get().getNetAmount()) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 response.setErrors(List.of("Amount exceeds the Total!"));
                 return response;
             }
-        }else{
+        } else {
             response.setErrors(List.of("Purchase Invoice is not exist!"));
             response.setStatus(HttpStatus.BAD_REQUEST);
             return response;
@@ -128,24 +131,24 @@ public class PurchasePaymentServiceImple implements PurchasePaymentService {
     }
 
     private boolean isFieldsOnConfirmPurchaseUpdated(PurchasePaymentDto purchasePaymentDto) {
-        Optional<ConfirmPurchaseEntity> confirmPurchaseEntity =  confirmPurchaseRepo.findById(
+        Optional<ConfirmPurchaseEntity> confirmPurchaseEntity = confirmPurchaseRepo.findById(
                 purchasePaymentDto.getConfirmPurchaseDto().getConfirmPurchaseId()
         );
-        if (confirmPurchaseEntity.isPresent()){
+        if (confirmPurchaseEntity.isPresent()) {
             double totalPaidAmount = confirmPurchaseEntity.get().getPaidAmount() + purchasePaymentDto.getPaidAmount();
             confirmPurchaseEntity.get().setPaidAmount(totalPaidAmount);
-            if(totalPaidAmount == confirmPurchaseEntity.get().getNetAmount()){
+            if (totalPaidAmount == confirmPurchaseEntity.get().getNetAmount()) {
                 confirmPurchaseEntity.get().setIsComplete(true);
             }
             confirmPurchaseRepo.save(confirmPurchaseEntity.get());
             return true;
         }
-       return false;
+        return false;
     }
 
     private void addDetailsToTheRelevantPayMethod(PurchasePaymentDto purchasePaymentDto, PurchasePaymentEntity savedPayment) {
-        Date now = new Date();
-        if(purchasePaymentDto.getPaymentType().equalsIgnoreCase("card")){
+        LocalDateTime now = LocalDateTime.now();
+        if (purchasePaymentDto.getPaymentType().equalsIgnoreCase("card")) {
             PurchasePayCardEntity aCardPayment = PurchasePayCardEntity.builder()
                     .cardRefNo(purchasePaymentDto.getCardRefNo())
                     .paidAmount(purchasePaymentDto.getPaidAmount())
@@ -154,7 +157,8 @@ public class PurchasePaymentServiceImple implements PurchasePaymentService {
                     .confirmPurchaseEntity(savedPayment.getConfirmPurchaseEntity())
                     .build();
             purchasePayCardRepo.save(aCardPayment);
-        }  if (purchasePaymentDto.getPaymentType().equalsIgnoreCase("cash")) {
+        }
+        if (purchasePaymentDto.getPaymentType().equalsIgnoreCase("cash")) {
             PurchasePayCashEntity aCashPayment = PurchasePayCashEntity.builder()
                     .paidAmount(purchasePaymentDto.getPaidAmount())
                     .paidDate(now)
@@ -162,7 +166,8 @@ public class PurchasePaymentServiceImple implements PurchasePaymentService {
                     .confirmPurchaseEntity(savedPayment.getConfirmPurchaseEntity())
                     .build();
             purchasePayCashRepo.save(aCashPayment);
-        } if (purchasePaymentDto.getPaymentType().equalsIgnoreCase("cheque")){
+        }
+        if (purchasePaymentDto.getPaymentType().equalsIgnoreCase("cheque")) {
             PurchasePayChequeEntity aChequePayment = PurchasePayChequeEntity.builder()
                     .paidAmount(purchasePaymentDto.getPaidAmount())
                     .paidDate(now)
@@ -174,6 +179,7 @@ public class PurchasePaymentServiceImple implements PurchasePaymentService {
             purchasePayChequeRepo.save(aChequePayment);
         }
     }
+
     @Override
     public NonPaginatedResponse deletePurchaseInvoicePayment(Long paymentId) {
         return null;
@@ -185,7 +191,28 @@ public class PurchasePaymentServiceImple implements PurchasePaymentService {
     }
 
     @Override
-    public NonPaginatedResponse getAllPurchaseInvoicePayments(Long purchaseId) {
-        return null;
+    public NonPaginatedResponse getAllPurchaseInvoicePayments(Long purchaseInvoiceId) {
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        try {
+            List<PurchasePaymentEntity> purchasePaymentEntities = purchasePaymentRepo.findByConfirmPurchaseEntity_ConfirmPurchaseId(purchaseInvoiceId);
+            List<PurchasePaymentDto> purchasePaymentDtos = purchasePaymentEntities.stream()
+                    .map(PurchasePaymentDto::new)
+                    .toList();
+            if(purchasePaymentDtos.isEmpty()){
+                response.setErrors(List.of("No Payments has been made for the selected Purchase Invoice!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
+            response.setResult(purchasePaymentDtos);
+            response.setSuccessMessage("Purchase Payment details are retrieved!");
+            response.setStatus(HttpStatus.ACCEPTED);
+            return response;
+        } catch (Exception e) {
+            response.setErrors(List.of("Could Retrieve Payments Details of the Purchase!"));
+            response.setStatus(HttpStatus.BAD_REQUEST);
+        }
+        return response;
     }
+
+
 }

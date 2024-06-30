@@ -17,7 +17,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class VoucherDto {
 
-    @JsonProperty("receiptId")
+    @JsonProperty("voucherId")
     private Long voucherId;
     @JsonProperty("confirmPurchaseOBJ")
     private ConfirmPurchaseDto confirmPurchaseDto;
