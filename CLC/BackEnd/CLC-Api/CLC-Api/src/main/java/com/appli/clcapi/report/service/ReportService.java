@@ -12,4 +12,6 @@ public interface ReportService {
     NonPaginatedResponse selectAllSalesInvoicePaymentsWithInRange(LocalDateTime start,LocalDateTime end);
     NonPaginatedResponse selectAllPaymentsOfTheSalesInvoiceWithInTheRange(Long salesInvoiceId,LocalDateTime start,LocalDateTime end);
     NonPaginatedResponse selectAllPaymentsOfThePurchaseInvoiceWithInTheRange(Long purchaseId,LocalDateTime start,LocalDateTime end);
+    NonPaginatedResponse selectAllPaymentsOfaCustomerWithInRange(Long custId,LocalDateTime start,LocalDateTime end);
+    NonPaginatedResponse selectAllPaymentsOfaVendorWithInRange(Long vendorId, LocalDateTime startDate, LocalDateTime endDate);
 }

@@ -56,4 +56,18 @@ public class ReportController {
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate){
         return reportService.selectAllPaymentsOfThePurchaseInvoiceWithInTheRange(purchaseInvoiceId,startDate, endDate);
     }
+    @GetMapping("selectAllPaymentsOfaCustomerWithInRange/{custId}")
+    public NonPaginatedResponse selectAllPaymentsOfaCustomerWithInRange(
+            @PathVariable Long custId,
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate){
+        return reportService.selectAllPaymentsOfaCustomerWithInRange(custId,startDate, endDate);
+    }
+    @GetMapping("selectAllPaymentsOfaVendorWithInRange/{vendorId}")
+    public NonPaginatedResponse selectAllPaymentsOfaVendorWithInRange(
+            @PathVariable Long vendorId,
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate){
+        return reportService.selectAllPaymentsOfaVendorWithInRange(vendorId,startDate, endDate);
+    }
 }

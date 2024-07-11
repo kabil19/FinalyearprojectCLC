@@ -21,5 +21,7 @@ public interface ConfirmPurchaseRepo extends JpaRepository<ConfirmPurchaseEntity
 
     List<ConfirmPurchaseEntity> findByPurchaseDateBetween(LocalDateTime start, LocalDateTime end);
 
+    List<ConfirmPurchaseEntity> findByVendorEntity_VendorId(Long vendorId);
+
 
 }

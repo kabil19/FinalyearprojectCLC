@@ -196,36 +196,101 @@ public class ReportServiceImpl implements ReportService {
         return response;
     }
 
-    //    @Override
+    @Override
     public NonPaginatedResponse selectAllPaymentsOfaCustomerWithInRange(Long custId, LocalDateTime start, LocalDateTime end) {
         NonPaginatedResponse response = new NonPaginatedResponse();
-        List<ConfirmInvoiceEntity> salesInvoiceList = confirmInvoiceRepo.findByCustomer_CustId(custId);
-        if (salesInvoiceList.isEmpty()) {
-            response.setErrors(List.of("No Sales Invoice exist for the selected Customer!"));
+        try {
+            List<ConfirmInvoiceEntity> salesInvoiceList = confirmInvoiceRepo.findByCustomer_CustId(custId);
+            boolean anyPaymentsFound = false;
+            if (salesInvoiceList.isEmpty()) {
+                response.setErrors(List.of("No Sales Invoice exist for the selected Customer!"));
+                response.setStatus(HttpStatus.NOT_FOUND);
+                return response;
+            }
+
+            start = start.with(LocalTime.MIN);
+            end = end.with(LocalTime.MAX);
+
+
+            List<List<ConfirmPaymentsDto>> resultList = new ArrayList<>();
+
+            for (ConfirmInvoiceEntity anInvoice : salesInvoiceList) {
+                List<ConfirmPaymentsEntity> salesInvoicePayment = confirmSalesInvoicePaymentsRepo
+                        .findByConfirmInvoice_ConfirmInvoiceIdAndPaidDateBetween(anInvoice.getConfirmInvoiceId(), start, end);
+
+                if (!salesInvoicePayment.isEmpty()) {
+                    anyPaymentsFound = true;
+
+                    List<ConfirmPaymentsDto> paymentsDtoList = new ArrayList<>();
+                    for (ConfirmPaymentsEntity payment : salesInvoicePayment) {
+                        paymentsDtoList.add(new ConfirmPaymentsDto(payment));
+                    }
+                    resultList.add(paymentsDtoList);
+                }
+            }
+
+            if (!anyPaymentsFound) {
+                response.setErrors(List.of("No Sales Invoice Payments exist for the selected Customer's invoices!"));
+                response.setStatus(HttpStatus.NOT_FOUND);
+            } else {
+                response.setResult(resultList);
+                response.setSuccessMessage("The Selected Customer's Payments within the selected range for the Sales Invoice are retrieved!");
+                response.setStatus(HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             response.setStatus(HttpStatus.BAD_REQUEST);
             return response;
         }
+        return response;
+    }
 
-
-//    List<ConfirmPaymentsRepo> salesInvoiceList = confirmSalesInvoicePaymentsRepo.findByConfirmInvoice_ConfirmInvoiceIdAndPaidDateBetween()
-        for (ConfirmInvoiceEntity anInvoice : salesInvoiceList) {
-            List<ConfirmPaymentsEntity> salesInvoicePayment = confirmSalesInvoicePaymentsRepo
-                    .findByConfirmInvoice_ConfirmInvoiceIdAndPaidDateBetween(anInvoice.getConfirmInvoiceId(), start, end);
-            if(salesInvoicePayment.isEmpty()){
-                response.setErrors(List.of("No Sales Invoice Payments exist for the selected Customer's invoices!"));
-                response.setStatus(HttpStatus.BAD_REQUEST);
+    @Override
+    public NonPaginatedResponse selectAllPaymentsOfaVendorWithInRange(Long vendorId, LocalDateTime start, LocalDateTime end) {
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        try {
+            List<ConfirmPurchaseEntity> purchaseInvoiceList = confirmPurchaseRepo.findByVendorEntity_VendorId(vendorId);
+            boolean anyPaymentsFound = false;
+            if (purchaseInvoiceList.isEmpty()) {
+                response.setErrors(List.of("No Purchase Invoice exist for the selected Customer!"));
+                response.setStatus(HttpStatus.NOT_FOUND);
                 return response;
             }
-            List<ConfirmPaymentsDto> paymentsDtoList = salesInvoicePayment.stream()
-                    .map(ConfirmPaymentsDto::new)
-                    .toList();
 
+            start = start.with(LocalTime.MIN);
+            end = end.with(LocalTime.MAX);
+
+
+            List<List<PurchasePaymentDto>> resultList = new ArrayList<>();
+
+            for (ConfirmPurchaseEntity aPurchaseInvoice : purchaseInvoiceList) {
+                List<PurchasePaymentEntity> purchaseInvoicePayment = purchasePaymentRepo
+                        .findByConfirmPurchaseEntity_ConfirmPurchaseIdAndPaidDateBetween(aPurchaseInvoice.getConfirmPurchaseId(), start, end);
+
+                if (!purchaseInvoicePayment.isEmpty()) {
+                    anyPaymentsFound = true;
+
+                    List<PurchasePaymentDto> paymentsDtoList = new ArrayList<>();
+                    for (PurchasePaymentEntity payment : purchaseInvoicePayment) {
+                        paymentsDtoList.add(new PurchasePaymentDto(payment));
+                    }
+                    resultList.add(paymentsDtoList);
+                }
+            }
+
+            if (!anyPaymentsFound) {
+                response.setErrors(List.of("No Purchase Invoice Payments exist for the selected Vendor's invoices!"));
+                response.setStatus(HttpStatus.NOT_FOUND);
+            } else {
+                response.setResult(resultList);
+                response.setSuccessMessage("The Selected Vendor's Payments within the selected range for the Purchase Invoice are retrieved!");
+                response.setStatus(HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            return response;
         }
-        List<ConfirmInvoiceEntity> confirmedSalesInvoice = salesInvoiceList.parallelStream()
-                .map().
-
-
-
         return response;
     }
 
