@@ -42,4 +42,18 @@ public class ReportController {
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate){
         return reportService.selectAllSalesInvoicePaymentsWithInRange(startDate, endDate);
     }
+    @GetMapping("selectAllPaymentsOfTheSalesInvoiceWithInTheRange/{confirmSalesInvoiceId}")
+    public NonPaginatedResponse selectAllPaymentsOfTheSalesInvoiceWithInTheRange(
+            @PathVariable Long confirmSalesInvoiceId,
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate){
+        return reportService.selectAllPaymentsOfTheSalesInvoiceWithInTheRange(confirmSalesInvoiceId,startDate, endDate);
+    }
+    @GetMapping("selectAllPaymentsOfThePurchaseInvoiceWithInTheRange/{purchaseInvoiceId}")
+    public NonPaginatedResponse selectAllPaymentsOfThePurchaseInvoiceWithInTheRange(
+            @PathVariable Long purchaseInvoiceId,
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate){
+        return reportService.selectAllPaymentsOfThePurchaseInvoiceWithInTheRange(purchaseInvoiceId,startDate, endDate);
+    }
 }

@@ -12,4 +12,5 @@ public interface PurchasePaymentRepo extends JpaRepository<PurchasePaymentEntity
 
     List<PurchasePaymentEntity> findByConfirmPurchaseEntity_ConfirmPurchaseId(long confirmPurchaseInvoiceId);
     List<PurchasePaymentEntity> findByPaidDateBetween(LocalDateTime start, LocalDateTime end);
+    List<PurchasePaymentEntity> findByConfirmPurchaseEntity_ConfirmPurchaseIdAndPaidDateBetween(long purchaseId,LocalDateTime start, LocalDateTime end);
 }

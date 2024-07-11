@@ -13,6 +13,8 @@ public interface ConfirmPaymentsRepo extends JpaRepository<ConfirmPaymentsEntity
 
 List<ConfirmPaymentsEntity> findByConfirmInvoice_ConfirmInvoiceId(Long id);
 List<ConfirmPaymentsEntity> findByPaidDateBetween(LocalDateTime start, LocalDateTime end);
+List<ConfirmPaymentsEntity> findByConfirmInvoice_ConfirmInvoiceIdAndPaidDateBetween(Long confirmInvoiceId,LocalDateTime start, LocalDateTime end);
+
 
 
 

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -113,6 +114,7 @@ public class ReportServiceImpl implements ReportService {
         }
         return response;
     }
+
     @Override
     public NonPaginatedResponse selectAllSalesInvoicePaymentsWithInRange(LocalDateTime start, LocalDateTime end) {
         NonPaginatedResponse response = new NonPaginatedResponse();
@@ -140,6 +142,91 @@ public class ReportServiceImpl implements ReportService {
         return response;
     }
 
+    @Override
+    public NonPaginatedResponse selectAllPaymentsOfTheSalesInvoiceWithInTheRange(Long confirmSalesInvoiceId, LocalDateTime start, LocalDateTime end) {
+        NonPaginatedResponse response = new NonPaginatedResponse();
 
+        try {
+
+            start = start.with(LocalTime.MIN);
+            end = end.with(LocalTime.MAX);
+            List<ConfirmPaymentsEntity> salesInvoicePaymentsList = confirmSalesInvoicePaymentsRepo.findByConfirmInvoice_ConfirmInvoiceIdAndPaidDateBetween(confirmSalesInvoiceId, start, end);
+            List<ConfirmPaymentsDto> salesInvoicePaymentsDtoList = salesInvoicePaymentsList.stream()
+                    .map(ConfirmPaymentsDto::new)
+                    .toList();
+            if (salesInvoicePaymentsDtoList.isEmpty()) {
+                response.setErrors(List.of("No Sales Invoice payment Reports exist with-in the given range! "));
+                return response;
+            }
+            response.setResult(salesInvoicePaymentsDtoList);
+            response.setSuccessMessage("Sales Invoice payment reports are retrieved from the given range! ");
+            return response;
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setErrors(List.of("Couldn't Retrieve any Sales Invoice payment Reports!"));
+            response.setStatus(HttpStatus.BAD_REQUEST);
+        }
+        return response;
+    }
+
+    @Override
+    public NonPaginatedResponse selectAllPaymentsOfThePurchaseInvoiceWithInTheRange(Long purchaseInvoiceId, LocalDateTime start, LocalDateTime end) {
+        NonPaginatedResponse response = new NonPaginatedResponse();
+
+        try {
+
+            start = start.with(LocalTime.MIN);
+            end = end.with(LocalTime.MAX);
+            List<PurchasePaymentEntity> purchaseInvoicePaymentsList = purchasePaymentRepo.findByConfirmPurchaseEntity_ConfirmPurchaseIdAndPaidDateBetween(purchaseInvoiceId, start, end);
+            List<PurchasePaymentDto> salesInvoicePaymentsDtoList = purchaseInvoicePaymentsList.stream()
+                    .map(PurchasePaymentDto::new)
+                    .toList();
+            if (salesInvoicePaymentsDtoList.isEmpty()) {
+                response.setErrors(List.of("No Purchase Invoice payment Reports exist with-in the given range! "));
+                return response;
+            }
+            response.setResult(salesInvoicePaymentsDtoList);
+            response.setSuccessMessage("Purchase Invoice payment reports are retrieved from the given range! ");
+            return response;
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setErrors(List.of("Couldn't Retrieve any Purchase Invoice payment Reports!"));
+            response.setStatus(HttpStatus.BAD_REQUEST);
+        }
+        return response;
+    }
+
+    //    @Override
+    public NonPaginatedResponse selectAllPaymentsOfaCustomerWithInRange(Long custId, LocalDateTime start, LocalDateTime end) {
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        List<ConfirmInvoiceEntity> salesInvoiceList = confirmInvoiceRepo.findByCustomer_CustId(custId);
+        if (salesInvoiceList.isEmpty()) {
+            response.setErrors(List.of("No Sales Invoice exist for the selected Customer!"));
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            return response;
+        }
+
+
+//    List<ConfirmPaymentsRepo> salesInvoiceList = confirmSalesInvoicePaymentsRepo.findByConfirmInvoice_ConfirmInvoiceIdAndPaidDateBetween()
+        for (ConfirmInvoiceEntity anInvoice : salesInvoiceList) {
+            List<ConfirmPaymentsEntity> salesInvoicePayment = confirmSalesInvoicePaymentsRepo
+                    .findByConfirmInvoice_ConfirmInvoiceIdAndPaidDateBetween(anInvoice.getConfirmInvoiceId(), start, end);
+            if(salesInvoicePayment.isEmpty()){
+                response.setErrors(List.of("No Sales Invoice Payments exist for the selected Customer's invoices!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
+            List<ConfirmPaymentsDto> paymentsDtoList = salesInvoicePayment.stream()
+                    .map(ConfirmPaymentsDto::new)
+                    .toList();
+
+        }
+        List<ConfirmInvoiceEntity> confirmedSalesInvoice = salesInvoiceList.parallelStream()
+                .map().
+
+
+
+        return response;
+    }
 
 }
