@@ -1,12 +1,13 @@
 package com.appli.clcapi.customer.service;
 
+import com.appli.clcapi.common.response.NonPaginatedResponse;
 import com.appli.clcapi.customer.dto.CustomerDto;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public interface CustomerService {
-    String register(CustomerDto customerDto);
+    NonPaginatedResponse register(CustomerDto customerDto);
 
     String delete(Long custId);
 

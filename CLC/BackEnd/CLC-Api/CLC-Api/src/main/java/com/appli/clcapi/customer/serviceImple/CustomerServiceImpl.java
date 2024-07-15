@@ -1,10 +1,12 @@
 package com.appli.clcapi.customer.serviceImple;
 
+import com.appli.clcapi.common.response.NonPaginatedResponse;
 import com.appli.clcapi.customer.dto.CustomerDto;
 import com.appli.clcapi.customer.entity.CustomerEntity;
 import com.appli.clcapi.customer.repository.CustomerRepo;
 import com.appli.clcapi.customer.service.CustomerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,20 +15,36 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CustomerServiceImple implements CustomerService {
+public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepo customerRepo;
     @Override
-    public String register(CustomerDto customerDto) {
-      var customer = CustomerEntity
-              .builder()
-              .custId(customerDto.getCustId())
-              .custName(customerDto.getCustName())
-              .address(customerDto.getAddress())
-              .email(customerDto.getEmail())
-              .contact(customerDto.getContact())
-              .build();
-        customerRepo.save(customer);
-       return "Customer Inserted";
+    public NonPaginatedResponse register(CustomerDto customerDto) {
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        try{
+            if(customerRepo.findByCustNameContainingIgnoreCaseAndDeletedEquals(customerDto.getCustName(), false).isEmpty()){
+                var customer = CustomerEntity
+                        .builder()
+                        .custId(customerDto.getCustId())
+                        .custName(customerDto.getCustName())
+                        .address(customerDto.getAddress())
+                        .email(customerDto.getEmail())
+                        .contact(customerDto.getContact())
+                        .build();
+                customerRepo.save(customer);
+                response.setSuccessMessage("Customer is successfully created!");
+                response.setResult(customerDto);
+                response.setStatus(HttpStatus.OK);
+            }else{
+                response.setErrors(List.of("Similar customer already exists!"));
+                response.setStatus(HttpStatus.FORBIDDEN);
+            }
+            return response;
+        }catch (Exception e){
+            e.printStackTrace();
+            response.setErrors(List.of("Couldn't create the user"));
+            response.setStatus(HttpStatus.BAD_REQUEST);
+        }
+        return response;
     }
 
     @Override
@@ -48,10 +66,10 @@ public class CustomerServiceImple implements CustomerService {
     @Override
     public String update(CustomerDto customerDto) {
         try{
-            Optional<CustomerEntity> foundCust= customerRepo.findById(customerDto.getCustId());
+            Optional<CustomerEntity> aCust= customerRepo.findById(customerDto.getCustId());
             CustomerEntity updatedCustomer;
-            if(foundCust.isPresent()){
-                updatedCustomer = foundCust.get();
+            if(aCust.isPresent()){
+                updatedCustomer = aCust.get();
                 updatedCustomer.setCustName(customerDto.getCustName());
                 updatedCustomer.setEmail(customerDto.getEmail());
                 updatedCustomer.setContact(customerDto.getContact());

@@ -8,4 +8,6 @@ import java.util.List;
 public interface TempChequeRepo extends JpaRepository<TempChequeEntity,Long> {
 
 List<TempChequeEntity> findByTempInvoiceEntity_TempInvoiceId(Long invoiceId);
+
+
 }

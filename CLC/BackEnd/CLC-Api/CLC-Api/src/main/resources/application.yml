@@ -14,4 +14,4 @@ spring:
     database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
 app:
-  default-admin-password: clc@admin2025
+  default-admin-password: admin2025

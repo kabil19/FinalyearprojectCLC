@@ -10,6 +10,7 @@ import com.appli.clcapi.user.repository.UserRepo;
 import com.appli.clcapi.user.service.UserService;
 import com.appli.clcapi.util.CurrentUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.*;
@@ -25,23 +26,30 @@ public class UserServiceImpl implements UserService {
     public NonPaginatedResponse register(UserDto userDto) {
 
         NonPaginatedResponse response = new NonPaginatedResponse();
-        if (userRepo.findByUsernameAndDeletedEquals(userDto.getUsername(), false).isEmpty()) {
-            var user = UserEntity.builder()
-                    .userId(userDto.getUserId())
-                    .username(userDto.getUsername().toLowerCase())
-                    .firstname(userDto.getFirstname())
-                    .lastname(userDto.getLastname())
-                    .gender(userDto.getGender())
-                    .role(userDto.getRole())
-                    .email(userDto.getEmail())
-                    .password(passwordEncoder.encode(userDto.getPassword()))
-                    .build();
-            UserEntity aUser = userRepo.save(user);
-            GetUserReqDto getUserDTO = new GetUserReqDto(aUser);
-            response.setResult(getUserDTO);
-            response.setSuccessMessage(UserConstants.USER_CREATED_SUCCESSFULLY);
-        } else {
-            response.setErrors(List.of(UserConstants.USER_IS_ALREADY_EXIST));
+        try{
+            if (userRepo.findByUsernameAndDeletedEquals(userDto.getUsername(), false).isEmpty()) {
+                var user = UserEntity.builder()
+                        .userId(userDto.getUserId())
+                        .username(userDto.getUsername().toLowerCase())
+                        .firstname(userDto.getFirstname())
+                        .lastname(userDto.getLastname())
+                        .gender(userDto.getGender())
+                        .role(userDto.getRole())
+                        .email(userDto.getEmail())
+                        .password(passwordEncoder.encode(userDto.getPassword()))
+                        .build();
+                UserEntity aUser = userRepo.save(user);
+                GetUserReqDto getUserDTO = new GetUserReqDto(aUser);
+                response.setResult(getUserDTO);
+                response.setSuccessMessage(UserConstants.USER_CREATED_SUCCESSFULLY);
+            } else {
+                response.setErrors(List.of(UserConstants.USER_IS_ALREADY_EXIST));
+                response.setStatus(HttpStatus.FORBIDDEN);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            response.setErrors(List.of("User creation is failed!"));
+            response.setStatus(HttpStatus.BAD_REQUEST);
         }
         return response;
     }

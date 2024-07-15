@@ -1,5 +1,6 @@
 package com.appli.clcapi.customer.controller;
 
+import com.appli.clcapi.common.response.NonPaginatedResponse;
 import com.appli.clcapi.customer.dto.CustomerDto;
 import com.appli.clcapi.customer.service.CustomerService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class CustomerController {
 
     private final CustomerService customerService;
     @PostMapping("register")
-    public String register(@RequestBody CustomerDto customerDto){
+    public NonPaginatedResponse register(@RequestBody CustomerDto customerDto){
         return customerService.register(customerDto);
     }
 

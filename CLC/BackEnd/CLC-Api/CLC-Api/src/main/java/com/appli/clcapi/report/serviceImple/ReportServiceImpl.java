@@ -178,14 +178,14 @@ public class ReportServiceImpl implements ReportService {
             start = start.with(LocalTime.MIN);
             end = end.with(LocalTime.MAX);
             List<PurchasePaymentEntity> purchaseInvoicePaymentsList = purchasePaymentRepo.findByConfirmPurchaseEntity_ConfirmPurchaseIdAndPaidDateBetween(purchaseInvoiceId, start, end);
-            List<PurchasePaymentDto> salesInvoicePaymentsDtoList = purchaseInvoicePaymentsList.stream()
+            List<PurchasePaymentDto> purchaseInvoicePaymentsDtoList = purchaseInvoicePaymentsList.stream()
                     .map(PurchasePaymentDto::new)
                     .toList();
-            if (salesInvoicePaymentsDtoList.isEmpty()) {
+            if (purchaseInvoicePaymentsDtoList.isEmpty()) {
                 response.setErrors(List.of("No Purchase Invoice payment Reports exist with-in the given range! "));
                 return response;
             }
-            response.setResult(salesInvoicePaymentsDtoList);
+            response.setResult(purchaseInvoicePaymentsDtoList);
             response.setSuccessMessage("Purchase Invoice payment reports are retrieved from the given range! ");
             return response;
         } catch (Exception e) {

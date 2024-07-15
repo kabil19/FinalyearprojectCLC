@@ -15,5 +15,5 @@ public interface CustomerRepo extends JpaRepository<CustomerEntity, Long> {
     Iterable<CustomerEntity> findByEmailContainingIgnoreCaseOrAddressContainingIgnoreCaseOrCustNameContaining(String email, String address,  String custName);
 
     List<CustomerEntity> findAllByDeletedEquals(boolean state);
-    Optional<CustomerEntity> findByCustName(String custName);
+    Optional<CustomerEntity> findByCustNameContainingIgnoreCaseAndDeletedEquals(String custName, boolean state);
 }

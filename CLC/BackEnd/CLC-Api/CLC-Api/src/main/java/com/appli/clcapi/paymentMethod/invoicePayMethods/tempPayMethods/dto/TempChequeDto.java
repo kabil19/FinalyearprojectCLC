@@ -1,5 +1,6 @@
 package com.appli.clcapi.paymentMethod.invoicePayMethods.tempPayMethods.dto;
 
+import com.appli.clcapi.paymentMethod.invoicePayMethods.tempPayMethods.entity.TempChequeEntity;
 import com.appli.clcapi.tempInvoice.dto.TempInvoiceDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -7,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,10 +21,10 @@ public class TempChequeDto {
     private Double paidAmount;
 
     @JsonProperty("paidDate")
-    private Date paidDate;
+    private LocalDateTime paidDate;
 
     @JsonProperty("chequeDueDate")
-    private Date chequeDueDate;
+    private LocalDateTime chequeDueDate;
 
     @JsonProperty("paymentId")
     private Long paymentId;
@@ -32,4 +33,12 @@ public class TempChequeDto {
     private TempInvoiceDto tempInvoiceDto;
 
 
+    public TempChequeDto(TempChequeEntity tempChequeEntity) {
+        this.chequeRefNo = tempChequeEntity.getChequeRefNo();
+        this.paidAmount = tempChequeEntity.getPaidAmount();
+        this.paidDate = tempChequeEntity.getPaidDate();
+        this.chequeDueDate = tempChequeEntity.getChequeDueDate();
+        this.paymentId = tempChequeEntity.getPaymentId();
+        this.tempInvoiceDto = new TempInvoiceDto(tempChequeEntity.getTempInvoiceEntity());
+    }
 }
