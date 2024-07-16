@@ -95,24 +95,34 @@ public class UserServiceImpl implements UserService {
 //        NonPaginatedResponse response = new NonPaginatedResponse();
 //        return userRepo.findByUsernameAndDeletedEquals(name, Boolean.FALSE);
 //    }
-
     @Override
     public NonPaginatedResponse deleteUser(Long userId) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         UserEntity aUser = userRepo.getReferenceById(userId);
 
         try {
-            if (Objects.equals(currentUserService.getCurrentUser().getUserId(), userId)) {
-                response.setErrors(List.of("Can't delete!"));
+            //            The person with USER role, can't delete the user data
+            if(currentUserService.getCurrentUser().getRole().equals(Roles.USER)){
+                response.setErrors(List.of("Role User has no privilege to delete!"));
+                response.setStatus(HttpStatus.FORBIDDEN);
                 return response;
             }
+//            The user can't delete himself while he/she is logged in
+            if (Objects.equals(currentUserService.getCurrentUser().getUserId(), userId)) {
+                response.setErrors(List.of("Can't delete the user who is currently logged in!"));
+                response.setStatus(HttpStatus.FORBIDDEN);
+                return response;
+            }
+
+//            Admin can't be deleted from the DB
             if (aUser.getRole() == Roles.ADMIN) {
                 response.setErrors(List.of("Admin can not be deleted!"));
+                response.setStatus(HttpStatus.FORBIDDEN);
                 return response;
             }
             aUser.setDeleted(true);
             userRepo.save(aUser);
-            response.setSuccessMessage("User Deleted successfully!");
+            response.setSuccessMessage("The selected User's data is Deleted successfully!");
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException();
@@ -126,19 +136,22 @@ public class UserServiceImpl implements UserService {
         try {
             Optional<UserEntity> existingUserOptional = userRepo.findById(userDto.getUserId());
             UserEntity aUser = new UserEntity();
-//            If the current logged in person's role is user then the privilege to update is limited.
+//            If the current logged in person's role is user then the privilege to update is restricted.
             if(currentUserService.getCurrentUser().getRole().equals(Roles.USER)){
                 response.setErrors(Collections.singletonList("Role User has no privilege to update!"));
+                response.setStatus(HttpStatus.FORBIDDEN);
                 return response;
             }
             if (existingUserOptional.isPresent()) {
                 aUser = existingUserOptional.get();
                 aUser.setFirstname(userDto.getFirstname());
                 aUser.setLastname(userDto.getLastname());
-
                 aUser.setRole(userDto.getRole());
                 aUser.setGender(userDto.getGender());
                 aUser.setEmail(userDto.getEmail());
+                aUser.setUsername(userDto.getUsername());
+/*  if in the front-end request, both password and confirm password aren't given then the data
+is updated with the previous password. if not, the password is also updated as well.  */
                 if (userDto.getConfirmPw() == null && userDto.getPassword() == null) {
                     //when updating w/d the same password
                     aUser.setPassword(existingUserOptional.get().getPassword());
@@ -148,11 +161,14 @@ public class UserServiceImpl implements UserService {
                 }
             }
             userRepo.save(aUser);
-            response.setSuccessMessage("Successfully updated!");
+            response.setSuccessMessage("User is Successfully updated!");
+            response.setStatus(HttpStatus.OK);
             return response;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setErrors(List.of("Couldn't update the user data!"));
+            return response;
         }
     }
 
