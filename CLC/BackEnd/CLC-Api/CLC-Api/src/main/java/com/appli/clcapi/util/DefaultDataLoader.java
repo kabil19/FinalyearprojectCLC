@@ -29,7 +29,7 @@ public class DefaultDataLoader {
             aUser.setUsername("Admin");
             aUser.setRole(ADMIN);
             aUser.setPassword(password);
-            userServiceImpl.register(aUser);
+            userServiceImpl.insertNewUser(aUser);
             log.info("Default User created!");
         }
 

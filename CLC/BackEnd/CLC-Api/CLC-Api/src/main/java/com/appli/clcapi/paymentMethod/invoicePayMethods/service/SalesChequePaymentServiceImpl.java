@@ -18,7 +18,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class ChequePaymentServiceImpl implements ChequePaymentsService{
+public class SalesChequePaymentServiceImpl implements SalesChequePaymentsService {
 
     private final TempChequeRepo tempChequeRepo;
     private final ConfirmChequeRepo confirmChequeRepo;

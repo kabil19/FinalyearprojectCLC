@@ -10,7 +10,7 @@ import java.util.List;
 public interface UserService{
 
 
-    NonPaginatedResponse register(UserDto userDto)throws Exception;
+    NonPaginatedResponse insertNewUser(UserDto userDto)throws Exception;
 
     List<GetUserReqDto> getAllActiveUsers() throws Exception;
 

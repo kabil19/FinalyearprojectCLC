@@ -17,9 +17,9 @@ import java.util.List;
 public class UserController {
 
 private final UserService userService ;
-    @PostMapping(path = "register")
+    @PostMapping(path = "insertNewUser")
     public NonPaginatedResponse registerUser(@RequestBody UserDto userDto) throws Exception {
-        return userService.register(userDto);
+        return userService.insertNewUser(userDto);
     }
     @GetMapping(path="getAll")
     public List<GetUserReqDto> getAllUsers() throws Exception

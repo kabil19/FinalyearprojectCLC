@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final CurrentUserService currentUserService;
 
-    public NonPaginatedResponse register(UserDto userDto) {
+    public NonPaginatedResponse insertNewUser(UserDto userDto) {
 
         NonPaginatedResponse response = new NonPaginatedResponse();
         try{
@@ -126,6 +126,7 @@ public class UserServiceImpl implements UserService {
         try {
             Optional<UserEntity> existingUserOptional = userRepo.findById(userDto.getUserId());
             UserEntity aUser = new UserEntity();
+//            If the current logged in person's role is user then the privilege to update is limited.
             if(currentUserService.getCurrentUser().getRole().equals(Roles.USER)){
                 response.setErrors(Collections.singletonList("Role User has no privilege to update!"));
                 return response;
@@ -134,7 +135,7 @@ public class UserServiceImpl implements UserService {
                 aUser = existingUserOptional.get();
                 aUser.setFirstname(userDto.getFirstname());
                 aUser.setLastname(userDto.getLastname());
-//                aUser.setUsername(userDto.getUsername().toLowerCase());
+
                 aUser.setRole(userDto.getRole());
                 aUser.setGender(userDto.getGender());
                 aUser.setEmail(userDto.getEmail());
@@ -144,7 +145,6 @@ public class UserServiceImpl implements UserService {
                 } else {
                     //when updating w/d a new password
                     aUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
-//                    aUser.setConfirmPw(passwordEncoder.encode(userDto.getConfirmPw()));
                 }
             }
             userRepo.save(aUser);

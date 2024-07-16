@@ -1,7 +1,7 @@
 package com.appli.clcapi.authentication.serviceImple;
 
 import com.appli.clcapi.authentication.dto.request.LoginDto;
-import com.appli.clcapi.authentication.dto.response.LoginSuccessful;
+import com.appli.clcapi.authentication.dto.response.AuthResponse;
 import com.appli.clcapi.authentication.repository.UserLoginRepo;
 import com.appli.clcapi.authentication.service.UserLoginService;
 import com.appli.clcapi.authentication.service.jwtService.JwtService;
@@ -20,7 +20,7 @@ public class UserLoginServiceImpl implements UserLoginService {
     private final JwtService jwtService;
 
     @Override
-    public LoginSuccessful userLogin(LoginDto loginRequest) {
+    public AuthResponse userLogin(LoginDto loginRequest) {
         try{
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -28,16 +28,17 @@ public class UserLoginServiceImpl implements UserLoginService {
                             loginRequest.getPassword()
                     )
             );
-            var existingUserInDB = userLoginRepo.findByUsername(loginRequest.getUsername()).orElseThrow(()->new UsernameNotFoundException("User Not Found"));
+            var existingUserInDB = userLoginRepo.findByUsername(loginRequest.getUsername()).
+                    orElseThrow(()->new UsernameNotFoundException("User Not Found"));
             String jwtToken = jwtService.generateToken(existingUserInDB);
-            return LoginSuccessful.builder()
+            return AuthResponse.builder()
                     .token(jwtToken)
                     .userName(existingUserInDB.getUsername())
                     .build();
         }catch (Exception e){
             e.printStackTrace();
+            throw new IllegalArgumentException("Login failed!");
         }
-    return null;
 
     }
 
