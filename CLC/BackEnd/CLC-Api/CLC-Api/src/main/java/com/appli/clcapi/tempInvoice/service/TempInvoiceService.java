@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface TempInvoiceService {
     NonPaginatedResponse createTempSalesInvoice(TempInvoiceDto tempInvoiceDto);
-    ResponseEntity<String> delete(Long tempInvoiceId);
+    NonPaginatedResponse deleteTempSalesInvoice(Long tempInvoiceId);
     ResponseEntity<String> update(TempInvoiceDto tempInvoiceDto);
     ResponseEntity<List<?>> getAll();
     ResponseEntity<ArrayList<?>> select(String existingChar);

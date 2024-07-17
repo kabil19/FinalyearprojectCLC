@@ -62,17 +62,27 @@ public class TempInvoiceServiceImpl implements TempInvoiceService {
     }
 
     @Override
-    public ResponseEntity<String> delete(Long tempInvoiceId) {
-        Optional<TempInvoiceEntity> aTempInvoice = tempInvoiceRepo.findById(tempInvoiceId);
-        if (aTempInvoice.isPresent()) {
-            List<ProductCartEntity> cartItems = tempProductCartRepo.findByTempInvoiceEntity_TempInvoiceId(aTempInvoice.get().getTempInvoiceId());
-            if (!aTempInvoice.get().getFinalized()) {
-                alterQTYinStockEntity(cartItems);
-                tempInvoiceRepo.deleteById(tempInvoiceId);
-                return new ResponseEntity<>("deleted", HttpStatus.OK);
+    public NonPaginatedResponse deleteTempSalesInvoice(Long tempInvoiceId) {
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        try{
+            Optional<TempInvoiceEntity> aTempInvoice = tempInvoiceRepo.findById(tempInvoiceId);
+            if (aTempInvoice.isPresent()) {
+                List<ProductCartEntity> cartItems = tempProductCartRepo.findByTempInvoiceEntity_TempInvoiceId(aTempInvoice.get().getTempInvoiceId());
+                if (!aTempInvoice.get().getFinalized()) {
+                    alterQTYinStockEntity(cartItems);
+                    tempInvoiceRepo.deleteById(tempInvoiceId);
+                    response.setSuccessMessage("Temp Sales Invoice is Successfully deleted!");
+                    response.setStatus(HttpStatus.OK);
+                }
             }
+            return response;
+        }catch (Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setErrors(List.of("Couldn't Delete the selected Temp Sales Invoice!"));
         }
-        return new ResponseEntity<>("Can't be deleted", HttpStatus.FORBIDDEN);
+        return response;
+
     }
 
     private void alterQTYinStockEntity(List<ProductCartEntity> cartItems) {

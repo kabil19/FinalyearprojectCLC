@@ -24,9 +24,9 @@ public class TempInvoiceController {
             return tempInvoiceService.createTempSalesInvoice(tempInvoiceDto);
         }
 
-        @DeleteMapping("delete/{tempInvoiceId}")
-        public ResponseEntity<String> delete(@PathVariable Long tempInvoiceId)throws Exception{
-            return tempInvoiceService.delete(tempInvoiceId);
+        @DeleteMapping("deleteTempSalesInvoice/{tempInvoiceId}")
+        public NonPaginatedResponse delete(@PathVariable Long tempInvoiceId)throws Exception{
+            return tempInvoiceService.deleteTempSalesInvoice(tempInvoiceId);
         }
 
         @PutMapping("update")
