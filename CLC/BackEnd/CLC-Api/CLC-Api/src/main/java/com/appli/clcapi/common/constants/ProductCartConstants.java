@@ -1,6 +1,6 @@
 package com.appli.clcapi.common.constants;
 
 public interface ProductCartConstants {
-    String PRODUCT_HAS_BEEN_ADDED_INTO_THE_CART_SUCCESSFULLY="PRODUCT HAS BEEN ADDED INTO THE CART SUCCESSFULLY";
-    String MORE_QUANTITY_HAS_BEEN_UPDATED_TO_THE_PRODUCT="MORE QUANTITY HAS BEEN ADDED";
+    String PRODUCT_HAS_BEEN_ADDED_INTO_THE_CART_SUCCESSFULLY="Product is successfully added to the cart!";
+    String MORE_QUANTITY_HAS_BEEN_UPDATED_TO_THE_PRODUCT="More quantity is added to the cart!";
 }

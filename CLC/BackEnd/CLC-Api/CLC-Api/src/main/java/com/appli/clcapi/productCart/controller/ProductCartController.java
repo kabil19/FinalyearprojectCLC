@@ -20,15 +20,15 @@ public class ProductCartController {
 
 
     private final ProductCartService productCartService;
-    @PostMapping("register")
-    public NonPaginatedResponse register(@RequestBody ProductCartDto productCartDto)
+    @PostMapping("addProductsToCart")
+    public NonPaginatedResponse addProductsToCart(@RequestBody ProductCartDto productCartDto)
     {
-        return productCartService.addToCart(productCartDto);
+        return productCartService.addProductsToCart(productCartDto);
     }
 
-    @DeleteMapping("delete/{proCartId}")
-    public NonPaginatedResponse delete(@PathVariable Long proCartId){
-        return productCartService.delete(proCartId);
+    @DeleteMapping("deleteProductFromTheCart/{proCartId}")
+    public NonPaginatedResponse deleteProductFromTheCart(@PathVariable Long proCartId){
+        return productCartService.deleteProductFromTheCart(proCartId);
     }
 
     @PutMapping("update")

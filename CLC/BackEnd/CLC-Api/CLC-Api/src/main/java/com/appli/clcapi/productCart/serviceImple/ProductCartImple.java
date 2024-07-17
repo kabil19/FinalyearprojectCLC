@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +34,7 @@ public class ProductCartImple implements ProductCartService {
     private static final Logger logger = LoggerFactory.getLogger(ProductCartImple.class);
     @Override
     @Transactional
-    public NonPaginatedResponse addToCart(ProductCartDto productCartDto) {
+    public NonPaginatedResponse addProductsToCart(ProductCartDto productCartDto) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try{
             Long stockId = productCartDto.getStockDto().getStockId();
@@ -115,7 +114,7 @@ public class ProductCartImple implements ProductCartService {
         existingItemsDetails.setQuantity(updatedQty);
         Double discount = existingItemsDetails.getDiscount() + productCartDto.getDiscount();
         existingItemsDetails.setDiscount(discount);
-        Double total = (stocksFromStockEntity.getSellingPrice() * updatedQty);
+        double total = (stocksFromStockEntity.getSellingPrice() * updatedQty);
 //        long total = existingItemsDetails.getTotal() + totalForNewAddition;
         existingItemsDetails.setTotal(total);
         Double netAmount = total - (updatedQty * discount);
@@ -130,40 +129,56 @@ public class ProductCartImple implements ProductCartService {
     }
     @Override
     @Transactional
-    public NonPaginatedResponse delete(Long cartId){
+    public NonPaginatedResponse deleteProductFromTheCart(Long cartId){
         NonPaginatedResponse response = new NonPaginatedResponse();
 
-        ProductCartEntity anItemInCart =productCartRepo.findById(cartId).orElseThrow();
+        try{
+            ProductCartEntity anItemInCart = productCartRepo.findById(cartId).orElseThrow();
 
-        StockEntity stockEntity = anItemInCart.getStockEntity();
-        Optional<StockEntity> aStock = stockRepo.findById(stockEntity.getStockId());
-
-
-
-        Double noOfQtyToBeDeleted = anItemInCart.getQuantity();
-        Double currentQtyInStock = aStock.get().getQuantity();
-        aStock.get().setQuantity((currentQtyInStock + noOfQtyToBeDeleted));
-
-        Optional<TempInvoiceEntity> tempInvoiceEntity = tempInvoiceRepo.findById(anItemInCart.getTempInvoiceEntity().getTempInvoiceId());
-        tempInvoiceEntity.get().setNetAmount(tempInvoiceEntity.get().getNetAmount()- anItemInCart.getNetAmount());
-        tempInvoiceRepo.save(tempInvoiceEntity.get());
+            StockEntity stockEntity = anItemInCart.getStockEntity();
+            Optional<StockEntity> aStock = stockRepo.findById(stockEntity.getStockId());
 
 
-        stockRepo.save(aStock.get());
-        stockRepo.flush();
+            if (aStock.isPresent()) {
+                Double noOfQtyToBeDeleted = anItemInCart.getQuantity();
+                Double currentQtyInStock = aStock.get().getQuantity();
+                aStock.get().setQuantity((currentQtyInStock + noOfQtyToBeDeleted));
 
-        productCartRepo.deleteById(cartId);
-        productCartRepo.flush();
+                Optional<TempInvoiceEntity> tempInvoiceEntity = tempInvoiceRepo.findById(anItemInCart.getTempInvoiceEntity().getTempInvoiceId());
+                if (tempInvoiceEntity.isPresent()) {
+                    tempInvoiceEntity.get().setNetAmount(tempInvoiceEntity.get().getNetAmount() - anItemInCart.getNetAmount());
+                    tempInvoiceRepo.save(tempInvoiceEntity.get());
 
-        ProductCartDto productCartDto = new ProductCartDto(anItemInCart);
-        Long stockId = aStock.get().getStockId();
-        String itemName = aStock.get().getItemName();
 
-        response.setSuccessMessage("The Item :- "+ stockId +"-"+ itemName +" Successfully removed from the cart");
-        response.setResult(productCartDto);
-        response.setStatus(HttpStatus.OK);
+                    stockRepo.save(aStock.get());
+                    stockRepo.flush();
+
+                    productCartRepo.deleteById(cartId);
+                    productCartRepo.flush();
+
+                    ProductCartDto productCartDto = new ProductCartDto(anItemInCart);
+
+                    response.setSuccessMessage("The product is successfully deleted from the cart!");
+                    response.setResult(productCartDto);
+                    response.setStatus(HttpStatus.OK);
+
+                } else {
+                    response.setErrors(List.of("Invoice isn't present!"));
+                    response.setStatus(HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                response.setErrors(List.of("Stock isn't present!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+            }
+            return response;
+        }catch (Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setErrors(List.of("Couldn't delete the product!"));
+        }
         return response;
     }
+
     @Override
     public NonPaginatedResponse getAllTempProCartItemsByInvoiceId(Long invoiceId){
         NonPaginatedResponse response = new NonPaginatedResponse();
@@ -192,49 +207,63 @@ public class ProductCartImple implements ProductCartService {
         public NonPaginatedResponse update(ProductCartDto productCartDto){
                 NonPaginatedResponse response = new NonPaginatedResponse();
 
-                Optional<ProductCartEntity> selectedCartRecord = productCartRepo.findById(productCartDto.getProCartId());
-                double currentQtyInTheRecord = selectedCartRecord.get().getQuantity();
-                double newlySelectedQty = productCartDto.getQuantity();
-                ProductCartEntity cartRecordDetails = selectedCartRecord.get();
+        try{
+            Optional<ProductCartEntity> selectedCartRecord = productCartRepo.findById(productCartDto.getProCartId());
+            if (selectedCartRecord.isEmpty()) {
+                response.setErrors(List.of("The Product isn't exist!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
 
-                Optional<TempInvoiceEntity> tempInvoiceEntity = tempInvoiceRepo.findById(productCartDto.getTempInvoiceDto().getTempInvoiceId());
-                if(selectedCartRecord.isPresent()){
-                    double quantityChange  = currentQtyInTheRecord - newlySelectedQty;//130-200=-70
+            double currentQtyInTheRecord = selectedCartRecord.get().getQuantity();
+            double newlySelectedQty = productCartDto.getQuantity();
+            ProductCartEntity cartRecordDetails = selectedCartRecord.get();
+
+            Optional<TempInvoiceEntity> tempInvoiceEntity = tempInvoiceRepo.findById(productCartDto.getTempInvoiceDto().getTempInvoiceId());
+            if (tempInvoiceEntity.isEmpty()) {
+                response.setErrors(List.of("No such invoice exists!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
+            double quantityChange = currentQtyInTheRecord - newlySelectedQty;//130-200=-70
 //                    double quantity = currentQtyInTheRecord - quantityChange;//130-(-70)=>130+70=200
-                    double previousQtyAmount = selectedCartRecord.get().getNetAmount();
+            double previousQtyAmount = selectedCartRecord.get().getNetAmount();
 
-                    cartRecordDetails.setQuantity(productCartDto.getQuantity());
-                    cartRecordDetails.setDiscount(productCartDto.getDiscount());
-                    cartRecordDetails.setTotal(productCartDto.getTotal());
-                    cartRecordDetails.setNetAmount(productCartDto.getNetAmount());
-
-
-                    double netAmount = tempInvoiceEntity.get().getNetAmount() - previousQtyAmount;
-                    tempInvoiceEntity.get().setNetAmount(netAmount+ productCartDto.getNetAmount());
-
-                    tempInvoiceRepo.save(tempInvoiceEntity.get());
-                    productCartRepo.save(cartRecordDetails);
-                    productCartRepo.flush();
+            cartRecordDetails.setQuantity(productCartDto.getQuantity());
+            cartRecordDetails.setDiscount(productCartDto.getDiscount());
+            cartRecordDetails.setTotal(productCartDto.getTotal());
+            cartRecordDetails.setNetAmount(productCartDto.getNetAmount());
 
 
+            double netAmount = tempInvoiceEntity.get().getNetAmount() - previousQtyAmount;
+            tempInvoiceEntity.get().setNetAmount(netAmount + productCartDto.getNetAmount());
 
-                    Long stockId = productCartDto.getStockDto().getStockId();
-                    Optional<StockEntity> theStockTobeUpdated = stockRepo.findById(stockId);
-                    StockEntity stockEntity = theStockTobeUpdated.get();
-                    updateIntoStockEntity(stockEntity, stockEntity.getQuantity() + quantityChange);
+            tempInvoiceRepo.save(tempInvoiceEntity.get());
+            productCartRepo.save(cartRecordDetails);
+            productCartRepo.flush();
 
-                    response.setResult(null);
-                    response.setSuccessMessage("The selected Item has been Successfully updated");
-                    response.setStatus(HttpStatus.OK);
-                    return response;
-                }else{
-                    response.setResult(null);
-                    response.setErrors(List.of("Unsuccessful"));
-                    response.setStatus(HttpStatus.NOT_FOUND);
-                    return response;
-                }
-    
+            Long stockId = productCartDto.getStockDto().getStockId();
+            Optional<StockEntity> theStockTobeUpdated = stockRepo.findById(stockId);
+            if (theStockTobeUpdated.isEmpty()) {
+                response.setErrors(List.of("No such Product exists!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
+            StockEntity stockEntity = theStockTobeUpdated.get();
+            updateIntoStockEntity(stockEntity, stockEntity.getQuantity() + quantityChange);
+
+            response.setResult(null);
+            response.setSuccessMessage("The selected Item is Successfully updated!");
+            response.setStatus(HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setErrors(List.of("Couldn't update the cart!"));
         }
+
+        return response;
+
+    }
     @Override
     public NonPaginatedResponse select(Long invoiceId, String exitingChar){
         NonPaginatedResponse response = new NonPaginatedResponse();
