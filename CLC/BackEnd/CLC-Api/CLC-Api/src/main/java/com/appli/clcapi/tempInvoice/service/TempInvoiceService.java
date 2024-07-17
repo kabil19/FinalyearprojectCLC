@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface TempInvoiceService {
-    ResponseEntity<String> register(TempInvoiceDto tempInvoiceDto);
+    NonPaginatedResponse createTempSalesInvoice(TempInvoiceDto tempInvoiceDto);
     ResponseEntity<String> delete(Long tempInvoiceId);
     ResponseEntity<String> update(TempInvoiceDto tempInvoiceDto);
     ResponseEntity<List<?>> getAll();

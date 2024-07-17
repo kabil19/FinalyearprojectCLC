@@ -19,9 +19,9 @@ import java.util.List;
 public class TempInvoiceController {
 
         private final TempInvoiceService tempInvoiceService;
-        @PostMapping("register")
-        public ResponseEntity<String> register(@RequestBody TempInvoiceDto tempInvoiceDto)throws Exception{
-            return tempInvoiceService.register(tempInvoiceDto);
+        @PostMapping("createTempSalesInvoice")
+        public NonPaginatedResponse register(@RequestBody TempInvoiceDto tempInvoiceDto)throws Exception{
+            return tempInvoiceService.createTempSalesInvoice(tempInvoiceDto);
         }
 
         @DeleteMapping("delete/{tempInvoiceId}")
@@ -40,12 +40,12 @@ public class TempInvoiceController {
         }
 
         @GetMapping("getTempInvoiceById/{invoiceId}")
-        public NonPaginatedResponse getTempInvoiceById(@PathVariable Long invoiceId)throws Exception{
+        public NonPaginatedResponse getTempInvoiceById(@PathVariable Long invoiceId){
             return tempInvoiceService.getTempInvoiceById(invoiceId);
         }
 
         @GetMapping("select/{existingChar}")
-        public ResponseEntity<ArrayList<?>> select(@PathVariable String existingChar)throws Exception{
+        public ResponseEntity<ArrayList<?>> select(@PathVariable String existingChar){
             return tempInvoiceService.select(existingChar);
         }
 

@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService {
         try {
             Optional<UserEntity> existingUserOptional = userRepo.findById(userDto.getUserId());
             UserEntity aUser = new UserEntity();
-//            If the current logged in person's role is user then the privilege to update is restricted.
+            //If the current logged in person's role is user then the privilege to update is restricted.
             if(currentUserService.getCurrentUser().getRole().equals(Roles.USER)){
                 response.setErrors(Collections.singletonList("Role User has no privilege to update!"));
                 response.setStatus(HttpStatus.FORBIDDEN);
@@ -150,8 +150,8 @@ public class UserServiceImpl implements UserService {
                 aUser.setGender(userDto.getGender());
                 aUser.setEmail(userDto.getEmail());
                 aUser.setUsername(userDto.getUsername());
-/*  if in the front-end request, both password and confirm password aren't given then the data
-is updated with the previous password. if not, the password is also updated as well.  */
+            /*  if in the front-end request, both password and confirm password aren't given then the data
+            is updated with the previous password. if not, the password is also updated as well.  */
                 if (userDto.getConfirmPw() == null && userDto.getPassword() == null) {
                     //when updating w/d the same password
                     aUser.setPassword(existingUserOptional.get().getPassword());

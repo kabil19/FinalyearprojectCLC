@@ -2,6 +2,7 @@ package com.appli.clcapi.tempInvoice.serviceImple;
 
 import com.appli.clcapi.common.response.NonPaginatedResponse;
 import com.appli.clcapi.customer.entity.CustomerEntity;
+import com.appli.clcapi.customer.repository.CustomerRepo;
 import com.appli.clcapi.productCart.entity.ProductCartEntity;
 import com.appli.clcapi.productCart.repository.ProductCartRepo;
 import com.appli.clcapi.stock.entity.StockEntity;
@@ -15,23 +16,31 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RequiredArgsConstructor
 @Service
-public class TempInvoiceServiceImple implements TempInvoiceService {
+public class TempInvoiceServiceImpl implements TempInvoiceService {
 
     private final TempInvoiceRepo tempInvoiceRepo;
     private final ProductCartRepo tempProductCartRepo;
     private final StockRepo stockRepo;
+    private final CustomerRepo customerRepo;
 
     @Override
-    public ResponseEntity<String> register(TempInvoiceDto tempInvoiceDto) {
-
+    public NonPaginatedResponse createTempSalesInvoice(TempInvoiceDto tempInvoiceDto) {
+        NonPaginatedResponse response = new NonPaginatedResponse();
         try {
+            Optional<CustomerEntity> customerEntity = customerRepo.findById(tempInvoiceDto.getCustomerEntity().getCustId());
+            if (customerEntity.isEmpty()) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("The Selected Customer isn't exist!"));
+                return response;
+            }
             var anInvoice = TempInvoiceEntity.builder()
                     .tempInvoiceId(tempInvoiceDto.getTempInvoiceId())
-                    .date(tempInvoiceDto.getDate())
+                    .date(LocalDateTime.now())
                     .netAmount(tempInvoiceDto.getNetAmount())
                     .paidAmount(tempInvoiceDto.getPaidAmount())
                     .finalized(false)
@@ -40,11 +49,16 @@ public class TempInvoiceServiceImple implements TempInvoiceService {
                     .customer(new CustomerEntity(tempInvoiceDto.getCustomerEntity()))
                     .build();
             tempInvoiceRepo.save(anInvoice);
-            return new ResponseEntity<>("Invoice has been created", HttpStatus.OK);
+            response.setSuccessMessage("Sales Invoice is created!");
+            response.setStatus(HttpStatus.OK);
+            return response;
+
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setErrors(List.of("Couldn't create the Sales Invoice!"));
         }
+        return response;
     }
 
     @Override
