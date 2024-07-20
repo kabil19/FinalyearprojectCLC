@@ -2,7 +2,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password:
+    password: password
     url: jdbc:mysql://localhost:3306/clc
   jpa:
     hibernate:
@@ -13,5 +13,16 @@ spring:
         format_sql: true
     database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: kabilstudies1999@gmail.com
+    password: zioa avrj lxjx jpjp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 app:
   default-admin-password: admin2025
