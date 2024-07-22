@@ -22,5 +22,7 @@ public interface ConfirmInvoiceRepo extends JpaRepository<ConfirmInvoiceEntity, 
 
     List<ConfirmInvoiceEntity> findByDateBetween(LocalDateTime start, LocalDateTime end);
 
-    List<ConfirmInvoiceEntity> findByCustomer_CustId(long custId);
+
+    List<ConfirmInvoiceEntity> findByCustomer_CustIdAndDateBetweenOrderByConfirmInvoiceId(Long custId, LocalDateTime start, LocalDateTime end);
+
 }

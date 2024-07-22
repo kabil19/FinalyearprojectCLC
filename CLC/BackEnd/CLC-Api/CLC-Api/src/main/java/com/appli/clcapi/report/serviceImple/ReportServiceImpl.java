@@ -22,8 +22,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -200,43 +199,35 @@ public class ReportServiceImpl implements ReportService {
     public NonPaginatedResponse selectAllPaymentsOfaCustomerWithInRange(Long custId, LocalDateTime start, LocalDateTime end) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
-            List<ConfirmInvoiceEntity> salesInvoiceList = confirmInvoiceRepo.findByCustomer_CustId(custId);
-            boolean anyPaymentsFound = false;
+            start = start.with(LocalTime.MIN);
+            end = end.with(LocalTime.MAX);
+            List<ConfirmInvoiceEntity> salesInvoiceList = confirmInvoiceRepo
+                    .findByCustomer_CustIdAndDateBetweenOrderByConfirmInvoiceId(custId,start,end);
             if (salesInvoiceList.isEmpty()) {
                 response.setErrors(List.of("No Sales Invoice exist for the selected Customer!"));
                 response.setStatus(HttpStatus.NOT_FOUND);
                 return response;
             }
 
-            start = start.with(LocalTime.MIN);
-            end = end.with(LocalTime.MAX);
+
+            List<ConfirmInvoiceDto> salesInvoiceData = salesInvoiceList.stream()
+                    .map(ConfirmInvoiceDto::new)
+                    .toList();
+            List<ConfirmPaymentsEntity> listOfSalesPayments =  confirmSalesInvoicePaymentsRepo.findByConfirmInvoiceInOrderByConfirmInvoice(salesInvoiceList);
+
+            List<ConfirmPaymentsDto> paymentsListDtoOfSales = listOfSalesPayments.stream()
+                    .map(ConfirmPaymentsDto::new)
+                    .toList();
+
+            Map<String, Object> customerReportRes = new HashMap<>();
+            customerReportRes.put("salesInvoiceData", salesInvoiceData);
+            customerReportRes.put("paymentsOfTheSales", paymentsListDtoOfSales);
 
 
-            List<List<ConfirmPaymentsDto>> resultList = new ArrayList<>();
 
-            for (ConfirmInvoiceEntity anInvoice : salesInvoiceList) {
-                List<ConfirmPaymentsEntity> salesInvoicePayment = confirmSalesInvoicePaymentsRepo
-                        .findByConfirmInvoice_ConfirmInvoiceIdAndPaidDateBetween(anInvoice.getConfirmInvoiceId(), start, end);
-
-                if (!salesInvoicePayment.isEmpty()) {
-                    anyPaymentsFound = true;
-
-                    List<ConfirmPaymentsDto> paymentsDtoList = new ArrayList<>();
-                    for (ConfirmPaymentsEntity payment : salesInvoicePayment) {
-                        paymentsDtoList.add(new ConfirmPaymentsDto(payment));
-                    }
-                    resultList.add(paymentsDtoList);
-                }
-            }
-
-            if (!anyPaymentsFound) {
-                response.setErrors(List.of("No Sales Invoice Payments exist for the selected Customer's invoices!"));
-                response.setStatus(HttpStatus.NOT_FOUND);
-            } else {
-                response.setResult(resultList);
-                response.setSuccessMessage("The Selected Customer's Payments within the selected range for the Sales Invoice are retrieved!");
-                response.setStatus(HttpStatus.OK);
-            }
+            response.setResult(customerReportRes);
+            response.setSuccessMessage("The Selected Customer's Payments within the selected range for the Purchase Invoice are retrieved!");
+            response.setStatus(HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(HttpStatus.BAD_REQUEST);
@@ -246,46 +237,37 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
+
     public NonPaginatedResponse selectAllPaymentsOfaVendorWithInRange(Long vendorId, LocalDateTime start, LocalDateTime end) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
-            List<ConfirmPurchaseEntity> purchaseInvoiceList = confirmPurchaseRepo.findByVendorEntity_VendorId(vendorId);
-            boolean anyPaymentsFound = false;
+            start = start.with(LocalTime.MIN);
+            end = end.with(LocalTime.MAX);
+            List<ConfirmPurchaseEntity> purchaseInvoiceList = confirmPurchaseRepo
+                    .findByVendorEntity_VendorIdAndPurchaseDateBetweenOrderByConfirmPurchaseId(vendorId, start, end);
             if (purchaseInvoiceList.isEmpty()) {
                 response.setErrors(List.of("No Purchase Invoice exist for the selected Customer!"));
                 response.setStatus(HttpStatus.NOT_FOUND);
                 return response;
             }
+            List<ConfirmPurchaseDto> purchaseInvoiceData = purchaseInvoiceList.stream()
+                    .map(ConfirmPurchaseDto::new)
+                    .toList();
+            List<PurchasePaymentEntity> listOfPurchasePayments =  purchasePaymentRepo.findByConfirmPurchaseEntityInOrderByConfirmPurchaseEntity(purchaseInvoiceList);
 
-            start = start.with(LocalTime.MIN);
-            end = end.with(LocalTime.MAX);
+            List<PurchasePaymentDto> paymentsListDtoOfPurchase = listOfPurchasePayments.stream()
+                    .map(PurchasePaymentDto::new)
+                    .toList();
+
+            Map<String, Object> vendorReportRes = new HashMap<>();
+            vendorReportRes.put("purchaseInvoiceData", purchaseInvoiceData);
+            vendorReportRes.put("paymentsOfThePurchase", paymentsListDtoOfPurchase);
 
 
-            List<List<PurchasePaymentDto>> resultList = new ArrayList<>();
 
-            for (ConfirmPurchaseEntity aPurchaseInvoice : purchaseInvoiceList) {
-                List<PurchasePaymentEntity> purchaseInvoicePayment = purchasePaymentRepo
-                        .findByConfirmPurchaseEntity_ConfirmPurchaseIdAndPaidDateBetween(aPurchaseInvoice.getConfirmPurchaseId(), start, end);
-
-                if (!purchaseInvoicePayment.isEmpty()) {
-                    anyPaymentsFound = true;
-
-                    List<PurchasePaymentDto> paymentsDtoList = new ArrayList<>();
-                    for (PurchasePaymentEntity payment : purchaseInvoicePayment) {
-                        paymentsDtoList.add(new PurchasePaymentDto(payment));
-                    }
-                    resultList.add(paymentsDtoList);
-                }
-            }
-
-            if (!anyPaymentsFound) {
-                response.setErrors(List.of("No Purchase Invoice Payments exist for the selected Vendor's invoices!"));
-                response.setStatus(HttpStatus.NOT_FOUND);
-            } else {
-                response.setResult(resultList);
+                response.setResult(vendorReportRes);
                 response.setSuccessMessage("The Selected Vendor's Payments within the selected range for the Purchase Invoice are retrieved!");
                 response.setStatus(HttpStatus.OK);
-            }
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(HttpStatus.BAD_REQUEST);
@@ -295,3 +277,5 @@ public class ReportServiceImpl implements ReportService {
     }
 
 }
+
+
