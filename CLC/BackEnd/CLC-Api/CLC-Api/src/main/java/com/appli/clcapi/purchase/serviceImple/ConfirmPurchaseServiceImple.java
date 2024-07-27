@@ -35,18 +35,18 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
 
     @Override
     @Transactional
-    public NonPaginatedResponse addToConfirmThePurchase(Long purchaseId) {
+    public NonPaginatedResponse addToConfirmPurchase(Long purchaseId) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
 
-            Optional<TempPurchaseEntity> selectTempPurchase = tempPurchaseRepo.findById(purchaseId);
-            if (selectTempPurchase.isEmpty()) {
+            Optional<TempPurchaseEntity> tempPurchase = tempPurchaseRepo.findById(purchaseId);
+            if (tempPurchase.isEmpty()) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 response.setErrors(List.of("Purchase isn't exist!"));
                 return response;
             }
 
-            ConfirmPurchaseEntity confirmPurchaseRecord = createConfirmPurchase(purchaseId, selectTempPurchase);
+            ConfirmPurchaseEntity confirmPurchaseRecord = createConfirmPurchase(purchaseId, tempPurchase);
             if (isConfirmPurchaseCartCreated(confirmPurchaseRecord)) {
                 tempPurchaseRepo.deleteById(purchaseId);
                 response.setStatus(HttpStatus.ACCEPTED);
@@ -104,17 +104,17 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
                 if (stockItem.get().getSellingPrice() < cartItem.getSellingPrice()) {
                     stockItem.get().setSellingPrice(cartItem.getSellingPrice());
                     stockItem.get().setPurchasePrice(cartItem.getPurchasePrice());
-                    stockItem.get().setQuantity(stockItem.get().getQuantity() + cartItem.getQuantity());
-                    stockRepo.save(stockItem.get());
                 }
+                stockItem.get().setQuantity(stockItem.get().getQuantity() + cartItem.getQuantity());
+                stockRepo.save(stockItem.get());
             }
 
         }
     }
+
     private ConfirmPurchaseEntity createConfirmPurchase(Long purchaseId, Optional<TempPurchaseEntity> selectTempPurchase) {
         //       have to find the total, after adding the confirmPurchaseCart,
-
-        if(selectTempPurchase.isPresent()){
+        if (selectTempPurchase.isPresent()) {
             ConfirmPurchaseEntity newConfirmPurchase = ConfirmPurchaseEntity.builder()
                     .confirmPurchaseId(purchaseId)
                     .purchaseInvoice(selectTempPurchase.get().getPurchaseInvoiceNO())
@@ -125,7 +125,7 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
                     .netAmount(selectTempPurchase.get().getNetAmount())
                     .build();
             return confirmPurchaseRepo.save(newConfirmPurchase);
-        }else {
+        } else {
             return null;
         }
 
@@ -150,6 +150,32 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
         return response;
     }
 
+    @Override
+    public NonPaginatedResponse cancelPurchaseInvoice(Long purchaseId) {
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        try {
+            Optional<TempPurchaseEntity> tempPurchase = tempPurchaseRepo.findById(purchaseId);
+            if (tempPurchase.isEmpty()) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Purchase isn't exist!"));
+                return response;
+            }
+
+            tempPurchaseRepo.delete(tempPurchase.get());
+
+            response.setStatus(HttpStatus.OK);
+            response.setSuccessMessage("Purchase Invoice is successfully cancelled!");
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+            response.setErrors(List.of("Error cancelling the Purchase Invoice!"));
+            response.setStatus(HttpStatus.BAD_REQUEST);
+
+        }
+        return response;
+    }
+
     public NonPaginatedResponse searchConfirmPurchaseInvoices(String characters) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
@@ -167,6 +193,5 @@ public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
         }
         return response;
     }
-
 
 }

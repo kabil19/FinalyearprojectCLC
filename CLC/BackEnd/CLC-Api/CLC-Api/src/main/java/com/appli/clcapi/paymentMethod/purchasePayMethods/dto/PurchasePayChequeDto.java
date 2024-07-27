@@ -17,20 +17,20 @@ import java.time.LocalDateTime;
 public class PurchasePayChequeDto {
     @JsonProperty("chequeRefNo")
     private Long chequeRefNo;
+
     @JsonProperty("paidAmount")
-
     private Double paidAmount;
+
     @JsonProperty("paidDate")
-
     private LocalDateTime paidDate;
+
     @JsonProperty("chequeDueDate")
-
     private LocalDateTime chequeDueDate;
+
     @JsonProperty("paymentId")
-
     private Long paymentId;
-    @JsonProperty("confirmPurchaseInvoiceOBJ")
 
+    @JsonProperty("confirmPurchaseInvoiceOBJ")
     private ConfirmPurchaseDto confirmPurchaseDto;
 
     public PurchasePayChequeDto(PurchasePayChequeEntity purchasePayChequeEntity) {

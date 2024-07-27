@@ -9,10 +9,10 @@ import com.appli.clcapi.confirmInvoice.service.ConfirmInvoiceService;
 import com.appli.clcapi.confirmInvoice.confirmCartItems.service.ConfirmProductCartService;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmCardEntity;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmCashEntity;
-import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmChequeEntity;
+import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmSalesInvoiceChequeEntity;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.repository.ConfirmCardRepo;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.repository.ConfirmCashRepo;
-import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.repository.ConfirmChequeRepo;
+import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.repository.ConfirmSalesPayChequeRepo;
 import com.appli.clcapi.payments.invoicePayments.confirmPayments.entity.ConfirmPaymentsEntity;
 import com.appli.clcapi.payments.invoicePayments.confirmPayments.repository.ConfirmPaymentsRepo;
 import com.appli.clcapi.payments.invoicePayments.tempPayments.entity.TempPaymentsEntity;
@@ -50,7 +50,7 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
     private final ConfirmPaymentsRepo confirmPaymentsRepo;
     private final ConfirmCardRepo confirmCardRepo;
     private final ConfirmCashRepo confirmCashRepo;
-    private final ConfirmChequeRepo confirmChequeRepo;
+    private final ConfirmSalesPayChequeRepo confirmSalesPayChequeRepo;
 
 
     @Override
@@ -58,8 +58,13 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
     public NonPaginatedResponse insertIntoConfirmInvoice(Long invoiceId) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
-            TempInvoiceEntity selectedTempInvoice = tempInvoiceRepo.findById(invoiceId).get();
-            ConfirmInvoiceEntity confirmedInvoice = createNewConfirmInvoiceData(selectedTempInvoice);
+            Optional<TempInvoiceEntity> selectedTempInvoice = tempInvoiceRepo.findById(invoiceId);
+            if(selectedTempInvoice.isEmpty()){
+                response.setErrors(List.of("Temporary Sales Invoice isn't exist!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
+            ConfirmInvoiceEntity confirmedInvoice = createNewConfirmInvoiceData(selectedTempInvoice.get());
             Boolean isCartItemsConfirmed = confirmProductCartService.confirmTheCartItems(invoiceId, confirmedInvoice);
             if (isCartItemsConfirmed) {
                 List<TempPaymentsEntity> selectAllPayments = tempPaymentsRepo.findByTempSalesInvoice_TempInvoiceId(confirmedInvoice.getConfirmInvoiceId());
@@ -127,9 +132,9 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
                 confirmCashRepo.saveAll(confirmCashList);
             }
             if (!tempChequeEntities.isEmpty()) {
-                List<ConfirmChequeEntity> confirmChequeList = tempChequeEntities.stream()
+                List<ConfirmSalesInvoiceChequeEntity> confirmChequeList = tempChequeEntities.stream()
                         .map(chequeEntity -> {
-                            ConfirmChequeEntity aCheque = new ConfirmChequeEntity();
+                            ConfirmSalesInvoiceChequeEntity aCheque = new ConfirmSalesInvoiceChequeEntity();
                             aCheque.setChequeDueDate(chequeEntity.getChequeDueDate());
                             aCheque.setChequeRefNo(chequeEntity.getChequeRefNo());
                             aCheque.setPaidAmount(chequeEntity.getPaidAmount());
@@ -138,7 +143,7 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
                             aCheque.setConfirmInvoiceEntity(confirmedInvoice);
                             return aCheque;
                         }).toList();
-                confirmChequeRepo.saveAll(confirmChequeList);
+                confirmSalesPayChequeRepo.saveAll(confirmChequeList);
             }
 
 

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "confirm_cheque_tbl")
-public class ConfirmChequeEntity {
+public class ConfirmSalesInvoiceChequeEntity {
 
 
    /* @GeneratedValue(strategy = GenerationType.AUTO)

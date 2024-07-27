@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConfirmCashDto {
+public class ConfirmSalesInvoiceCashDto {
     @JsonProperty("cashId")
     private Long cashId;
 

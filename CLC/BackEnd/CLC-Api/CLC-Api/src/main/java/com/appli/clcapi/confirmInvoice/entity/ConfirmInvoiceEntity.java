@@ -5,7 +5,7 @@ import com.appli.clcapi.confirmInvoice.confirmCartItems.entity.ConfirmProductCar
 import com.appli.clcapi.customer.entity.CustomerEntity;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmCardEntity;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmCashEntity;
-import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmChequeEntity;
+import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmSalesInvoiceChequeEntity;
 import com.appli.clcapi.payments.invoicePayments.confirmPayments.entity.ConfirmPaymentsEntity;
 import com.appli.clcapi.payments.invoicePayments.receipt.entity.ConfirmSalesInvoiceReceiptEntity;
 import jakarta.persistence.*;
@@ -54,7 +54,7 @@ public class ConfirmInvoiceEntity {
     private List<ConfirmCashEntity> confirmCashEntity;//checked
 
     @OneToMany(mappedBy = "confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ConfirmChequeEntity> confirmChequeEntity;//checked
+    private List<ConfirmSalesInvoiceChequeEntity> confirmSalesInvoiceChequeEntity;//checked
 
 
     public ConfirmInvoiceEntity(ConfirmInvoiceDto confirmInvoiceDto) {

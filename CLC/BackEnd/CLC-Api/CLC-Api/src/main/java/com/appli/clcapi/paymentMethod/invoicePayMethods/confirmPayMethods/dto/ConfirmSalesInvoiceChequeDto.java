@@ -1,7 +1,7 @@
 package com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.dto;
 
 import com.appli.clcapi.confirmInvoice.dto.ConfirmInvoiceDto;
-import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmChequeEntity;
+import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmSalesInvoiceChequeEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConfirmChequeDto {
+public class ConfirmSalesInvoiceChequeDto {
     @JsonProperty("chequeRefNo")
     private Long chequeRefNo;
 
@@ -33,7 +33,8 @@ public class ConfirmChequeDto {
     @JsonProperty("confirmInvoiceOBJ")
     private ConfirmInvoiceDto confirmInvoiceDto;
 
-    public ConfirmChequeDto(ConfirmChequeEntity chequeEntity){
+    public ConfirmSalesInvoiceChequeDto(ConfirmSalesInvoiceChequeEntity chequeEntity){
+        setPaymentId(chequeEntity.getPaymentId());
         setChequeRefNo(chequeEntity.getChequeRefNo());
         setPaidAmount(chequeEntity.getPaidAmount());
         setPaidDate(chequeEntity.getPaidDate());

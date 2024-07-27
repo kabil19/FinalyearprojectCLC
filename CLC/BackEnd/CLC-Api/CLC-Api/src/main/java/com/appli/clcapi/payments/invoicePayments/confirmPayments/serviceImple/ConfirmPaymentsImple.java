@@ -7,10 +7,10 @@ import com.appli.clcapi.confirmInvoice.entity.ConfirmInvoiceEntity;
 import com.appli.clcapi.confirmInvoice.repository.ConfirmInvoiceRepo;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmCardEntity;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmCashEntity;
-import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmChequeEntity;
+import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmSalesInvoiceChequeEntity;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.repository.ConfirmCardRepo;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.repository.ConfirmCashRepo;
-import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.repository.ConfirmChequeRepo;
+import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.repository.ConfirmSalesPayChequeRepo;
 import com.appli.clcapi.payments.invoicePayments.confirmPayments.dto.ConfirmPaymentsDto;
 import com.appli.clcapi.payments.invoicePayments.confirmPayments.entity.ConfirmPaymentsEntity;
 import com.appli.clcapi.payments.invoicePayments.confirmPayments.repository.ConfirmPaymentsRepo;
@@ -36,7 +36,7 @@ public class ConfirmPaymentsImple implements ConfirmPaymentsService {
     private final ConfirmInvoiceRepo confirmInvoiceRepo;
     private final ConfirmCardRepo confirmCardRepo;
     private final ConfirmCashRepo confirmCashRepo;
-    private final ConfirmChequeRepo confirmChequeRepo;
+    private final ConfirmSalesPayChequeRepo confirmSalesPayChequeRepo;
     private final ConfirmSalesInvoiceReceiptRepo confirmSalesInvoiceReceiptRepo;
 
     @Override
@@ -105,7 +105,7 @@ public class ConfirmPaymentsImple implements ConfirmPaymentsService {
             }
         }
         if (confirmPaymentsDto.getPaymentType().equalsIgnoreCase("cheque")) {
-            boolean isExists = confirmChequeRepo.existsById(confirmPaymentsDto.getChequeRefNo());
+            boolean isExists = confirmSalesPayChequeRepo.existsById(confirmPaymentsDto.getChequeRefNo());
             if (isExists) {
                 response.setErrors(List.of("Cheque ref No. already exists!"));
                 response.setStatus(HttpStatus.BAD_REQUEST);
@@ -148,7 +148,7 @@ public class ConfirmPaymentsImple implements ConfirmPaymentsService {
                     .build();
             confirmCashRepo.save(aCashPayment);
         } else if (confirmPaymentsDto.getPaymentType().equalsIgnoreCase("cheque")) {
-            ConfirmChequeEntity aChequePayment = ConfirmChequeEntity.builder()
+            ConfirmSalesInvoiceChequeEntity aChequePayment = ConfirmSalesInvoiceChequeEntity.builder()
                     .paidAmount(confirmPaymentsDto.getPaidAmount())
                     .paidDate(confirmPaymentsDto.getPaidDate())
                     .chequeRefNo(confirmPaymentsDto.getChequeRefNo())
@@ -156,7 +156,7 @@ public class ConfirmPaymentsImple implements ConfirmPaymentsService {
                     .chequeDueDate(confirmPaymentsDto.getChequeDueDate())
                     .confirmInvoiceEntity(savedPayment.getConfirmInvoice())
                     .build();
-            confirmChequeRepo.save(aChequePayment);
+            confirmSalesPayChequeRepo.save(aChequePayment);
         }
     }
 

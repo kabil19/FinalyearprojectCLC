@@ -16,7 +16,7 @@ public class ConfirmPurchaseController {
     @PostMapping("addToConfirmPurchase")
     public NonPaginatedResponse addToConfirmPurchase(@RequestBody Long purchaseId)
     {
-        return confirmPurchaseService.addToConfirmThePurchase(purchaseId);
+        return confirmPurchaseService.addToConfirmPurchase(purchaseId);
     }
     @GetMapping("getAllConfirmPurchaseInvoices")
     public NonPaginatedResponse getAllConfirmPurchaseInvoices()
@@ -29,5 +29,9 @@ public class ConfirmPurchaseController {
     {
         return confirmPurchaseService.searchConfirmPurchaseInvoices(searchCharacter);
     }
-
+    @DeleteMapping("cancelPurchase/{purchaseId}")
+    public NonPaginatedResponse cancelPurchase(@PathVariable Long purchaseId)
+    {
+        return confirmPurchaseService.cancelPurchaseInvoice(purchaseId);
+    }
 }

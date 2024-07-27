@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConfirmCardDto {
+public class ConfirmSalesInvoiceCardDto {
     @JsonProperty("cardRefNo")
     private Long cardRefNo;
 
