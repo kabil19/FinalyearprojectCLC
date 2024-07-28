@@ -1,7 +1,7 @@
 package com.appli.clcapi.payments.invoicePayments.confirmPayments.controller;
 
 import com.appli.clcapi.common.response.NonPaginatedResponse;
-import com.appli.clcapi.payments.invoicePayments.confirmPayments.dto.ConfirmPaymentsDto;
+import com.appli.clcapi.payments.invoicePayments.confirmPayments.dto.ConfirmSalesPaymentsDto;
 import com.appli.clcapi.payments.invoicePayments.confirmPayments.service.ConfirmPaymentsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/ConfirmSalesInvoicePayments/")
 @CrossOrigin(origins = "http://localhost:4200")
-public class ConfirmPaymentsController {
+public class ConfirmSalesPaymentsController {
 
 
     private final ConfirmPaymentsService confirmPaymentsService;
     @PostMapping("makePaymentToConfirmInvoice")
-    public NonPaginatedResponse makePaymentToConfirmInvoice(@RequestBody ConfirmPaymentsDto paymentDto)
+    public NonPaginatedResponse makePaymentToConfirmInvoice(@RequestBody ConfirmSalesPaymentsDto paymentDto)
     {
         return confirmPaymentsService.makePaymentToConfirmInvoice(paymentDto);
     }
@@ -26,7 +26,7 @@ public class ConfirmPaymentsController {
     }
 
     @PutMapping("updatePayment")
-    public NonPaginatedResponse updatePayment(@RequestBody ConfirmPaymentsDto confirmPaymentsDto){
+    public NonPaginatedResponse updatePayment(@RequestBody ConfirmSalesPaymentsDto confirmPaymentsDto){
         return confirmPaymentsService.updatePayment(confirmPaymentsDto);
     }*/
 

@@ -13,8 +13,8 @@ import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.repository.ConfirmCardRepo;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.repository.ConfirmCashRepo;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.repository.ConfirmSalesPayChequeRepo;
-import com.appli.clcapi.payments.invoicePayments.confirmPayments.entity.ConfirmPaymentsEntity;
-import com.appli.clcapi.payments.invoicePayments.confirmPayments.repository.ConfirmPaymentsRepo;
+import com.appli.clcapi.payments.invoicePayments.confirmPayments.entity.ConfirmSalesPaymentsEntity;
+import com.appli.clcapi.payments.invoicePayments.confirmPayments.repository.ConfirmSalesPaymentsRepo;
 import com.appli.clcapi.payments.invoicePayments.tempPayments.entity.TempPaymentsEntity;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.tempPayMethods.entity.TempCardEntity;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.tempPayMethods.entity.TempCashEntity;
@@ -47,7 +47,7 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
     private final TempCardRepo tempCardRepo;
     private final TempCashRepo tempCashRepo;
     private final TempChequeRepo tempChequeRepo;
-    private final ConfirmPaymentsRepo confirmPaymentsRepo;
+    private final ConfirmSalesPaymentsRepo confirmSalesPaymentsRepo;
     private final ConfirmCardRepo confirmCardRepo;
     private final ConfirmCashRepo confirmCashRepo;
     private final ConfirmSalesPayChequeRepo confirmSalesPayChequeRepo;
@@ -68,9 +68,9 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
             Boolean isCartItemsConfirmed = confirmProductCartService.confirmTheCartItems(invoiceId, confirmedInvoice);
             if (isCartItemsConfirmed) {
                 List<TempPaymentsEntity> selectAllPayments = tempPaymentsRepo.findByTempSalesInvoice_TempInvoiceId(confirmedInvoice.getConfirmInvoiceId());
-                List<ConfirmPaymentsEntity> listOfPayments = selectAllPayments.stream().map(
+                List<ConfirmSalesPaymentsEntity> listOfPayments = selectAllPayments.stream().map(
                         aPayment -> {
-                            ConfirmPaymentsEntity aPay = new ConfirmPaymentsEntity();
+                            ConfirmSalesPaymentsEntity aPay = new ConfirmSalesPaymentsEntity();
                             aPay.setPaymentType(aPayment.getPaymentType());
                             aPay.setPaidDate(aPayment.getPaidDate());
                             aPay.setPaidAmount(aPayment.getPaidAmount());
@@ -78,7 +78,7 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
                             return aPay;
                         }
                 ).toList();
-                confirmPaymentsRepo.saveAll(listOfPayments);
+                confirmSalesPaymentsRepo.saveAll(listOfPayments);
                 List<TempCardEntity> tempCardEntities = tempCardRepo.findByTempInvoiceEntity_TempInvoiceId(confirmedInvoice.getConfirmInvoiceId());
                 List<TempCashEntity> tempCashEntities = tempCashRepo.findByTempInvoiceEntity_TempInvoiceId(confirmedInvoice.getConfirmInvoiceId());
                 List<TempChequeEntity> tempChequeEntities = tempChequeRepo.findByTempInvoiceEntity_TempInvoiceId(confirmedInvoice.getConfirmInvoiceId());

@@ -1,7 +1,7 @@
 package com.appli.clcapi.payments.invoicePayments.confirmPayments.dto;
 
 import com.appli.clcapi.confirmInvoice.dto.ConfirmInvoiceDto;
-import com.appli.clcapi.payments.invoicePayments.confirmPayments.entity.ConfirmPaymentsEntity;
+import com.appli.clcapi.payments.invoicePayments.confirmPayments.entity.ConfirmSalesPaymentsEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConfirmPaymentsDto {
+public class ConfirmSalesPaymentsDto {
     @JsonProperty("paymentId")
     private Long paymentId;
     @JsonProperty("paymentType")
@@ -32,12 +32,13 @@ public class ConfirmPaymentsDto {
 
 //    private Long purchaseInvoice;
 
-    public ConfirmPaymentsDto(ConfirmPaymentsEntity confirmPaymentsEntity) {
-        this.setPaymentId(confirmPaymentsEntity.getPaymentId());
-        this.setConfirmInvoiceDto(new ConfirmInvoiceDto(confirmPaymentsEntity.getConfirmInvoice()));
-        this.setPaymentType(confirmPaymentsEntity.getPaymentType());
-        this.setPaidAmount(confirmPaymentsEntity.getPaidAmount());
-        this.setPaidDate(confirmPaymentsEntity.getPaidDate());
+    public ConfirmSalesPaymentsDto(ConfirmSalesPaymentsEntity confirmSalesPaymentsEntity) {
+        this.setPaymentId(confirmSalesPaymentsEntity.getPaymentId());
+        this.setConfirmInvoiceDto(new ConfirmInvoiceDto(confirmSalesPaymentsEntity.getConfirmInvoice()));
+        this.setPaymentType(confirmSalesPaymentsEntity.getPaymentType());
+        this.setPaidAmount(confirmSalesPaymentsEntity.getPaidAmount());
+        this.setPaidDate(confirmSalesPaymentsEntity.getPaidDate());
+
     }
 
 }

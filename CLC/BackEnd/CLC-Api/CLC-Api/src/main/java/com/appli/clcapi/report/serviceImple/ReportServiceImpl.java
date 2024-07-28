@@ -5,9 +5,9 @@ import com.appli.clcapi.common.response.NonPaginatedResponse;
 import com.appli.clcapi.confirmInvoice.dto.ConfirmInvoiceDto;
 import com.appli.clcapi.confirmInvoice.entity.ConfirmInvoiceEntity;
 import com.appli.clcapi.confirmInvoice.repository.ConfirmInvoiceRepo;
-import com.appli.clcapi.payments.invoicePayments.confirmPayments.dto.ConfirmPaymentsDto;
-import com.appli.clcapi.payments.invoicePayments.confirmPayments.entity.ConfirmPaymentsEntity;
-import com.appli.clcapi.payments.invoicePayments.confirmPayments.repository.ConfirmPaymentsRepo;
+import com.appli.clcapi.payments.invoicePayments.confirmPayments.dto.ConfirmSalesPaymentsDto;
+import com.appli.clcapi.payments.invoicePayments.confirmPayments.entity.ConfirmSalesPaymentsEntity;
+import com.appli.clcapi.payments.invoicePayments.confirmPayments.repository.ConfirmSalesPaymentsRepo;
 import com.appli.clcapi.payments.purchasePayment.dto.PurchasePaymentDto;
 import com.appli.clcapi.payments.purchasePayment.entity.PurchasePaymentEntity;
 import com.appli.clcapi.payments.purchasePayment.repository.PurchasePaymentRepo;
@@ -31,7 +31,7 @@ public class ReportServiceImpl implements ReportService {
     private final ConfirmInvoiceRepo confirmInvoiceRepo;
     private final ConfirmPurchaseRepo confirmPurchaseRepo;
     private final PurchasePaymentRepo purchasePaymentRepo;
-    private final ConfirmPaymentsRepo confirmSalesInvoicePaymentsRepo;
+    private final ConfirmSalesPaymentsRepo confirmSalesInvoicePaymentsRepo;
 
     @Override
     public NonPaginatedResponse selectSalesReportWithInRange(LocalDateTime start, LocalDateTime end) {
@@ -122,9 +122,9 @@ public class ReportServiceImpl implements ReportService {
 
             start = start.with(LocalTime.MIN);
             end = end.with(LocalTime.MAX);
-            List<ConfirmPaymentsEntity> salesInvoicePaymentsList = confirmSalesInvoicePaymentsRepo.findByPaidDateBetween(start, end);
-            List<ConfirmPaymentsDto> salesInvoicePaymentsDtoList = salesInvoicePaymentsList.stream()
-                    .map(ConfirmPaymentsDto::new)
+            List<ConfirmSalesPaymentsEntity> salesInvoicePaymentsList = confirmSalesInvoicePaymentsRepo.findByPaidDateBetween(start, end);
+            List<ConfirmSalesPaymentsDto> salesInvoicePaymentsDtoList = salesInvoicePaymentsList.stream()
+                    .map(ConfirmSalesPaymentsDto::new)
                     .toList();
             if (salesInvoicePaymentsDtoList.isEmpty()) {
                 response.setErrors(List.of("No Sales Invoice payment Reports exist with-in the given range! "));
@@ -149,9 +149,9 @@ public class ReportServiceImpl implements ReportService {
 
             start = start.with(LocalTime.MIN);
             end = end.with(LocalTime.MAX);
-            List<ConfirmPaymentsEntity> salesInvoicePaymentsList = confirmSalesInvoicePaymentsRepo.findByConfirmInvoice_ConfirmInvoiceIdAndPaidDateBetween(confirmSalesInvoiceId, start, end);
-            List<ConfirmPaymentsDto> salesInvoicePaymentsDtoList = salesInvoicePaymentsList.stream()
-                    .map(ConfirmPaymentsDto::new)
+            List<ConfirmSalesPaymentsEntity> salesInvoicePaymentsList = confirmSalesInvoicePaymentsRepo.findByConfirmInvoice_ConfirmInvoiceIdAndPaidDateBetween(confirmSalesInvoiceId, start, end);
+            List<ConfirmSalesPaymentsDto> salesInvoicePaymentsDtoList = salesInvoicePaymentsList.stream()
+                    .map(ConfirmSalesPaymentsDto::new)
                     .toList();
             if (salesInvoicePaymentsDtoList.isEmpty()) {
                 response.setErrors(List.of("No Sales Invoice payment Reports exist with-in the given range! "));
@@ -213,10 +213,10 @@ public class ReportServiceImpl implements ReportService {
             List<ConfirmInvoiceDto> salesInvoiceData = salesInvoiceList.stream()
                     .map(ConfirmInvoiceDto::new)
                     .toList();
-            List<ConfirmPaymentsEntity> listOfSalesPayments =  confirmSalesInvoicePaymentsRepo.findByConfirmInvoiceInOrderByConfirmInvoice(salesInvoiceList);
+            List<ConfirmSalesPaymentsEntity> listOfSalesPayments =  confirmSalesInvoicePaymentsRepo.findByConfirmInvoiceInOrderByConfirmInvoice(salesInvoiceList);
 
-            List<ConfirmPaymentsDto> paymentsListDtoOfSales = listOfSalesPayments.stream()
-                    .map(ConfirmPaymentsDto::new)
+            List<ConfirmSalesPaymentsDto> paymentsListDtoOfSales = listOfSalesPayments.stream()
+                    .map(ConfirmSalesPaymentsDto::new)
                     .toList();
 
             Map<String, Object> customerReportRes = new HashMap<>();

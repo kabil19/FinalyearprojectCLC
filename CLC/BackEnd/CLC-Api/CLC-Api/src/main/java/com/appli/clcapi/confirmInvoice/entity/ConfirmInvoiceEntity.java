@@ -6,7 +6,7 @@ import com.appli.clcapi.customer.entity.CustomerEntity;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmCardEntity;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmCashEntity;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmSalesInvoiceChequeEntity;
-import com.appli.clcapi.payments.invoicePayments.confirmPayments.entity.ConfirmPaymentsEntity;
+import com.appli.clcapi.payments.invoicePayments.confirmPayments.entity.ConfirmSalesPaymentsEntity;
 import com.appli.clcapi.payments.invoicePayments.receipt.entity.ConfirmSalesInvoiceReceiptEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -42,7 +42,7 @@ public class ConfirmInvoiceEntity {
     private List<ConfirmSalesInvoiceReceiptEntity> confirmSalesInvoiceReceiptEntity;
 
     @OneToMany(mappedBy = "confirmInvoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ConfirmPaymentsEntity> confirmPaymentsEntity;
+    private List<ConfirmSalesPaymentsEntity> confirmSalesPaymentsEntity;
 
     @OneToMany(mappedBy = "confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ConfirmProductCartEntity> confirmProductCartEntity;
