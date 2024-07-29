@@ -25,7 +25,7 @@ public class ConfirmInvoiceEntity {
 
     @Id
     private Long confirmInvoiceId;
-    private Long invoiceNumber;
+    private String invoiceReference;
     private LocalDateTime date;
     private Double netAmount;
     private Double paidAmount;
@@ -59,7 +59,7 @@ public class ConfirmInvoiceEntity {
 
     public ConfirmInvoiceEntity(ConfirmInvoiceDto confirmInvoiceDto) {
         this.confirmInvoiceId = confirmInvoiceDto.getConfirmInvoiceId();
-        this.invoiceNumber = confirmInvoiceDto.getInvoiceNumber();
+        this.invoiceReference = confirmInvoiceDto.getInvoiceReference();
         this.date = confirmInvoiceDto.getDate();
         this.netAmount = confirmInvoiceDto.getNetAmount();
         this.paidAmount = confirmInvoiceDto.getPaidAmount();

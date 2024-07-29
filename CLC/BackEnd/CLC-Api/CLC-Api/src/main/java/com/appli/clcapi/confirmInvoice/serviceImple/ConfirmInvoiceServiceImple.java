@@ -161,7 +161,7 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
 
         ConfirmInvoiceEntity confirmInvoiceEntity = new ConfirmInvoiceEntity();
         confirmInvoiceEntity.setConfirmInvoiceId(tempInvoiceEntity.getTempInvoiceId());
-        confirmInvoiceEntity.setInvoiceNumber(tempInvoiceEntity.getTempInvoiceNumber());
+        confirmInvoiceEntity.setInvoiceReference(tempInvoiceEntity.getTempInvoiceNumberReference());
         confirmInvoiceEntity.setDate(LocalDateTime.now());
         confirmInvoiceEntity.setPaidAmount(tempInvoiceEntity.getPaidAmount());
         confirmInvoiceEntity.setNetAmount(tempInvoiceEntity.getNetAmount());
@@ -190,10 +190,10 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
         return response;
     }
 
-    public NonPaginatedResponse getConfirmedInvoiceByInvoiceNumber(long invoiceNo){
+    public NonPaginatedResponse getConfirmedInvoiceByInvoiceNumber(String invoiceNo){
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
-           ConfirmInvoiceEntity confirmedSalesInvoiceEntity =confirmInvoiceRepo.findByInvoiceNumber(invoiceNo);
+           ConfirmInvoiceEntity confirmedSalesInvoiceEntity =confirmInvoiceRepo.findByInvoiceReference(invoiceNo);
             ConfirmInvoiceDto confirmedSalesInvoice = new ConfirmInvoiceDto(confirmedSalesInvoiceEntity);
             response.setResult(confirmedSalesInvoice);
             response.setStatus(HttpStatus.ACCEPTED);

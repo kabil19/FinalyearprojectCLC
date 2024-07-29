@@ -38,8 +38,8 @@ public class ConfirmInvoiceDto {
     @JsonProperty("customerOBJ")
     private CustomerDto customerOBJ;
 
-    @JsonProperty("invoiceNumber")
-    private Long invoiceNumber;
+    @JsonProperty("invoiceNumberRef")
+    private String invoiceReference;
 
     public ConfirmInvoiceDto(ConfirmInvoiceEntity confirmInvoiceEntity) {
         this.confirmInvoiceId = confirmInvoiceEntity.getConfirmInvoiceId();
@@ -47,7 +47,7 @@ public class ConfirmInvoiceDto {
         this.netAmount = confirmInvoiceEntity.getNetAmount();
         this.paidAmount = confirmInvoiceEntity.getPaidAmount();
         this.customerOBJ = (new CustomerDto(confirmInvoiceEntity.getCustomer()));
-        this.invoiceNumber = confirmInvoiceEntity.getInvoiceNumber();
+        this.invoiceReference = confirmInvoiceEntity.getInvoiceReference();
         this.isComplete = confirmInvoiceEntity.getIsComplete();
         this.advanceAmount = confirmInvoiceEntity.getAdvancePayment();
     }

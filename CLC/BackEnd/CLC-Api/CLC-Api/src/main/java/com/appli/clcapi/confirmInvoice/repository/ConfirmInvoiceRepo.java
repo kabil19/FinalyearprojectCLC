@@ -14,11 +14,11 @@ public interface ConfirmInvoiceRepo extends JpaRepository<ConfirmInvoiceEntity, 
     @Query("SELECT cie FROM ConfirmInvoiceEntity cie " +
             "JOIN cie.customer ce " +
             "WHERE ce.custName LIKE %:searchCharacter% " +
-            "OR CAST(cie.invoiceNumber AS string) LIKE %:searchCharacter% " +
+            "OR CAST(cie.invoiceReference AS string) LIKE %:searchCharacter% " +
             "OR FUNCTION('DATE_FORMAT', cie.date, '%Y-%m-%d %H:%i:%s')LIKE %:searchCharacter% ")
     List<ConfirmInvoiceEntity> searchByCustomerNameOrInvoiceNoOrInvoiceDate(@PathVariable("searchCharacter") String searchCharacter);
 
-    ConfirmInvoiceEntity findByInvoiceNumber(long invoiceNo);
+    ConfirmInvoiceEntity findByInvoiceReference(String invoiceNo);
 
     List<ConfirmInvoiceEntity> findByDateBetween(LocalDateTime start, LocalDateTime end);
 

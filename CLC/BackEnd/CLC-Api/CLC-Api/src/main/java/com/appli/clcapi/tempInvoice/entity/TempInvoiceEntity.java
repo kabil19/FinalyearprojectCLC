@@ -27,7 +27,7 @@ public class TempInvoiceEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long tempInvoiceId;
 
-    private Long tempInvoiceNumber;
+    private String tempInvoiceNumberReference;
 
     private LocalDateTime date;
 
@@ -61,7 +61,7 @@ public class TempInvoiceEntity {
 
     public TempInvoiceEntity(TempInvoiceDto tempInvoiceDto){
         super();
-        this.setTempInvoiceNumber(tempInvoiceDto.getTempInvoiceNumber());
+        this.setTempInvoiceNumberReference(tempInvoiceDto.getTempInvoiceNumberReference());
         this.setTempInvoiceId(tempInvoiceDto.getTempInvoiceId());
         this.setDate(tempInvoiceDto.getDate());
         this.setNetAmount(tempInvoiceDto.getNetAmount());

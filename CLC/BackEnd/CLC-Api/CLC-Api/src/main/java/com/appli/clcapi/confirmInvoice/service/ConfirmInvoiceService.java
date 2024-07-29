@@ -6,7 +6,7 @@ public interface ConfirmInvoiceService {
 
     NonPaginatedResponse insertIntoConfirmInvoice(Long invoiceId);
     NonPaginatedResponse getAllConfirmedInvoices();
-    NonPaginatedResponse getConfirmedInvoiceByInvoiceNumber(long invoiceNum);
+    NonPaginatedResponse getConfirmedInvoiceByInvoiceNumber(String invoiceNo);
     NonPaginatedResponse searchConfirmedSalesInvoice(String character);
 
 }

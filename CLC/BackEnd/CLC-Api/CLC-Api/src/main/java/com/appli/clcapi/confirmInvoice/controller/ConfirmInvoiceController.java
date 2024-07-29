@@ -27,7 +27,7 @@ public class ConfirmInvoiceController {
     }
 
     @GetMapping("getConfirmedInvoiceByInvoiceNumber/{invoiceNo}")
-    public NonPaginatedResponse getConfirmedInvoiceByInvoiceNumber(@PathVariable long invoiceNo)  {
+    public NonPaginatedResponse getConfirmedInvoiceByInvoiceNumber(@PathVariable String invoiceNo)  {
         return confirmInvoiceService.getConfirmedInvoiceByInvoiceNumber(invoiceNo);
     }
 

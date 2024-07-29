@@ -45,10 +45,13 @@ public class TempInvoiceServiceImpl implements TempInvoiceService {
                     .paidAmount(tempInvoiceDto.getPaidAmount())
                     .finalized(false)
                     .isComplete(false)
-                    .tempInvoiceNumber(tempInvoiceDto.getTempInvoiceNumber())
                     .customer(new CustomerEntity(tempInvoiceDto.getCustomerEntity()))
                     .build();
-            tempInvoiceRepo.save(anInvoice);
+            TempInvoiceEntity savedData = tempInvoiceRepo.save(anInvoice);
+            if(Objects.equals(savedData.getTempInvoiceNumberReference(), null)){
+                savedData.setTempInvoiceNumberReference("CLC-"+savedData.getTempInvoiceId());
+                tempInvoiceRepo.save(savedData);
+            }
             response.setSuccessMessage("Sales Invoice is created!");
             response.setStatus(HttpStatus.OK);
             return response;
@@ -106,7 +109,7 @@ public class TempInvoiceServiceImpl implements TempInvoiceService {
                 updatedTempInvoice.setDate(tempInvoiceDto.getDate());
                 updatedTempInvoice.setNetAmount(tempInvoiceDto.getNetAmount());
                 updatedTempInvoice.setPaidAmount(tempInvoiceDto.getPaidAmount());
-                updatedTempInvoice.setTempInvoiceNumber(tempInvoiceDto.getTempInvoiceNumber());
+                updatedTempInvoice.setTempInvoiceNumberReference(tempInvoiceDto.getTempInvoiceNumberReference());
                 updatedTempInvoice.setCustomer(new CustomerEntity(tempInvoiceDto.getCustomerEntity()));
                 if (tempInvoiceDto.getFinalized() != null) {
                     updatedTempInvoice.setFinalized(tempInvoiceDto.getFinalized());
