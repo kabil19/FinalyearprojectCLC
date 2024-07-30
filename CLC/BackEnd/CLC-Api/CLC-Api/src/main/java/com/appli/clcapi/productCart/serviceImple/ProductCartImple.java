@@ -37,6 +37,11 @@ public class ProductCartImple implements ProductCartService {
     public NonPaginatedResponse addProductsToCart(ProductCartDto productCartDto) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try{
+            if(productCartDto.getQuantity() <= 0.0){
+                response.setErrors(List.of("The quantity can't be zero nor less!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
             Long stockId = productCartDto.getStockDto().getStockId();
             Long tempInvoiceId = productCartDto.getTempInvoiceDto().getTempInvoiceId();
 
@@ -208,6 +213,11 @@ public class ProductCartImple implements ProductCartService {
                 NonPaginatedResponse response = new NonPaginatedResponse();
 
         try{
+            if(productCartDto.getQuantity() <= 0.0){
+                response.setErrors(List.of("The quantity can't be zero nor less!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
             Optional<ProductCartEntity> selectedCartRecord = productCartRepo.findById(productCartDto.getProCartId());
             if (selectedCartRecord.isEmpty()) {
                 response.setErrors(List.of("The Product isn't exist!"));

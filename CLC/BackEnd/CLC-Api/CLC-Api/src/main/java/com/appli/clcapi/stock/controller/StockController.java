@@ -27,7 +27,7 @@ public class StockController{
         return stockService.update(stockDto);
     }
 
-    @GetMapping("getAll")
+    @GetMapping("getAllStock")
     public List<StockDto> getAll(){
         return stockService.getAll();
     }
