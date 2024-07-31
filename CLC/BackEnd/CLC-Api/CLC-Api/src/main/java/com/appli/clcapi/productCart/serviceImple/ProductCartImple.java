@@ -52,7 +52,11 @@ public class ProductCartImple implements ProductCartService {
             double newQtyToStock = stocksFromStockEntity.getQuantity() - productCartDto.getQuantity();
 
             Optional<TempInvoiceEntity> tempInvoiceEntity = tempInvoiceRepo.findById(tempInvoiceId);
-
+            if(tempInvoiceEntity.isEmpty()){
+                response.setErrors(List.of("The Temp sales invoice isn't exist!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
             if(itemInCart.isEmpty()) {
                 ProductCartEntity returnedProduct = addNewItem(productCartDto);
 
@@ -189,18 +193,21 @@ public class ProductCartImple implements ProductCartService {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try{
             List<ProductCartEntity> cartList = productCartRepo.findByTempInvoiceEntity_TempInvoiceId(invoiceId);
-            List<ProductCartDto> anItemCartForView = new ArrayList<>();
-            for (ProductCartEntity cartListFromEntity : cartList) {
-                ProductCartDto productCartDto = new ProductCartDto(cartListFromEntity);
-                anItemCartForView.add(productCartDto);
-            }
+//            List<ProductCartDto> anItemCartForView = new ArrayList<>();
+//            for (ProductCartEntity cartListFromEntity : cartList) {
+//                ProductCartDto productCartDto = new ProductCartDto(cartListFromEntity);
+//                anItemCartForView.add(productCartDto);
+//            }
+            List<ProductCartDto> anItemCartForView = cartList.stream()
+                            .map(ProductCartDto::new)
+                            .toList();
             response.setResult(List.of(anItemCartForView));
             response.setStatus(HttpStatus.OK);
-            response.setSuccessMessage("Data is retrieved");
+            response.setSuccessMessage("Temp Sales Invoice Cart Data are retrieved");
         }
         catch (Exception e){
           response.setStatus(HttpStatus.BAD_REQUEST);
-          response.setErrors(List.of("couldn't find any Data"));
+          response.setErrors(List.of("couldn't find any Temp Sales Invoice Data"));
         }
         return response;
     }
