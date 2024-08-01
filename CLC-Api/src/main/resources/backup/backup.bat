@@ -3,11 +3,19 @@
 :: Configuration
 set DB_NAME=clc
 set DB_USER=root
-set DB_PASSWORD=password
-set BACKUP_DIR=D:\backup
-for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /value') do set DATE=%%I
-set DATE=%DATE:~0,8%%DATE:~8,4%
-set BACKUP_FILE=%BACKUP_DIR%\%DB_NAME%-%DATE%.sql
+set DB_PASSWORD=
+set BACKUP_DIR=D:\clc-backup
+:: Get the current date and time
+for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /value') do set CURRENT_DATE=%%I
+
+:: Format date as DD-MM-YYYY
+set DATE=%CURRENT_DATE:~6,2%-%CURRENT_DATE:~4,2%-%CURRENT_DATE:~0,4%
+
+:: Format time as HH-MM
+set TIME=%CURRENT_DATE:~8,2%-%CURRENT_DATE:~10,2%
+
+:: Create the backup file name
+set BACKUP_FILE=%BACKUP_DIR%\%DB_NAME%-%DATE%_%TIME%.sql
 
 :: Create backup directory if it doesn't exist
 if not exist "%BACKUP_DIR%" (
@@ -15,7 +23,11 @@ if not exist "%BACKUP_DIR%" (
 )
 
 :: Perform the backup
-mysqldump -u %DB_USER% -p%DB_PASSWORD% %DB_NAME% > "%BACKUP_FILE%"
+if "%DB_PASSWORD%"=="" (
+    mysqldump -u %DB_USER% %DB_NAME% > "%BACKUP_FILE%"
+) else (
+    mysqldump -u %DB_USER% -p%DB_PASSWORD% %DB_NAME% > "%BACKUP_FILE%"
+)
 
 :: Check if the backup file is empty
 for %%F in ("%BACKUP_FILE%") do if %%~zF == 0 (
@@ -23,7 +35,7 @@ for %%F in ("%BACKUP_FILE%") do if %%~zF == 0 (
     exit /b 1
 )
 
-:: Optional: Remove old backups (e.g., older than 30 days)
+::Remove old backups (e.g., older than 30 days)
 forfiles /p "%BACKUP_DIR%" /s /m *.sql /d -30 /c "cmd /c del @path"
 
 echo Backup completed: %BACKUP_FILE%

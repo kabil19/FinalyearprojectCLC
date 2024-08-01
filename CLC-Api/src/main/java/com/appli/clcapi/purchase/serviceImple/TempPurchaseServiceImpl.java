@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class TempPurchaseServiceImple implements TempPurchaseService {
+public class TempPurchaseServiceImpl implements TempPurchaseService {
 
     private final VendorRepo vendorRepo;
     private final TempPurchaseRepo tempPurchaseRepo;
@@ -29,7 +29,7 @@ public class TempPurchaseServiceImple implements TempPurchaseService {
             Optional<VendorEntity> vendorEntity = vendorRepo.findById(tempPurchaseDto.getVendorDto().getVendorId());
             List<TempPurchaseEntity> tempPurchaseEntity = tempPurchaseRepo.findAll();
             if(tempPurchaseEntity.isEmpty()){
-                if (!vendorEntity.isEmpty()) {
+                if (vendorEntity.isPresent()) {
                     TempPurchaseEntity aTempPurchase = TempPurchaseEntity.builder()
                             .purchasedDate(tempPurchaseDto.getPurchasedDate())
                             .purchaseInvoiceNO(tempPurchaseDto.getPurchaseInvoiceNO())

@@ -25,7 +25,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class ConfirmPurchaseServiceImple implements ConfirmPurchaseService {
+public class ConfirmPurchaseServiceImpl implements ConfirmPurchaseService {
     private final TempPurchaseRepo tempPurchaseRepo;
     private final ConfirmPurchaseRepo confirmPurchaseRepo;
 

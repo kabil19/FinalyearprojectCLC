@@ -2,7 +2,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: password
+    password:
     url: jdbc:mysql://localhost:3306/clc
   jpa:
     hibernate:
@@ -26,3 +26,4 @@ spring:
             enable: true
 app:
   default-admin-password: admin2025
+  restore-script-path: D:\wamp64\www\FinalYearProject\CLC-Api\src\main\resources\restore\restore.bat
