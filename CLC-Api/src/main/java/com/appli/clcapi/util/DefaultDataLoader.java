@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 import static com.appli.clcapi.common.enums.Roles.ADMIN;
 
 
@@ -21,10 +23,10 @@ public class DefaultDataLoader {
     private String password;
 
 
-
     @PostConstruct
     public void createDefaultUser() {
-        if(userServiceImpl.getAllUsers().isEmpty()){
+
+        if (userServiceImpl.getAllUsers().isEmpty()) {
             UserDto aUser = new UserDto();
             aUser.setUsername("Admin");
             aUser.setRole(ADMIN);
@@ -33,5 +35,21 @@ public class DefaultDataLoader {
             log.info("Default User created!");
         }
 
+        backup();
+
+    }
+
+    private void backup() {
+        try {
+            Process process = Runtime.getRuntime().exec("src/main/resources/backup/backup.bat");
+            process.waitFor();
+            if (process.exitValue() == 0) {
+                System.out.println("Backup completed successfully.");
+            } else {
+                System.err.println("Backup failed.");
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
