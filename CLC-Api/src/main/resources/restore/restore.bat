@@ -3,7 +3,7 @@
 :: Configuration
 set DB_NAME=clc
 set DB_USER=root
-set DB_PASSWORD=
+set DB_PASSWORD=CLC2019
 
 :: Path to the backup file provided by the application
 set BACKUP_FILE=%1

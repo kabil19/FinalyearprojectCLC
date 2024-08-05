@@ -3,7 +3,7 @@
 :: Configuration
 set DB_NAME=clc
 set DB_USER=root
-set DB_PASSWORD=
+set DB_PASSWORD=CLC2019
 set BACKUP_DIR=D:\clc-backup
 
 :: Get the current date and time

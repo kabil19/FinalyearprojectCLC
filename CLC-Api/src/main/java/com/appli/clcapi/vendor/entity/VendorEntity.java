@@ -24,7 +24,7 @@ public class VendorEntity {
     private String vendorName;
     private String address;
     private String email;
-    private  Long contact;
+    private  String contact;
     private boolean deleted = false;
 
     @OneToMany(mappedBy = "vendorEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY )

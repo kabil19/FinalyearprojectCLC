@@ -22,7 +22,7 @@ public class CustomerEntity {
     private Long custId;
     private String custName;
     private String address;
-    private Long contact;
+    private String contact;
     private String email;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
