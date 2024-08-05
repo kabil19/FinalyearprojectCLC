@@ -7,7 +7,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -24,6 +24,12 @@ spring:
           auth: true
           starttls:
             enable: true
+  web:
+    resources:
+      static-locations: classpath:/static/
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 app:
   default-admin-password: admin2025
   restore-script-path: D:\wamp64\www\FinalYearProject\CLC-Api\src\main\resources\restore\restore.bat

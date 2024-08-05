@@ -201,6 +201,7 @@ public class ReportServiceImpl implements ReportService {
         try {
             start = start.with(LocalTime.MIN);
             end = end.with(LocalTime.MAX);
+            //finds out the customer's invoices that has been confirmed within the provided range
             List<ConfirmInvoiceEntity> salesInvoiceList = confirmInvoiceRepo
                     .findByCustomer_CustIdAndDateBetweenOrderByConfirmInvoiceId(custId,start,end);
             if (salesInvoiceList.isEmpty()) {

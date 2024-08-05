@@ -18,13 +18,18 @@ set TIME=%CURRENT_DATE:~8,2%-%CURRENT_DATE:~10,2%
 :: Get mode argument
 set MODE=%1
 
-:: Create the backup file name
+:: Determine the backup file path based on the mode
 if "%MODE%"=="manual" (
     set BACKUP_FILE=%BACKUP_DIR%\%DB_NAME%-%DATE%_%TIME%_manual.sql
+) else if "%MODE%"=="whenRestore" (
+    set SNAPSHOT_DIR=%BACKUP_DIR%\SNAPSHOT
+    if not exist "%SNAPSHOT_DIR%" (
+        mkdir "%SNAPSHOT_DIR%"
+    )
+    set BACKUP_FILE=%SNAPSHOT_DIR%\%DB_NAME%-%DATE%_%TIME%.sql
 ) else (
     set BACKUP_FILE=%BACKUP_DIR%\%DB_NAME%-%DATE%_%TIME%.sql
 )
-
 :: Create backup directory if it doesn't exist
 if not exist "%BACKUP_DIR%" (
     mkdir "%BACKUP_DIR%"

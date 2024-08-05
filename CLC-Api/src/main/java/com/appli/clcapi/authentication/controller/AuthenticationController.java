@@ -4,6 +4,7 @@ import com.appli.clcapi.authentication.dto.request.LoginDto;
 import com.appli.clcapi.authentication.dto.response.AuthResponse;
 import com.appli.clcapi.authentication.service.UserLoginService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,8 +15,8 @@ public class AuthenticationController {
 public final UserLoginService userLoginService;
 
     @PostMapping(path = "login")
-    public AuthResponse login(@RequestBody LoginDto loginDto){
-//            return ResponseEntity.ok(userLoginService.userLogin(loginDto));
-        return (userLoginService.userLogin(loginDto));
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginDto loginDto){
+            return ResponseEntity.ok(userLoginService.userLogin(loginDto));
+//        return (userLoginService.userLogin(loginDto));
     }
 }

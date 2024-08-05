@@ -65,11 +65,6 @@ public class NotificationServiceImpl implements NotificationService {
             notificationResponse.put("salesChequeDues", salesInvoiceChequeDtos);
             notificationResponse.put("purchaseChequeDues", purchasePayChequeDtos);
 
-            // Debug prints
-            System.out.println("Purchase Cheques: " + purchaseChequeList.size());
-            System.out.println("Sales Cheques: " + salesInvoiceChequeList.size());
-            System.out.println("Filtered Purchase Cheques: " + purchasePayChequeDtos.size());
-            System.out.println("Filtered Sales Cheques: " + salesInvoiceChequeDtos.size());
 
             response.setResult(notificationResponse);
             response.setStatus(HttpStatus.OK);

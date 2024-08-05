@@ -16,7 +16,7 @@ public class BackupController {
 
     @PostMapping
     public ResponseEntity<String> triggerBackup() {
-        backupService.backup(true);
+        backupService.backup("manual");
         return ResponseEntity.ok("Backup is initiated successfully!");
     }
 }

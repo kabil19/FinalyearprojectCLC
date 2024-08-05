@@ -37,7 +37,7 @@ public class DefaultDataLoader {
             userServiceImpl.insertNewUser(aUser);
             log.info("Default User created!");
         }
-        backupService.backup(false);
+        backupService.backup("automatic");
     }
 
 }

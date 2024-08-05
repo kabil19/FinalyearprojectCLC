@@ -10,9 +10,9 @@ import java.io.InputStreamReader;
 @Service
 @Slf4j
 public class BackupService {
-    public void backup(boolean isManual) {
+    public void backup(String mode) {
         try {
-            String mode = isManual ? "manual" : "automatic";
+//            String mode = isManual ? "manual" : "automatic";
             String scriptPath= "D:/wamp64/www/FinalYearProject/CLC-Api/src/main/resources/backup/backup.bat";
             ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/c",scriptPath, mode);
             processBuilder.redirectErrorStream(true);

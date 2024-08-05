@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -18,8 +17,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    public static final String[] WHITE_LIST_APIS = {"/api/authentication/**","/v3/api-docs/**", "/swagger-resources/**",
-            "/swagger-ui/**", "/webjars/**"};
+    public static final String[] WHITE_LIST_APIS = {"/login","/dash_board","/dash_board/**","/api/authentication/**","/v3/api-docs/**", "/swagger-resources/**",
+            "/swagger-ui/**", "/webjars/**",
+            "/", "/index.html", "/static/**","/static/*.*", "/**.css", "/**.js", "/assets/**", "/**.ico", "/**.woff",
+            "/**.woff2"
+    };
     private final JwtAuthFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
 
