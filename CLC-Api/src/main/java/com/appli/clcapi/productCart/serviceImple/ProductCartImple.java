@@ -32,32 +32,48 @@ public class ProductCartImple implements ProductCartService {
     private final StockRepo stockRepo;
     private final TempInvoiceRepo tempInvoiceRepo;
     private static final Logger logger = LoggerFactory.getLogger(ProductCartImple.class);
+
     @Override
     @Transactional
     public NonPaginatedResponse addProductsToCart(ProductCartDto productCartDto) {
         NonPaginatedResponse response = new NonPaginatedResponse();
-        try{
-            if(productCartDto.getQuantity() <= 0.0){
+        try {
+            if (productCartDto.getQuantity() <= 0.0) {
                 response.setErrors(List.of("The quantity can't be zero nor less!"));
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 return response;
             }
+            if(productCartDto.getDiscount() <0){
+                response.setErrors(List.of("The discount can't be lesser than zero!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
+            if (productCartDto.getStockDto().getStockId()==null) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Stock is not selected!"));
+                return response;
+            }
+            if(productCartDto.getNetAmount()<=0){
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Invalid Data!"));
+                return response;
+            }
             Long stockId = productCartDto.getStockDto().getStockId();
             Long tempInvoiceId = productCartDto.getTempInvoiceDto().getTempInvoiceId();
-
             StockEntity stocksFromStockEntity = stockRepo.findById(stockId)
-                    .orElseThrow(()-> new IllegalArgumentException("Stock with ID "+ stockId + " not found"));
+                    .orElseThrow(() -> new IllegalArgumentException("Stock with ID " + stockId + " not found"));
 
-            Optional<ProductCartEntity> itemInCart = productCartRepo.findByStockEntity_StockIdAndTempInvoiceEntity_TempInvoiceId(stockId,tempInvoiceId);
+
+            Optional<ProductCartEntity> itemInCart = productCartRepo.findByStockEntity_StockIdAndTempInvoiceEntity_TempInvoiceId(stockId, tempInvoiceId);
             double newQtyToStock = stocksFromStockEntity.getQuantity() - productCartDto.getQuantity();
 
             Optional<TempInvoiceEntity> tempInvoiceEntity = tempInvoiceRepo.findById(tempInvoiceId);
-            if(tempInvoiceEntity.isEmpty()){
+            if (tempInvoiceEntity.isEmpty()) {
                 response.setErrors(List.of("The Temp sales invoice isn't exist!"));
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 return response;
             }
-            if(itemInCart.isEmpty()) {
+            if (itemInCart.isEmpty()) {
                 ProductCartEntity returnedProduct = addNewItem(productCartDto);
 
                 updateIntoStockEntity(stocksFromStockEntity, newQtyToStock);
@@ -70,9 +86,9 @@ public class ProductCartImple implements ProductCartService {
                 ProductCartDto aProductIntoTheCart = new ProductCartDto(returnedProduct);
                 response.setResult(aProductIntoTheCart);
                 response.setStatus(HttpStatus.CREATED);
-            }else{
+            } else {
                 ProductCartEntity itemInCartDetails = itemInCart.get();
-                ProductCartEntity insertedProduct = addMoreQuantity(itemInCartDetails,productCartDto, stocksFromStockEntity, tempInvoiceEntity);
+                ProductCartEntity insertedProduct = addMoreQuantity(itemInCartDetails, productCartDto, stocksFromStockEntity, tempInvoiceEntity);
 
                 updateIntoStockEntity(stocksFromStockEntity, newQtyToStock);
 
@@ -83,7 +99,7 @@ public class ProductCartImple implements ProductCartService {
                 response.setStatus(HttpStatus.ACCEPTED);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error("An error occurred while registering product cart", e);
             response.setSuccessMessage(null);
             response.setErrors(List.of("An error occurred while registering product cart"));
@@ -101,14 +117,20 @@ public class ProductCartImple implements ProductCartService {
 
     private ProductCartEntity addNewItem(ProductCartDto productCartDto) {
 
-        StockDto stockDto = productCartDto.getStockDto();
+        StockEntity selectedStock = stockRepo.findById(productCartDto.getStockDto().getStockId()).get();
+
+        StockDto stockDto = new StockDto(selectedStock);
         TempInvoiceDto tempInvoiceDto = productCartDto.getTempInvoiceDto();
+        double grossAmount = productCartDto.getQuantity() * stockDto.getSellingPrice();
+        double totalDiscount = productCartDto.getQuantity() * productCartDto.getDiscount();
         ProductCartEntity aProductIntoCart = ProductCartEntity.builder()
                 .proCartId(productCartDto.getProCartId())
                 .discount(productCartDto.getDiscount())
-                .netAmount(productCartDto.getNetAmount())
+//                .netAmount(productCartDto.getNetAmount())
+                .netAmount(grossAmount- totalDiscount)
                 .quantity(productCartDto.getQuantity())
-                .total(productCartDto.getTotal())
+//                .total(productCartDto.getTotal())
+                .total(grossAmount)
                 .tempInvoiceEntity(new TempInvoiceEntity(tempInvoiceDto))
                 .stockEntity(new StockEntity(stockDto)).build();
         return productCartRepo.save(aProductIntoCart);
@@ -117,8 +139,7 @@ public class ProductCartImple implements ProductCartService {
     private ProductCartEntity addMoreQuantity(ProductCartEntity existingItemsDetails,
                                               ProductCartDto productCartDto,
                                               StockEntity stocksFromStockEntity,
-                                              Optional<TempInvoiceEntity> tempInvoiceEntity)
-    {
+                                              Optional<TempInvoiceEntity> tempInvoiceEntity) {
         Double updatedQty = existingItemsDetails.getQuantity() + productCartDto.getQuantity();
         existingItemsDetails.setQuantity(updatedQty);
         Double discount = existingItemsDetails.getDiscount() + productCartDto.getDiscount();
@@ -136,12 +157,13 @@ public class ProductCartImple implements ProductCartService {
 
 
     }
+
     @Override
     @Transactional
-    public NonPaginatedResponse deleteProductFromTheCart(Long cartId){
+    public NonPaginatedResponse deleteProductFromTheCart(Long cartId) {
         NonPaginatedResponse response = new NonPaginatedResponse();
 
-        try{
+        try {
             ProductCartEntity anItemInCart = productCartRepo.findById(cartId).orElseThrow();
 
             StockEntity stockEntity = anItemInCart.getStockEntity();
@@ -180,7 +202,7 @@ public class ProductCartImple implements ProductCartService {
                 response.setStatus(HttpStatus.BAD_REQUEST);
             }
             return response;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(HttpStatus.BAD_REQUEST);
             response.setErrors(List.of("Couldn't delete the product!"));
@@ -189,9 +211,9 @@ public class ProductCartImple implements ProductCartService {
     }
 
     @Override
-    public NonPaginatedResponse getAllTempProCartItemsByInvoiceId(Long invoiceId){
+    public NonPaginatedResponse getAllTempProCartItemsByInvoiceId(Long invoiceId) {
         NonPaginatedResponse response = new NonPaginatedResponse();
-        try{
+        try {
             List<ProductCartEntity> cartList = productCartRepo.findByTempInvoiceEntity_TempInvoiceId(invoiceId);
 //            List<ProductCartDto> anItemCartForView = new ArrayList<>();
 //            for (ProductCartEntity cartListFromEntity : cartList) {
@@ -199,28 +221,26 @@ public class ProductCartImple implements ProductCartService {
 //                anItemCartForView.add(productCartDto);
 //            }
             List<ProductCartDto> anItemCartForView = cartList.stream()
-                            .map(ProductCartDto::new)
-                            .toList();
+                    .map(ProductCartDto::new)
+                    .toList();
             response.setResult(List.of(anItemCartForView));
             response.setStatus(HttpStatus.OK);
             response.setSuccessMessage("Temp Sales Invoice Cart Data are retrieved");
-        }
-        catch (Exception e){
-          response.setStatus(HttpStatus.BAD_REQUEST);
-          response.setErrors(List.of("couldn't find any Temp Sales Invoice Data"));
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setErrors(List.of("couldn't find any Temp Sales Invoice Data"));
         }
         return response;
     }
 
 
-
     @Override
-        @Transactional
-        public NonPaginatedResponse update(ProductCartDto productCartDto){
-                NonPaginatedResponse response = new NonPaginatedResponse();
+    @Transactional
+    public NonPaginatedResponse update(ProductCartDto productCartDto) {
+        NonPaginatedResponse response = new NonPaginatedResponse();
 
-        try{
-            if(productCartDto.getQuantity() <= 0.0){
+        try {
+            if (productCartDto.getQuantity() <= 0.0) {
                 response.setErrors(List.of("The quantity can't be zero nor less!"));
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 return response;
@@ -272,7 +292,7 @@ public class ProductCartImple implements ProductCartService {
             response.setResult(null);
             response.setSuccessMessage("The selected Item is Successfully updated!");
             response.setStatus(HttpStatus.OK);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(HttpStatus.BAD_REQUEST);
             response.setErrors(List.of("Couldn't update the cart!"));
@@ -281,8 +301,9 @@ public class ProductCartImple implements ProductCartService {
         return response;
 
     }
+
     @Override
-    public NonPaginatedResponse select(Long invoiceId, String exitingChar){
+    public NonPaginatedResponse select(Long invoiceId, String exitingChar) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
             List<ProductCartEntity> existingCartDetails = productCartRepo.findByTempInvoiceEntity_TempInvoiceIdAndStockEntity_ItemNameContaining(invoiceId, exitingChar);
@@ -295,7 +316,7 @@ public class ProductCartImple implements ProductCartService {
             response.setStatus(HttpStatus.OK);
             response.setSuccessMessage("Searched Item has been found");
 
-        }catch (Exception e){
+        } catch (Exception e) {
             response.setErrors(List.of(e.toString()));
             response.setStatus(HttpStatus.BAD_REQUEST);
             response.setResult(null);
