@@ -12,11 +12,11 @@ import java.util.List;
 @Repository
 public interface ConfirmPurchaseRepo extends JpaRepository<ConfirmPurchaseEntity, Long> {
 
-@Query("SELECT cpe FROM confirm_purchase_tbl cpe " +
-        "JOIN cpe.vendorEntity ve " +
+@Query("SELECT confirmPurchaseInvoiceEntity FROM confirm_purchase_tbl confirmPurchaseInvoiceEntity " +
+        "JOIN confirmPurchaseInvoiceEntity.vendorEntity ve " +
         "WHERE ve.vendorName LIKE %:searchCharacter% " +
-        "OR CAST(cpe.purchaseInvoice AS string) LIKE %:searchCharacter% " +
-        "OR FUNCTION('DATE_FORMAT', cpe.purchaseDate, '%Y-%m-%d %H:%i:%s')LIKE %:searchCharacter% ")
+        "OR CAST(confirmPurchaseInvoiceEntity.purchaseInvoice AS string) LIKE %:searchCharacter% " +
+        "OR FUNCTION('DATE_FORMAT', confirmPurchaseInvoiceEntity.purchaseDate, '%d-%m-%Y')LIKE %:searchCharacter% ")
     List<ConfirmPurchaseEntity> searchByVendorNameOrPurchaseInvoiceOrPurchaseDate(@PathVariable("searchCharacter") String searchCharacter);
 
     List<ConfirmPurchaseEntity> findByPurchaseDateBetween(LocalDateTime start, LocalDateTime end);

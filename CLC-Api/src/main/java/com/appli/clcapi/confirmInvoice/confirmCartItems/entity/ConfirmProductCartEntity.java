@@ -1,6 +1,6 @@
 package com.appli.clcapi.confirmInvoice.confirmCartItems.entity;
 
-import com.appli.clcapi.confirmInvoice.entity.ConfirmInvoiceEntity;
+import com.appli.clcapi.confirmInvoice.entity.ConfirmSalesInvoiceEntity;
 import com.appli.clcapi.confirmInvoice.confirmCartItems.dto.ConfirmProductCartDto;
 import com.appli.clcapi.stock.entity.StockEntity;
 import jakarta.persistence.*;
@@ -34,7 +34,7 @@ public class ConfirmProductCartEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="confirmInvoiceId")
-    private ConfirmInvoiceEntity confirmInvoiceEntity;
+    private ConfirmSalesInvoiceEntity confirmSalesInvoiceEntity;
 
     public ConfirmProductCartEntity(ConfirmProductCartDto confirmProductCartDto) {
         this.confirmProductCartId = confirmProductCartDto.getConfirmProductCartId();
@@ -44,7 +44,7 @@ public class ConfirmProductCartEntity {
         this.netAmount = confirmProductCartDto.getNetAmount();
 //        this.tempInvoiceEntity = new TempInvoiceEntity(confirmProductCartDto.getTempInvoiceDto());
         this.stockEntity = new StockEntity(confirmProductCartDto.getStockDto());
-        this.confirmInvoiceEntity = new ConfirmInvoiceEntity(confirmProductCartDto.getConfirmInvoiceDto());
+        this.confirmSalesInvoiceEntity = new ConfirmSalesInvoiceEntity(confirmProductCartDto.getConfirmInvoiceDto());
     }
 
 }

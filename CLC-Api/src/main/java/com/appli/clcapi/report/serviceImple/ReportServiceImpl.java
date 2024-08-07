@@ -3,8 +3,8 @@ package com.appli.clcapi.report.serviceImple;
 
 import com.appli.clcapi.common.response.NonPaginatedResponse;
 import com.appli.clcapi.confirmInvoice.dto.ConfirmInvoiceDto;
-import com.appli.clcapi.confirmInvoice.entity.ConfirmInvoiceEntity;
-import com.appli.clcapi.confirmInvoice.repository.ConfirmInvoiceRepo;
+import com.appli.clcapi.confirmInvoice.entity.ConfirmSalesInvoiceEntity;
+import com.appli.clcapi.confirmInvoice.repository.ConfirmSalesInvoiceRepo;
 import com.appli.clcapi.payments.invoicePayments.confirmPayments.dto.ConfirmSalesPaymentsDto;
 import com.appli.clcapi.payments.invoicePayments.confirmPayments.entity.ConfirmSalesPaymentsEntity;
 import com.appli.clcapi.payments.invoicePayments.confirmPayments.repository.ConfirmSalesPaymentsRepo;
@@ -28,7 +28,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
 
-    private final ConfirmInvoiceRepo confirmInvoiceRepo;
+    private final ConfirmSalesInvoiceRepo confirmSalesInvoiceRepo;
     private final ConfirmPurchaseRepo confirmPurchaseRepo;
     private final PurchasePaymentRepo purchasePaymentRepo;
     private final ConfirmSalesPaymentsRepo confirmSalesInvoicePaymentsRepo;
@@ -40,7 +40,7 @@ public class ReportServiceImpl implements ReportService {
 
             start = start.with(LocalTime.MIN);
             end = end.with(LocalTime.MAX);
-            List<ConfirmInvoiceEntity> confirmInvoiceEntities = confirmInvoiceRepo.findByDateBetween(start, end);
+            List<ConfirmSalesInvoiceEntity> confirmInvoiceEntities = confirmSalesInvoiceRepo.findByDateBetween(start, end);
             List<ConfirmInvoiceDto> confirmInvoiceDto = confirmInvoiceEntities.stream()
                     .map(ConfirmInvoiceDto::new)
                     .toList();
@@ -202,7 +202,7 @@ public class ReportServiceImpl implements ReportService {
             start = start.with(LocalTime.MIN);
             end = end.with(LocalTime.MAX);
             //finds out the customer's invoices that has been confirmed within the provided range
-            List<ConfirmInvoiceEntity> salesInvoiceList = confirmInvoiceRepo
+            List<ConfirmSalesInvoiceEntity> salesInvoiceList = confirmSalesInvoiceRepo
                     .findByCustomer_CustIdAndDateBetweenOrderByConfirmInvoiceId(custId,start,end);
             if (salesInvoiceList.isEmpty()) {
                 response.setErrors(List.of("No Sales Invoice exist for the selected Customer!"));

@@ -1,6 +1,6 @@
 package com.appli.clcapi.confirmInvoice.dto;
 
-import com.appli.clcapi.confirmInvoice.entity.ConfirmInvoiceEntity;
+import com.appli.clcapi.confirmInvoice.entity.ConfirmSalesInvoiceEntity;
 import com.appli.clcapi.customer.dto.CustomerDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -41,14 +41,14 @@ public class ConfirmInvoiceDto {
     @JsonProperty("invoiceNumberRef")
     private String invoiceReference;
 
-    public ConfirmInvoiceDto(ConfirmInvoiceEntity confirmInvoiceEntity) {
-        this.confirmInvoiceId = confirmInvoiceEntity.getConfirmInvoiceId();
-        this.date = confirmInvoiceEntity.getDate();
-        this.netAmount = confirmInvoiceEntity.getNetAmount();
-        this.paidAmount = confirmInvoiceEntity.getPaidAmount();
-        this.customerOBJ = (new CustomerDto(confirmInvoiceEntity.getCustomer()));
-        this.invoiceReference = confirmInvoiceEntity.getInvoiceReference();
-        this.isComplete = confirmInvoiceEntity.getIsComplete();
-        this.advanceAmount = confirmInvoiceEntity.getAdvancePayment();
+    public ConfirmInvoiceDto(ConfirmSalesInvoiceEntity confirmSalesInvoiceEntity) {
+        this.confirmInvoiceId = confirmSalesInvoiceEntity.getConfirmInvoiceId();
+        this.date = confirmSalesInvoiceEntity.getDate();
+        this.netAmount = confirmSalesInvoiceEntity.getNetAmount();
+        this.paidAmount = confirmSalesInvoiceEntity.getPaidAmount();
+        this.customerOBJ = (new CustomerDto(confirmSalesInvoiceEntity.getCustomer()));
+        this.invoiceReference = confirmSalesInvoiceEntity.getInvoiceReference();
+        this.isComplete = confirmSalesInvoiceEntity.getIsComplete();
+        this.advanceAmount = confirmSalesInvoiceEntity.getAdvancePayment();
     }
 }

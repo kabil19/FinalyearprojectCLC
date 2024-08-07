@@ -1,6 +1,6 @@
 package com.appli.clcapi.payments.invoicePayments.receipt.entity;
 
-import com.appli.clcapi.confirmInvoice.entity.ConfirmInvoiceEntity;
+import com.appli.clcapi.confirmInvoice.entity.ConfirmSalesInvoiceEntity;
 import com.appli.clcapi.payments.invoicePayments.receipt.dto.ConfirmSalesInvoiceReceiptDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,7 +20,7 @@ public class ConfirmSalesInvoiceReceiptEntity {
     private Long receiptId;
     @ManyToOne
     @JoinColumn(name = "confirmInvoiceId")
-    private ConfirmInvoiceEntity confirmInvoiceEntity;
+    private ConfirmSalesInvoiceEntity confirmSalesInvoiceEntity;
     private Double paidAmount;
     private Date paidDate;
     private String paymentType;
@@ -28,7 +28,7 @@ public class ConfirmSalesInvoiceReceiptEntity {
     public ConfirmSalesInvoiceReceiptEntity(ConfirmSalesInvoiceReceiptDto confirmSalesInvoiceReceiptDto){
         this.setReceiptId(confirmSalesInvoiceReceiptDto.getReceiptId());
         this.setPaidAmount(confirmSalesInvoiceReceiptDto.getPaidAmount());
-        this.setConfirmInvoiceEntity(new ConfirmInvoiceEntity(confirmSalesInvoiceReceiptDto.getConfirmInvoiceDto()));
+        this.setConfirmSalesInvoiceEntity(new ConfirmSalesInvoiceEntity(confirmSalesInvoiceReceiptDto.getConfirmInvoiceDto()));
         this.setPaymentType(confirmSalesInvoiceReceiptDto.getPaymentType());
         this.setPaidDate(confirmSalesInvoiceReceiptDto.getPaidDate());
     }

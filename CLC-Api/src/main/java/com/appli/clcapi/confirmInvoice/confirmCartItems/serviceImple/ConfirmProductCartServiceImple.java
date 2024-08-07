@@ -3,8 +3,7 @@ package com.appli.clcapi.confirmInvoice.confirmCartItems.serviceImple;
 import com.appli.clcapi.common.response.NonPaginatedResponse;
 import com.appli.clcapi.confirmInvoice.confirmCartItems.dto.ConfirmProductCartDto;
 
-import com.appli.clcapi.confirmInvoice.entity.ConfirmInvoiceEntity;
-import com.appli.clcapi.confirmInvoice.repository.ConfirmInvoiceRepo;
+import com.appli.clcapi.confirmInvoice.entity.ConfirmSalesInvoiceEntity;
 import com.appli.clcapi.confirmInvoice.confirmCartItems.entity.ConfirmProductCartEntity;
 import com.appli.clcapi.confirmInvoice.confirmCartItems.repository.ConfirmProductCartRepo;
 import com.appli.clcapi.confirmInvoice.confirmCartItems.service.ConfirmProductCartService;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -29,7 +27,7 @@ public class ConfirmProductCartServiceImple implements ConfirmProductCartService
 
     @Override
     @Transactional
-    public Boolean confirmTheCartItems(Long invoiceId, ConfirmInvoiceEntity confirmInvoice) {
+    public Boolean confirmTheCartItems(Long invoiceId, ConfirmSalesInvoiceEntity confirmInvoice) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
             List<ProductCartEntity> listOfProCarts = productCartRepo.findByTempInvoiceEntity_TempInvoiceId(invoiceId);
@@ -41,7 +39,7 @@ public class ConfirmProductCartServiceImple implements ConfirmProductCartService
                         .netAmount(aCart.getNetAmount())
                         .quantity(aCart.getQuantity())
                         .total(aCart.getTotal())
-                        .confirmInvoiceEntity(confirmInvoice)
+                        .confirmSalesInvoiceEntity(confirmInvoice)
                         .stockEntity(aCart.getStockEntity()).build();
                 confirmProductCartRepo.save(confirmProductCartEntity);
             }

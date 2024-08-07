@@ -1,6 +1,6 @@
 package com.appli.clcapi.payments.invoicePayments.confirmPayments.entity;
 
-import com.appli.clcapi.confirmInvoice.entity.ConfirmInvoiceEntity;
+import com.appli.clcapi.confirmInvoice.entity.ConfirmSalesInvoiceEntity;
 import com.appli.clcapi.payments.invoicePayments.confirmPayments.dto.ConfirmSalesPaymentsDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,7 +25,7 @@ public class ConfirmSalesPaymentsEntity {
 
     @ManyToOne
     @JoinColumn(name="confirmInvoiceId")
-    private ConfirmInvoiceEntity confirmInvoice;
+    private ConfirmSalesInvoiceEntity confirmInvoice;
 //    private Long purchaseInvoice;
 
 

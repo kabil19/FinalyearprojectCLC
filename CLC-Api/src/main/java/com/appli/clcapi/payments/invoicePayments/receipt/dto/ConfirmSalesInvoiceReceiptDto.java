@@ -29,7 +29,7 @@ public class ConfirmSalesInvoiceReceiptDto {
 
     public ConfirmSalesInvoiceReceiptDto(ConfirmSalesInvoiceReceiptEntity confirmSalesInvoiceReceiptEntity){
         this.setReceiptId(confirmSalesInvoiceReceiptEntity.getReceiptId());
-        this.setConfirmInvoiceDto(new ConfirmInvoiceDto(confirmSalesInvoiceReceiptEntity.getConfirmInvoiceEntity()));
+        this.setConfirmInvoiceDto(new ConfirmInvoiceDto(confirmSalesInvoiceReceiptEntity.getConfirmSalesInvoiceEntity()));
         this.setPaidAmount(confirmSalesInvoiceReceiptEntity.getPaidAmount());
         this.setPaidDate(confirmSalesInvoiceReceiptEntity.getPaidDate());
         this.setPaymentType(confirmSalesInvoiceReceiptEntity.getPaymentType());

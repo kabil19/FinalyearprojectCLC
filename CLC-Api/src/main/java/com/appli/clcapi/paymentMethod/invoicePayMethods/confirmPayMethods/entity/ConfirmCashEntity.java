@@ -1,6 +1,6 @@
 package com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity;
 
-import com.appli.clcapi.confirmInvoice.entity.ConfirmInvoiceEntity;
+import com.appli.clcapi.confirmInvoice.entity.ConfirmSalesInvoiceEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,7 +26,7 @@ public class ConfirmCashEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "confirmInvoiceId")
-    private ConfirmInvoiceEntity confirmInvoiceEntity;
+    private ConfirmSalesInvoiceEntity confirmSalesInvoiceEntity;
 
 
 }

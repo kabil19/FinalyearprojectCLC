@@ -21,7 +21,7 @@ import java.util.List;
 @Table(name="confirm_invoice_tbl")
 @AllArgsConstructor
 @NoArgsConstructor
-public class ConfirmInvoiceEntity {
+public class ConfirmSalesInvoiceEntity {
 
     @Id
     private Long confirmInvoiceId;
@@ -30,7 +30,7 @@ public class ConfirmInvoiceEntity {
     private Double netAmount;
     private Double paidAmount;
     private Double advancePayment;
-  /*  @OneToMany(mappedBy = "confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  /*  @OneToMany(mappedBy = "confirmSalesInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductCartEntity> productCartEntity;*/
     private Boolean isComplete =false;
 
@@ -57,7 +57,7 @@ public class ConfirmInvoiceEntity {
     private List<ConfirmSalesInvoiceChequeEntity> confirmSalesInvoiceChequeEntity;//checked
 
 
-    public ConfirmInvoiceEntity(ConfirmInvoiceDto confirmInvoiceDto) {
+    public ConfirmSalesInvoiceEntity(ConfirmInvoiceDto confirmInvoiceDto) {
         this.confirmInvoiceId = confirmInvoiceDto.getConfirmInvoiceId();
         this.invoiceReference = confirmInvoiceDto.getInvoiceReference();
         this.date = confirmInvoiceDto.getDate();

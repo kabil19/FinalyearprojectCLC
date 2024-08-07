@@ -51,6 +51,6 @@ public class ProductCartDto {
         setTotal(productCartEntity.getTotal());
         setTempInvoiceDto(new TempInvoiceDto(productCartEntity.getTempInvoiceEntity()));
         setStockDto(new StockDto(productCartEntity.getStockEntity()));
-//        setConfirmInvoiceDto(new ConfirmInvoiceDto(productCartEntity.getConfirmInvoiceEntity()));
+//        setConfirmInvoiceDto(new ConfirmInvoiceDto(productCartEntity.getConfirmSalesInvoiceEntity()));
     }
 }

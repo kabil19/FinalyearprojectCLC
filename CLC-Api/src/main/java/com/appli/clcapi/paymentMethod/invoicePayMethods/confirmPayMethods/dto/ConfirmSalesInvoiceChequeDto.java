@@ -40,7 +40,7 @@ public class ConfirmSalesInvoiceChequeDto {
         setPaidDate(chequeEntity.getPaidDate());
         setChequeDueDate(chequeEntity.getChequeDueDate());
         setPaidAmount(chequeEntity.getPaidAmount());
-        setConfirmInvoiceDto(new ConfirmInvoiceDto(chequeEntity.getConfirmInvoiceEntity()));
+        setConfirmInvoiceDto(new ConfirmInvoiceDto(chequeEntity.getConfirmSalesInvoiceEntity()));
 
     }
 }

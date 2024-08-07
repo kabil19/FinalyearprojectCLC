@@ -3,8 +3,8 @@ package com.appli.clcapi.confirmInvoice.serviceImple;
 import com.appli.clcapi.common.constants.ConfirmInvoiceConsonants;
 import com.appli.clcapi.common.response.NonPaginatedResponse;
 import com.appli.clcapi.confirmInvoice.dto.ConfirmInvoiceDto;
-import com.appli.clcapi.confirmInvoice.entity.ConfirmInvoiceEntity;
-import com.appli.clcapi.confirmInvoice.repository.ConfirmInvoiceRepo;
+import com.appli.clcapi.confirmInvoice.entity.ConfirmSalesInvoiceEntity;
+import com.appli.clcapi.confirmInvoice.repository.ConfirmSalesInvoiceRepo;
 import com.appli.clcapi.confirmInvoice.service.ConfirmInvoiceService;
 import com.appli.clcapi.confirmInvoice.confirmCartItems.service.ConfirmProductCartService;
 import com.appli.clcapi.paymentMethod.invoicePayMethods.confirmPayMethods.entity.ConfirmCardEntity;
@@ -39,7 +39,7 @@ import java.util.*;
 public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
 
     private final TempInvoiceRepo tempInvoiceRepo;
-    private final ConfirmInvoiceRepo confirmInvoiceRepo;
+    private final ConfirmSalesInvoiceRepo confirmSalesInvoiceRepo;
     private final ConfirmProductCartService confirmProductCartService;
 
     //    PaymentRepos to set the ConfirmInvoiceId (FK)
@@ -64,7 +64,7 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 return response;
             }
-            ConfirmInvoiceEntity confirmedInvoice = createNewConfirmInvoiceData(selectedTempInvoice.get());
+            ConfirmSalesInvoiceEntity confirmedInvoice = createNewConfirmInvoiceData(selectedTempInvoice.get());
             Boolean isCartItemsConfirmed = confirmProductCartService.confirmTheCartItems(invoiceId, confirmedInvoice);
             if (isCartItemsConfirmed) {
                 List<TempPaymentsEntity> selectAllPayments = tempPaymentsRepo.findByTempSalesInvoice_TempInvoiceId(confirmedInvoice.getConfirmInvoiceId());
@@ -104,14 +104,14 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
 
 
 
-    private boolean transferToConfirmPayMethods(List<TempCardEntity> tempCardEntities, List<TempCashEntity> tempCashEntities, List<TempChequeEntity> tempChequeEntities, ConfirmInvoiceEntity confirmedInvoice) {
+    private boolean transferToConfirmPayMethods(List<TempCardEntity> tempCardEntities, List<TempCashEntity> tempCashEntities, List<TempChequeEntity> tempChequeEntities, ConfirmSalesInvoiceEntity confirmedInvoice) {
         try {
             if (!tempCardEntities.isEmpty()) {
                 List<ConfirmCardEntity> confirmCardList = tempCardEntities.stream()
                         .map(cardEntityData -> {
                             ConfirmCardEntity aCard = new ConfirmCardEntity();
                             aCard.setCardRefNo(cardEntityData.getCardRefNo());
-                            aCard.setConfirmInvoiceEntity(confirmedInvoice);
+                            aCard.setConfirmSalesInvoiceEntity(confirmedInvoice);
                             aCard.setPaidDate(cardEntityData.getPaidDate());
                             aCard.setPaidAmount(cardEntityData.getPaidAmount());
                             aCard.setPaymentId(cardEntityData.getPaymentId());
@@ -126,7 +126,7 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
                             aCash.setPaidAmount(cashEntity.getPaidAmount());
                             aCash.setPaidDate(cashEntity.getPaidDate());
                             aCash.setPaymentId(cashEntity.getPaymentId());
-                            aCash.setConfirmInvoiceEntity(confirmedInvoice);
+                            aCash.setConfirmSalesInvoiceEntity(confirmedInvoice);
                             return aCash;
                         }).toList();
                 confirmCashRepo.saveAll(confirmCashList);
@@ -140,7 +140,7 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
                             aCheque.setPaidAmount(chequeEntity.getPaidAmount());
                             aCheque.setPaidDate(chequeEntity.getPaidDate());
                             aCheque.setPaymentId(chequeEntity.getPaymentId());
-                            aCheque.setConfirmInvoiceEntity(confirmedInvoice);
+                            aCheque.setConfirmSalesInvoiceEntity(confirmedInvoice);
                             return aCheque;
                         }).toList();
                 confirmSalesPayChequeRepo.saveAll(confirmChequeList);
@@ -157,25 +157,25 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
     }
 
 
-    private ConfirmInvoiceEntity createNewConfirmInvoiceData(TempInvoiceEntity tempInvoiceEntity) {
+    private ConfirmSalesInvoiceEntity createNewConfirmInvoiceData(TempInvoiceEntity tempInvoiceEntity) {
 
-        ConfirmInvoiceEntity confirmInvoiceEntity = new ConfirmInvoiceEntity();
-        confirmInvoiceEntity.setConfirmInvoiceId(tempInvoiceEntity.getTempInvoiceId());
-        confirmInvoiceEntity.setInvoiceReference(tempInvoiceEntity.getTempInvoiceNumberReference());
-        confirmInvoiceEntity.setDate(LocalDateTime.now());
-        confirmInvoiceEntity.setPaidAmount(tempInvoiceEntity.getPaidAmount());
-        confirmInvoiceEntity.setNetAmount(tempInvoiceEntity.getNetAmount());
-        confirmInvoiceEntity.setCustomer(tempInvoiceEntity.getCustomer());
-        confirmInvoiceEntity.setIsComplete(tempInvoiceEntity.getIsComplete());
-        confirmInvoiceEntity.setAdvancePayment(tempInvoiceEntity.getPaidAmount());
-        return confirmInvoiceRepo.save(confirmInvoiceEntity);
+        ConfirmSalesInvoiceEntity confirmSalesInvoiceEntity = new ConfirmSalesInvoiceEntity();
+        confirmSalesInvoiceEntity.setConfirmInvoiceId(tempInvoiceEntity.getTempInvoiceId());
+        confirmSalesInvoiceEntity.setInvoiceReference(tempInvoiceEntity.getTempInvoiceNumberReference());
+        confirmSalesInvoiceEntity.setDate(LocalDateTime.now());
+        confirmSalesInvoiceEntity.setPaidAmount(tempInvoiceEntity.getPaidAmount());
+        confirmSalesInvoiceEntity.setNetAmount(tempInvoiceEntity.getNetAmount());
+        confirmSalesInvoiceEntity.setCustomer(tempInvoiceEntity.getCustomer());
+        confirmSalesInvoiceEntity.setIsComplete(tempInvoiceEntity.getIsComplete());
+        confirmSalesInvoiceEntity.setAdvancePayment(tempInvoiceEntity.getPaidAmount());
+        return confirmSalesInvoiceRepo.save(confirmSalesInvoiceEntity);
     }
 
     @Override
     public NonPaginatedResponse getAllConfirmedInvoices() {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
-            List<ConfirmInvoiceEntity> confirmedSalesInvoiceEntities =confirmInvoiceRepo.findAll();
+            List<ConfirmSalesInvoiceEntity> confirmedSalesInvoiceEntities = confirmSalesInvoiceRepo.findAll();
             List<ConfirmInvoiceDto> confirmedSalesInvoice = confirmedSalesInvoiceEntities.stream()
                     .filter(ConfirmInvoiceEntity -> !ConfirmInvoiceEntity.getIsComplete())
                     .map(ConfirmInvoiceDto::new)
@@ -193,7 +193,7 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
     public NonPaginatedResponse getConfirmedInvoiceByInvoiceNumber(String invoiceNo){
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
-           ConfirmInvoiceEntity confirmedSalesInvoiceEntity =confirmInvoiceRepo.findByInvoiceReference(invoiceNo);
+           ConfirmSalesInvoiceEntity confirmedSalesInvoiceEntity = confirmSalesInvoiceRepo.findByInvoiceReference(invoiceNo);
             ConfirmInvoiceDto confirmedSalesInvoice = new ConfirmInvoiceDto(confirmedSalesInvoiceEntity);
             response.setResult(confirmedSalesInvoice);
             response.setStatus(HttpStatus.ACCEPTED);
@@ -207,7 +207,7 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
     public NonPaginatedResponse searchConfirmedSalesInvoice(String characters){
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
-            List<ConfirmInvoiceEntity> confirmedSalesInvoiceEntities =confirmInvoiceRepo.searchByCustomerNameOrInvoiceNoOrInvoiceDate(characters);
+            List<ConfirmSalesInvoiceEntity> confirmedSalesInvoiceEntities = confirmSalesInvoiceRepo.searchByCustomerNameOrInvoiceNoOrInvoiceDate(characters);
             List<ConfirmInvoiceDto> confirmedSalesInvoice = confirmedSalesInvoiceEntities.stream()
                     .filter(ConfirmInvoiceEntity -> !ConfirmInvoiceEntity.getIsComplete())
                     .map(ConfirmInvoiceDto::new)

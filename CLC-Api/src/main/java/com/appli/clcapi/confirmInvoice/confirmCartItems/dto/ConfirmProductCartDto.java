@@ -48,7 +48,7 @@ public class ConfirmProductCartDto {
         this.total = confirmProductCartEntity.getTotal();
         this.netAmount = confirmProductCartEntity.getNetAmount();
 //        this.tempInvoiceDto = new TempInvoiceDto(confirmProductCartEntity.getTempInvoiceEntity());
-        this.confirmInvoiceDto = new ConfirmInvoiceDto(confirmProductCartEntity.getConfirmInvoiceEntity());
+        this.confirmInvoiceDto = new ConfirmInvoiceDto(confirmProductCartEntity.getConfirmSalesInvoiceEntity());
     }
 
 
