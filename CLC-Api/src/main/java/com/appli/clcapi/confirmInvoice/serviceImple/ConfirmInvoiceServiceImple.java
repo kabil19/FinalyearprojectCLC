@@ -74,7 +74,7 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
                             aPay.setPaymentType(aPayment.getPaymentType());
                             aPay.setPaidDate(aPayment.getPaidDate());
                             aPay.setPaidAmount(aPayment.getPaidAmount());
-                            aPay.setConfirmInvoice(confirmedInvoice);
+                            aPay.setConfirmSalesInvoiceEntity(confirmedInvoice);
                             return aPay;
                         }
                 ).toList();

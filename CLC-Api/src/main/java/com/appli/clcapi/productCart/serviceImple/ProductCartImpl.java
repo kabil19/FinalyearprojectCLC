@@ -27,11 +27,11 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class ProductCartImple implements ProductCartService {
+public class ProductCartImpl implements ProductCartService {
     private final ProductCartRepo productCartRepo;
     private final StockRepo stockRepo;
     private final TempInvoiceRepo tempInvoiceRepo;
-    private static final Logger logger = LoggerFactory.getLogger(ProductCartImple.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProductCartImpl.class);
 
     @Override
     @Transactional
@@ -43,21 +43,23 @@ public class ProductCartImple implements ProductCartService {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 return response;
             }
-            if(productCartDto.getDiscount() <0){
+            if (productCartDto.getDiscount() < 0) {
                 response.setErrors(List.of("The discount can't be lesser than zero!"));
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 return response;
             }
-            if (productCartDto.getStockDto().getStockId()==null) {
+            if (productCartDto.getStockDto().getStockId() == null) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 response.setErrors(List.of("Stock is not selected!"));
                 return response;
             }
-            if(productCartDto.getNetAmount()<=0){
+//          this is the instance that unit discount is 100% from the selling price
+            if (productCartDto.getNetAmount() <= 0) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setErrors(List.of("Invalid Data!"));
+                response.setErrors(List.of("Unit Discount Can't be higher or equals to the selling price!"));
                 return response;
             }
+
             Long stockId = productCartDto.getStockDto().getStockId();
             Long tempInvoiceId = productCartDto.getTempInvoiceDto().getTempInvoiceId();
             StockEntity stocksFromStockEntity = stockRepo.findById(stockId)
@@ -117,45 +119,50 @@ public class ProductCartImple implements ProductCartService {
 
     private ProductCartEntity addNewItem(ProductCartDto productCartDto) {
 
-        StockEntity selectedStock = stockRepo.findById(productCartDto.getStockDto().getStockId()).get();
-
-        StockDto stockDto = new StockDto(selectedStock);
-        TempInvoiceDto tempInvoiceDto = productCartDto.getTempInvoiceDto();
-        double grossAmount = productCartDto.getQuantity() * stockDto.getSellingPrice();
-        double totalDiscount = productCartDto.getQuantity() * productCartDto.getDiscount();
-        ProductCartEntity aProductIntoCart = ProductCartEntity.builder()
-                .proCartId(productCartDto.getProCartId())
-                .discount(productCartDto.getDiscount())
+        Optional<StockEntity> selectedStock = stockRepo.findById(productCartDto.getStockDto().getStockId());
+        if (selectedStock.isPresent()) {
+            StockDto stockDto = new StockDto(selectedStock.get());
+            TempInvoiceDto tempInvoiceDto = productCartDto.getTempInvoiceDto();
+            double grossAmount = productCartDto.getQuantity() * stockDto.getSellingPrice();
+            double totalDiscount = productCartDto.getQuantity() * productCartDto.getDiscount();
+            ProductCartEntity aProductIntoCart = ProductCartEntity.builder()
+                    .proCartId(productCartDto.getProCartId())
+                    .discount(productCartDto.getDiscount())
 //                .netAmount(productCartDto.getNetAmount())
-                .netAmount(grossAmount- totalDiscount)
-                .quantity(productCartDto.getQuantity())
+                    .netAmount(grossAmount - totalDiscount)
+                    .quantity(productCartDto.getQuantity())
 //                .total(productCartDto.getTotal())
-                .total(grossAmount)
-                .tempInvoiceEntity(new TempInvoiceEntity(tempInvoiceDto))
-                .stockEntity(new StockEntity(stockDto)).build();
-        return productCartRepo.save(aProductIntoCart);
+                    .total(grossAmount)
+                    .tempInvoiceEntity(new TempInvoiceEntity(tempInvoiceDto))
+                    .stockEntity(new StockEntity(stockDto)).build();
+            return productCartRepo.save(aProductIntoCart);
+        }
+        return null;
     }
 
     private ProductCartEntity addMoreQuantity(ProductCartEntity existingItemsDetails,
                                               ProductCartDto productCartDto,
                                               StockEntity stocksFromStockEntity,
                                               Optional<TempInvoiceEntity> tempInvoiceEntity) {
-        Double updatedQty = existingItemsDetails.getQuantity() + productCartDto.getQuantity();
-        existingItemsDetails.setQuantity(updatedQty);
-        Double discount = existingItemsDetails.getDiscount() + productCartDto.getDiscount();
-        existingItemsDetails.setDiscount(discount);
-        double total = (stocksFromStockEntity.getSellingPrice() * updatedQty);
+        if (tempInvoiceEntity.isPresent()) {
+            Double updatedQty = existingItemsDetails.getQuantity() + productCartDto.getQuantity();
+            existingItemsDetails.setQuantity(updatedQty);
+            Double discount = existingItemsDetails.getDiscount() + productCartDto.getDiscount();
+            existingItemsDetails.setDiscount(discount);
+            double total = (stocksFromStockEntity.getSellingPrice() * updatedQty);
 //        long total = existingItemsDetails.getTotal() + totalForNewAddition;
-        existingItemsDetails.setTotal(total);
-        Double netAmount = total - (updatedQty * discount);
-        existingItemsDetails.setNetAmount(netAmount);
+            existingItemsDetails.setTotal(total);
+            Double netAmount = total - (updatedQty * discount);
+            existingItemsDetails.setNetAmount(netAmount);
 
-        tempInvoiceEntity.get().setNetAmount(netAmount);
-        tempInvoiceRepo.save(tempInvoiceEntity.get());
+            tempInvoiceEntity.get().setNetAmount(netAmount);
+            tempInvoiceRepo.save(tempInvoiceEntity.get());
 
-        return productCartRepo.save(existingItemsDetails);
+            return productCartRepo.save(existingItemsDetails);
 
+        }
 
+        return null;
     }
 
     @Override
@@ -251,7 +258,11 @@ public class ProductCartImple implements ProductCartService {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 return response;
             }
-
+            if (productCartDto.getNetAmount() <= 0) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Unit Discount Can't be higher or equals to the selling price!"));
+                return response;
+            }
             double currentQtyInTheRecord = selectedCartRecord.get().getQuantity();
             double newlySelectedQty = productCartDto.getQuantity();
             ProductCartEntity cartRecordDetails = selectedCartRecord.get();

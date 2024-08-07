@@ -34,7 +34,7 @@ public class ConfirmSalesPaymentsDto {
 
     public ConfirmSalesPaymentsDto(ConfirmSalesPaymentsEntity confirmSalesPaymentsEntity) {
         this.setPaymentId(confirmSalesPaymentsEntity.getPaymentId());
-        this.setConfirmInvoiceDto(new ConfirmInvoiceDto(confirmSalesPaymentsEntity.getConfirmInvoice()));
+        this.setConfirmInvoiceDto(new ConfirmInvoiceDto(confirmSalesPaymentsEntity.getConfirmSalesInvoiceEntity()));
         this.setPaymentType(confirmSalesPaymentsEntity.getPaymentType());
         this.setPaidAmount(confirmSalesPaymentsEntity.getPaidAmount());
         this.setPaidDate(confirmSalesPaymentsEntity.getPaidDate());

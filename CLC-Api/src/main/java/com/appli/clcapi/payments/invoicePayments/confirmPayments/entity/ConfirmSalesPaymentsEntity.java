@@ -25,7 +25,7 @@ public class ConfirmSalesPaymentsEntity {
 
     @ManyToOne
     @JoinColumn(name="confirmInvoiceId")
-    private ConfirmSalesInvoiceEntity confirmInvoice;
+    private ConfirmSalesInvoiceEntity confirmSalesInvoiceEntity;
 //    private Long purchaseInvoice;
 
 

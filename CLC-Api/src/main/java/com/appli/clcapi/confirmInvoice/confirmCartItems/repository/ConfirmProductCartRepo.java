@@ -10,5 +10,5 @@ import java.util.List;
 public interface ConfirmProductCartRepo extends JpaRepository<ConfirmProductCartEntity, Long> {
 
 
-    List<ConfirmProductCartEntity> findByConfirmInvoiceEntity_ConfirmInvoiceId(long invoiceId);
+    List<ConfirmProductCartEntity> findByConfirmSalesInvoiceEntity_ConfirmInvoiceId(long invoiceId);
 }

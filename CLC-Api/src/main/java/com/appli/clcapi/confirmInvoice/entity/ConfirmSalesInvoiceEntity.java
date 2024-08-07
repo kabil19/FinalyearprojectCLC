@@ -38,22 +38,22 @@ public class ConfirmSalesInvoiceEntity {
     @JoinColumn(name="custId")
     private CustomerEntity customer;
 
-    @OneToMany(mappedBy ="confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy ="confirmSalesInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ConfirmSalesInvoiceReceiptEntity> confirmSalesInvoiceReceiptEntity;
 
-    @OneToMany(mappedBy = "confirmInvoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "confirmSalesInvoiceEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ConfirmSalesPaymentsEntity> confirmSalesPaymentsEntity;
 
-    @OneToMany(mappedBy = "confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "confirmSalesInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ConfirmProductCartEntity> confirmProductCartEntity;
 
-    @OneToMany(mappedBy = "confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "confirmSalesInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ConfirmCardEntity> confirmCardEntity;//checked
 
-    @OneToMany(mappedBy = "confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "confirmSalesInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ConfirmCashEntity> confirmCashEntity;//checked
 
-    @OneToMany(mappedBy = "confirmInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "confirmSalesInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ConfirmSalesInvoiceChequeEntity> confirmSalesInvoiceChequeEntity;//checked
 
 

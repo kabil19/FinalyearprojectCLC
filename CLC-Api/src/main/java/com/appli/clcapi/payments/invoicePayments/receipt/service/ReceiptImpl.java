@@ -20,7 +20,7 @@ public class ReceiptImpl implements ReceiptService {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try{
             List<ConfirmSalesInvoiceReceiptEntity> confirmSalesInvoiceReceiptEntities = receiptRepo.
-                    findByConfirmInvoiceEntity_ConfirmInvoiceId(invoiceId);
+                    findByConfirmSalesInvoiceEntity_ConfirmInvoiceId(invoiceId);
             List<ConfirmSalesInvoiceReceiptDto> receiptDtos = confirmSalesInvoiceReceiptEntities.stream()
                     .map(ConfirmSalesInvoiceReceiptDto::new)
                     .toList();

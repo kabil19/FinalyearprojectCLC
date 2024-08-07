@@ -21,7 +21,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class ConfirmProductCartServiceImple implements ConfirmProductCartService {
+public class ConfirmProductCartServiceImpl implements ConfirmProductCartService {
     private final ProductCartRepo productCartRepo;
     private final ConfirmProductCartRepo confirmProductCartRepo;
 
@@ -58,7 +58,7 @@ public class ConfirmProductCartServiceImple implements ConfirmProductCartService
     public NonPaginatedResponse getAllConfirmedProCartItemsByInvoiceId(Long invoiceId) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
-            List<ConfirmProductCartEntity> cartList = confirmProductCartRepo.findByConfirmInvoiceEntity_ConfirmInvoiceId(invoiceId);
+            List<ConfirmProductCartEntity> cartList = confirmProductCartRepo.findByConfirmSalesInvoiceEntity_ConfirmInvoiceId(invoiceId);
             List<ConfirmProductCartDto> confirmProductCartDtoList = cartList.stream()
                     .map(ConfirmProductCartDto::new)
                             .toList();

@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ConfirmSalesInvoiceReceiptRepo extends JpaRepository<ConfirmSalesInvoiceReceiptEntity, Long> {
-    List<ConfirmSalesInvoiceReceiptEntity> findByConfirmInvoiceEntity_ConfirmInvoiceId(Long confirmInvoiceId);
+    List<ConfirmSalesInvoiceReceiptEntity> findByConfirmSalesInvoiceEntity_ConfirmInvoiceId(Long confirmInvoiceId);
 }

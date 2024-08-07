@@ -149,7 +149,7 @@ public class ReportServiceImpl implements ReportService {
 
             start = start.with(LocalTime.MIN);
             end = end.with(LocalTime.MAX);
-            List<ConfirmSalesPaymentsEntity> salesInvoicePaymentsList = confirmSalesInvoicePaymentsRepo.findByConfirmInvoice_ConfirmInvoiceIdAndPaidDateBetween(confirmSalesInvoiceId, start, end);
+            List<ConfirmSalesPaymentsEntity> salesInvoicePaymentsList = confirmSalesInvoicePaymentsRepo.findByConfirmSalesInvoiceEntity_ConfirmInvoiceIdAndPaidDateBetween(confirmSalesInvoiceId, start, end);
             List<ConfirmSalesPaymentsDto> salesInvoicePaymentsDtoList = salesInvoicePaymentsList.stream()
                     .map(ConfirmSalesPaymentsDto::new)
                     .toList();
@@ -214,7 +214,7 @@ public class ReportServiceImpl implements ReportService {
             List<ConfirmInvoiceDto> salesInvoiceData = salesInvoiceList.stream()
                     .map(ConfirmInvoiceDto::new)
                     .toList();
-            List<ConfirmSalesPaymentsEntity> listOfSalesPayments =  confirmSalesInvoicePaymentsRepo.findByConfirmInvoiceInOrderByConfirmInvoice(salesInvoiceList);
+            List<ConfirmSalesPaymentsEntity> listOfSalesPayments =  confirmSalesInvoicePaymentsRepo.findByConfirmSalesInvoiceEntityInOrderByConfirmSalesInvoiceEntity(salesInvoiceList);
 
             List<ConfirmSalesPaymentsDto> paymentsListDtoOfSales = listOfSalesPayments.stream()
                     .map(ConfirmSalesPaymentsDto::new)

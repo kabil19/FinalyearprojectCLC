@@ -13,11 +13,11 @@ import java.util.List;
 public interface ConfirmSalesPaymentsRepo extends JpaRepository<ConfirmSalesPaymentsEntity, Long> {
 
 
-List<ConfirmSalesPaymentsEntity> findByConfirmInvoice_ConfirmInvoiceId(Long id);
+List<ConfirmSalesPaymentsEntity> findByConfirmSalesInvoiceEntity_ConfirmInvoiceId(Long id);
 List<ConfirmSalesPaymentsEntity> findByPaidDateBetween(LocalDateTime start, LocalDateTime end);
-List<ConfirmSalesPaymentsEntity> findByConfirmInvoice_ConfirmInvoiceIdAndPaidDateBetween(Long confirmInvoiceId, LocalDateTime start, LocalDateTime end);
+List<ConfirmSalesPaymentsEntity> findByConfirmSalesInvoiceEntity_ConfirmInvoiceIdAndPaidDateBetween(Long confirmInvoiceId, LocalDateTime start, LocalDateTime end);
 
-List<ConfirmSalesPaymentsEntity> findByConfirmInvoiceInOrderByConfirmInvoice(List<ConfirmSalesInvoiceEntity> listOfSales);
+List<ConfirmSalesPaymentsEntity> findByConfirmSalesInvoiceEntityInOrderByConfirmSalesInvoiceEntity(List<ConfirmSalesInvoiceEntity> listOfSales);
 
 
 
