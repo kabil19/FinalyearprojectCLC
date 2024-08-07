@@ -36,6 +36,11 @@ public class TempPurchaseProductCartImpl implements TempPurchaseProductCartServi
                 response.setErrors(List.of("Quantity can't be neither 0 nor less!"));
                 return response;
             }
+            if(tempPurchaseProductCartDto.getDiscount()<0){
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Discount can't be less than zero!"));
+                return response;
+            }
             if (tempPurchaseProductCartDto.getSellingPrice() <= 0 && tempPurchaseProductCartDto.getPurchasePrice() <= 0) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 response.setErrors(List.of("Prices can't be neither 0 nor less!"));
@@ -224,6 +229,41 @@ public class TempPurchaseProductCartImpl implements TempPurchaseProductCartServi
         try {
             Optional<TempPurchaseEntity> selectedTempPurchaseInvoice = tempPurchaseRepo.findById(tempPurchaseProductCartDto.getTempPurchaseEntity().getPurchaseId());
             Optional<StockEntity> selectedStockItem = stockRepo.findById(tempPurchaseProductCartDto.getStockDto().getStockId());
+            if (tempPurchaseProductCartDto.getQuantity() <= 0) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Quantity can't be neither 0 nor less!"));
+                return response;
+            }
+            if(tempPurchaseProductCartDto.getDiscount()<0){
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Discount can't be less than zero!"));
+                return response;
+            }
+            if (tempPurchaseProductCartDto.getSellingPrice() <= 0 && tempPurchaseProductCartDto.getPurchasePrice() <= 0) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Prices can't be neither 0 nor less!"));
+                return response;
+            }
+            if (tempPurchaseProductCartDto.getSellingPrice() <= 0) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Selling price can't be neither 0 nor less!"));
+                return response;
+            }
+            if (tempPurchaseProductCartDto.getPurchasePrice() <= 0) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Purchase price can't be neither 0 nor less!"));
+                return response;
+            }
+            if (tempPurchaseProductCartDto.getPurchasePrice() > tempPurchaseProductCartDto.getSellingPrice()) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Selling Price can't be lesser than Purchase Price!"));
+                return response;
+            }
+            if (tempPurchaseProductCartDto.getDiscount() >= tempPurchaseProductCartDto.getPurchasePrice()) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Unit Discount can't exceed the Purchase Price!"));
+                return response;
+            }
             if (selectedStockItem.isEmpty()) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 response.setErrors(List.of("Stock isn't exist!"));
@@ -232,11 +272,6 @@ public class TempPurchaseProductCartImpl implements TempPurchaseProductCartServi
             if (selectedTempPurchaseInvoice.isEmpty()) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 response.setErrors(List.of("Purchase Invoice isn't exist!"));
-                return response;
-            }
-            if (tempPurchaseProductCartDto.getQuantity() == 0 || tempPurchaseProductCartDto.getQuantity() < 0) {
-                response.setErrors(List.of("Quantity can't be neither 0 nor less!"));
-                response.setStatus(HttpStatus.BAD_REQUEST);
                 return response;
             }
             Optional<TempPurchaseProductCartEntity> selectedPurchaseCartRec = tempPurchaseProductCartRepo.findById(tempPurchaseProductCartDto.getProductCartId());

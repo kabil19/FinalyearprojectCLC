@@ -85,6 +85,7 @@ public class ProductCartImpl implements ProductCartService {
                 tempInvoiceRepo.save(tempInvoiceEntity.get());
 
                 response.setSuccessMessage(ProductCartConstants.PRODUCT_HAS_BEEN_ADDED_INTO_THE_CART_SUCCESSFULLY);
+                assert returnedProduct != null;
                 ProductCartDto aProductIntoTheCart = new ProductCartDto(returnedProduct);
                 response.setResult(aProductIntoTheCart);
                 response.setStatus(HttpStatus.CREATED);
@@ -96,6 +97,7 @@ public class ProductCartImpl implements ProductCartService {
 
 
                 response.setSuccessMessage(ProductCartConstants.MORE_QUANTITY_HAS_BEEN_UPDATED_TO_THE_PRODUCT);
+                assert insertedProduct != null;
                 ProductCartDto aProductIntoTheCart = new ProductCartDto(insertedProduct);
                 response.setResult(aProductIntoTheCart);
                 response.setStatus(HttpStatus.ACCEPTED);
@@ -252,15 +254,27 @@ public class ProductCartImpl implements ProductCartService {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 return response;
             }
+            if (productCartDto.getDiscount() < 0) {
+                response.setErrors(List.of("The discount can't be lesser than zero!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
+            if (productCartDto.getStockDto().getStockId() == null) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Stock is not selected!"));
+                return response;
+            }
+//          this is the instance that unit discount is 100% from the selling price
+            if (productCartDto.getNetAmount() <= 0) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Unit Discount Can't be higher or equals to the selling price!"));
+                return response;
+            }
+
             Optional<ProductCartEntity> selectedCartRecord = productCartRepo.findById(productCartDto.getProCartId());
             if (selectedCartRecord.isEmpty()) {
                 response.setErrors(List.of("The Product isn't exist!"));
                 response.setStatus(HttpStatus.BAD_REQUEST);
-                return response;
-            }
-            if (productCartDto.getNetAmount() <= 0) {
-                response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setErrors(List.of("Unit Discount Can't be higher or equals to the selling price!"));
                 return response;
             }
             double currentQtyInTheRecord = selectedCartRecord.get().getQuantity();
