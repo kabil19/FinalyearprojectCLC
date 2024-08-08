@@ -28,9 +28,20 @@ public class TempPurchaseProductCartImpl implements TempPurchaseProductCartServi
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
 
-            Optional<TempPurchaseEntity> selectedTempPurchaseInvoice = tempPurchaseRepo.findById(tempPurchaseProductCartDto.getTempPurchaseEntity().getPurchaseId());
-            Optional<StockEntity> selectedStockItem = stockRepo.findById(tempPurchaseProductCartDto.getStockDto().getStockId());
-
+            Long purchaseId = tempPurchaseProductCartDto.getTempPurchaseEntity().getPurchaseId();
+            Optional<TempPurchaseEntity> selectedTempPurchaseInvoice = tempPurchaseRepo.findById(purchaseId);
+            Long stockId = tempPurchaseProductCartDto.getStockDto().getStockId();
+            Optional<StockEntity> selectedStockItem = stockRepo.findById(stockId);
+            if (selectedTempPurchaseInvoice.isEmpty()) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Purchase Invoice isn't exist!"));
+                return response;
+            }
+            if (selectedStockItem.isEmpty()) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Stock isn't exist!"));
+                return response;
+            }
             if (tempPurchaseProductCartDto.getQuantity() <= 0) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 response.setErrors(List.of("Quantity can't be neither 0 nor less!"));
@@ -63,24 +74,16 @@ public class TempPurchaseProductCartImpl implements TempPurchaseProductCartServi
             }
             if (tempPurchaseProductCartDto.getDiscount() >= tempPurchaseProductCartDto.getPurchasePrice()) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setErrors(List.of("Unit Discount can't exceed the Purchase Price!"));
+                response.setErrors(List.of("Unit Discount can't be neither exceed nor equal the Purchase Price!"));
                 return response;
             }
-            if (selectedStockItem.isEmpty()) {
-                response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setErrors(List.of("Stock isn't exist!"));
-                return response;
-            }
-            if (selectedTempPurchaseInvoice.isEmpty()) {
-                response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setErrors(List.of("Purchase Invoice isn't exist!"));
-                return response;
-            }
+
+
             Optional<TempPurchaseProductCartEntity> existingRecordFromTheCart = tempPurchaseProductCartRepo.
                     findByStockEntity_StockIdAndTempPurchaseEntity_PurchaseId(
-                            tempPurchaseProductCartDto.getStockDto().getStockId(), tempPurchaseProductCartDto.getTempPurchaseEntity().getPurchaseId()
+                            stockId, purchaseId
                     );
-            Optional<StockEntity> productFromTheStock = stockRepo.findById(tempPurchaseProductCartDto.getStockDto().getStockId());
+            Optional<StockEntity> productFromTheStock = stockRepo.findById(stockId);
             if (existingRecordFromTheCart.isEmpty() && productFromTheStock.isPresent()) {
                 createPurchaseCartRecord(tempPurchaseProductCartDto);
             } else
@@ -227,8 +230,15 @@ public class TempPurchaseProductCartImpl implements TempPurchaseProductCartServi
     public NonPaginatedResponse updateTempPurchaseCartRecord(TempPurchaseProductCartDto tempPurchaseProductCartDto) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
-            Optional<TempPurchaseEntity> selectedTempPurchaseInvoice = tempPurchaseRepo.findById(tempPurchaseProductCartDto.getTempPurchaseEntity().getPurchaseId());
-            Optional<StockEntity> selectedStockItem = stockRepo.findById(tempPurchaseProductCartDto.getStockDto().getStockId());
+            Long purchaseId = tempPurchaseProductCartDto.getTempPurchaseEntity().getPurchaseId();
+            Optional<TempPurchaseEntity> selectedTempPurchaseInvoice = tempPurchaseRepo.findById(purchaseId);
+            Long stockId = tempPurchaseProductCartDto.getStockDto().getStockId();
+            Optional<StockEntity> selectedStockItem = stockRepo.findById(stockId);
+            if (selectedStockItem.isEmpty()) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Stock isn't exist!"));
+                return response;
+            }
             if (tempPurchaseProductCartDto.getQuantity() <= 0) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 response.setErrors(List.of("Quantity can't be neither 0 nor less!"));
@@ -262,11 +272,6 @@ public class TempPurchaseProductCartImpl implements TempPurchaseProductCartServi
             if (tempPurchaseProductCartDto.getDiscount() >= tempPurchaseProductCartDto.getPurchasePrice()) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 response.setErrors(List.of("Unit Discount can't exceed the Purchase Price!"));
-                return response;
-            }
-            if (selectedStockItem.isEmpty()) {
-                response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setErrors(List.of("Stock isn't exist!"));
                 return response;
             }
             if (selectedTempPurchaseInvoice.isEmpty()) {

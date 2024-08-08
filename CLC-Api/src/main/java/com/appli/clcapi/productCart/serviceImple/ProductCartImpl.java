@@ -53,7 +53,7 @@ public class ProductCartImpl implements ProductCartService {
                 response.setErrors(List.of("Stock is not selected!"));
                 return response;
             }
-//          this is the instance that unit discount is 100% from the selling price
+//          this is the instance that shows a unit discount is acquired 100% from the selling price
             if (productCartDto.getNetAmount() <= 0) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 response.setErrors(List.of("Unit Discount Can't be higher or equals to the selling price!"));
@@ -62,12 +62,15 @@ public class ProductCartImpl implements ProductCartService {
 
             Long stockId = productCartDto.getStockDto().getStockId();
             Long tempInvoiceId = productCartDto.getTempInvoiceDto().getTempInvoiceId();
-            StockEntity stocksFromStockEntity = stockRepo.findById(stockId)
-                    .orElseThrow(() -> new IllegalArgumentException("Stock with ID " + stockId + " not found"));
-
+            Optional<StockEntity> stocksFromStockEntity = stockRepo.findById(stockId);
+            if(stocksFromStockEntity.isEmpty()){
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Select an existing stock from the list!"));
+                return response;
+            }
 
             Optional<ProductCartEntity> itemInCart = productCartRepo.findByStockEntity_StockIdAndTempInvoiceEntity_TempInvoiceId(stockId, tempInvoiceId);
-            double newQtyToStock = stocksFromStockEntity.getQuantity() - productCartDto.getQuantity();
+            double newQtyToStock = stocksFromStockEntity.get().getQuantity() - productCartDto.getQuantity();
 
             Optional<TempInvoiceEntity> tempInvoiceEntity = tempInvoiceRepo.findById(tempInvoiceId);
             if (tempInvoiceEntity.isEmpty()) {
@@ -78,7 +81,7 @@ public class ProductCartImpl implements ProductCartService {
             if (itemInCart.isEmpty()) {
                 ProductCartEntity returnedProduct = addNewItem(productCartDto);
 
-                updateIntoStockEntity(stocksFromStockEntity, newQtyToStock);
+                updateIntoStockEntity(stocksFromStockEntity.get(), newQtyToStock);
 
                 double currentNetAmountInTempInvoice = tempInvoiceEntity.get().getNetAmount();
                 tempInvoiceEntity.get().setNetAmount(currentNetAmountInTempInvoice + productCartDto.getNetAmount());
@@ -91,9 +94,9 @@ public class ProductCartImpl implements ProductCartService {
                 response.setStatus(HttpStatus.CREATED);
             } else {
                 ProductCartEntity itemInCartDetails = itemInCart.get();
-                ProductCartEntity insertedProduct = addMoreQuantity(itemInCartDetails, productCartDto, stocksFromStockEntity, tempInvoiceEntity);
+                ProductCartEntity insertedProduct = addMoreQuantity(itemInCartDetails, productCartDto, stocksFromStockEntity.get(), tempInvoiceEntity);
 
-                updateIntoStockEntity(stocksFromStockEntity, newQtyToStock);
+                updateIntoStockEntity(stocksFromStockEntity.get(), newQtyToStock);
 
 
                 response.setSuccessMessage(ProductCartConstants.MORE_QUANTITY_HAS_BEEN_UPDATED_TO_THE_PRODUCT);
