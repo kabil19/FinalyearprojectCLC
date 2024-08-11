@@ -52,12 +52,12 @@ public class VendorServiceImpl implements VendorService {
                vendorRepo.save(aVendor);
                return new ResponseEntity<>("Vendor is Deleted!",HttpStatus.OK);
            }
-
+           return new ResponseEntity<>("Vendor Can't be deleted since its reference is used for Purchase Invoices!", HttpStatus.FORBIDDEN);
        }catch (Exception e){
            e.printStackTrace();
            return new ResponseEntity<>("Server Error!", HttpStatus.INTERNAL_SERVER_ERROR);
        }
-        return null;
+
     }
 
     @Override
