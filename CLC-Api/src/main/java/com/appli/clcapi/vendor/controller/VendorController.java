@@ -3,6 +3,7 @@ package com.appli.clcapi.vendor.controller;
 import com.appli.clcapi.vendor.dto.VendorDto;
 import com.appli.clcapi.vendor.service.VendorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,16 +16,16 @@ public class VendorController {
     private final VendorService vendorService;
 
     @PostMapping("register")
-    public String register(@RequestBody VendorDto vendorDto){
+    public ResponseEntity<String> register(@RequestBody VendorDto vendorDto){
         return vendorService.register(vendorDto);
     }
     @DeleteMapping("delete/{vendorID}")
-    public String delete(@PathVariable Long vendorID){
+    public ResponseEntity<String> delete(@PathVariable Long vendorID){
         return vendorService.delete(vendorID);
     }
 
     @PutMapping("update")
-    public String update(@RequestBody VendorDto vendorDto){
+    public ResponseEntity<String> update(@RequestBody VendorDto vendorDto){
         return vendorService.update(vendorDto);
     }
     @GetMapping("getAll")

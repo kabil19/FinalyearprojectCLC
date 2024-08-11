@@ -1,15 +1,16 @@
 package com.appli.clcapi.vendor.service;
 import com.appli.clcapi.vendor.dto.VendorDto;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public interface VendorService {
-    String register(VendorDto vendorDto);
+    ResponseEntity<String> register(VendorDto vendorDto);
 
-    String delete(Long custId);
+    ResponseEntity<String> delete(Long custId);
 
-    String update(VendorDto vendorDto);
+    ResponseEntity<String> update(VendorDto vendorDto);
 
     List<VendorDto> getAll();
 
