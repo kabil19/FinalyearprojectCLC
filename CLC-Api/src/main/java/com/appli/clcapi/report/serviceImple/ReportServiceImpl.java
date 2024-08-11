@@ -45,7 +45,7 @@ public class ReportServiceImpl implements ReportService {
                     .map(ConfirmInvoiceDto::new)
                     .toList();
             if (confirmInvoiceDto.isEmpty()) {
-                response.setErrors(List.of("No Sales Reports exist with-in the given range! "));
+                response.setErrors(List.of("No Sales Report exist with-in the given range! "));
                 return response;
             }
             response.setResult(confirmInvoiceDto);

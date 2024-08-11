@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserService {
             UserEntity aUser = new UserEntity();
             //If the current logged in person's role is user then the privilege to update is restricted.
             if(currentUserService.getCurrentUser().getRole().equals(Roles.USER)){
-                response.setErrors(Collections.singletonList("Role User has no privilege to update!"));
+                response.setErrors(List.of("Role User has no privilege to update!"));
                 response.setStatus(HttpStatus.FORBIDDEN);
                 return response;
             }

@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class StockServiceImple implements StockService {
+public class StockServiceImpl implements StockService {
 
     private final StockRepo stockRepo;
 
@@ -29,6 +29,9 @@ public class StockServiceImple implements StockService {
     public ResponseEntity<String> register(StockDto stockDto) {
         LocalDateTime now = LocalDateTime.now();
         try{
+            if(stockDto.getSellingPrice() <stockDto.getPurchasePrice()){
+                return new ResponseEntity<>("Purchase price can't be greater than Selling Price!",HttpStatus.BAD_REQUEST);
+            }
             StockEntity aStock = StockEntity.builder()
                     .stockId(stockDto.getStockId())
                     .categoryEntity(new CategoryEntity(stockDto.getCategoryOBJ().getCategoryId()))
@@ -43,7 +46,7 @@ public class StockServiceImple implements StockService {
                     .reorderQty(stockDto.getReorderQty())
                     .build();
             stockRepo.save(aStock);
-            return new ResponseEntity<>("Stock has been Inserted", HttpStatus.OK);
+            return new ResponseEntity<>("Stock is Inserted!", HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
             return new ResponseEntity<>("Server Error",HttpStatus.INTERNAL_SERVER_ERROR);
@@ -52,34 +55,49 @@ public class StockServiceImple implements StockService {
 
     @Override
     public ResponseEntity<String> delete(Long stockId) {
-        StockEntity aStock = stockRepo.getReferenceById(stockId);
-        aStock.setDeleted(true);
-        stockRepo.save(aStock);
-        return new ResponseEntity<>("deleted",HttpStatus.OK);
+        try {
+            StockEntity aStock = stockRepo.getReferenceById(stockId);
+            if (aStock.getTempPurchaseProductCartEntity().isEmpty() && aStock.getProductCartEntity().isEmpty()) {
+                aStock.setDeleted(true);
+                stockRepo.save(aStock);
+                return new ResponseEntity<>("Stock is deleted!", HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Stock as some other references, so can't be deleted!", HttpStatus.BAD_REQUEST);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>("Server Error",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
     public ResponseEntity<String> update(StockDto stockDto) {
         try{
             Optional<StockEntity> aStock = stockRepo.findById(stockDto.getStockId());
-            StockEntity updatedStock;
-            updatedStock = aStock.get();
-            updatedStock.setCategoryEntity(new CategoryEntity(stockDto.getCategoryOBJ().getCategoryId()));
-            updatedStock.setItemName(stockDto.getItemName());
-            updatedStock.setQuantity(stockDto.getQuantity());
-            updatedStock.setRemarks(stockDto.getRemarks());
-            updatedStock.setArrivalDate(stockDto.getArrivalDate());
-            updatedStock.setMaterialColour(stockDto.getMaterialColour());
-            updatedStock.setPurchasePrice(stockDto.getPurchasePrice());
-            updatedStock.setSellingPrice(stockDto.getSellingPrice());
-            updatedStock.setReorderQty(stockDto.getReorderQty());
-            stockRepo.save(updatedStock);
-            return new ResponseEntity<>("Stock has been updated",HttpStatus.OK);
+            if(stockDto.getSellingPrice() <stockDto.getPurchasePrice()){
+                return new ResponseEntity<>("Purchase price can't be greater than Selling Price!",HttpStatus.BAD_REQUEST);
+            }
+            if(aStock.isPresent()){
+                StockEntity updatedStock;
+                updatedStock = aStock.get();
+                updatedStock.setCategoryEntity(new CategoryEntity(stockDto.getCategoryOBJ().getCategoryId()));
+                updatedStock.setItemName(stockDto.getItemName());
+                updatedStock.setQuantity(stockDto.getQuantity());
+                updatedStock.setRemarks(stockDto.getRemarks());
+                updatedStock.setArrivalDate(stockDto.getArrivalDate());
+                updatedStock.setMaterialColour(stockDto.getMaterialColour());
+                updatedStock.setPurchasePrice(stockDto.getPurchasePrice());
+                updatedStock.setSellingPrice(stockDto.getSellingPrice());
+                updatedStock.setReorderQty(stockDto.getReorderQty());
+                stockRepo.save(updatedStock);
+                return new ResponseEntity<>("Stock is updated!",HttpStatus.OK);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>("Server Error",HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        }
+        return null;
+    }
 
 
     @Override
@@ -99,7 +117,6 @@ public class StockServiceImple implements StockService {
 
     @Override
     public List<StockDto> getAll() {
-        Pageable sortedByName =   PageRequest.of(0, 3, Sort.by("itemName"));
         List<StockEntity> stockList = stockRepo.findAllByDeletedEquals(false);
         List<StockDto> stockDtoListForView = new ArrayList<>();
         for(StockEntity aStock : stockList) {
