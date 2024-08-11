@@ -7,6 +7,7 @@ import com.appli.clcapi.customer.repository.CustomerRepo;
 import com.appli.clcapi.customer.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -48,23 +49,28 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public String delete(Long custId) {
+    public ResponseEntity<String> delete(Long custId) {
         try{
              var aCust = customerRepo.getReferenceById(custId);
-             aCust.setDeleted(true);
-             customerRepo.save(aCust);
-             return "Customer Deleted";
+             if(aCust.getTempInvoiceEntity().isEmpty()){
+                 aCust.setDeleted(true);
+                 customerRepo.save(aCust);
+                 return new ResponseEntity<>("Customer is deleted!",HttpStatus.OK);
+             }else {
+                 return new ResponseEntity<>("Customer's reference is used in invoices, so can't be deleted",HttpStatus.FORBIDDEN);
+             }
+
 
 
         }catch (Exception e){
             e.printStackTrace();
-            throw new RuntimeException("Couldn't delete customer");
+            return new ResponseEntity<>("Server Error",HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
     @Override
-    public String update(CustomerDto customerDto) {
+    public ResponseEntity<String>  update(CustomerDto customerDto) {
         try{
             Optional<CustomerEntity> aCust= customerRepo.findById(customerDto.getCustId());
             CustomerEntity updatedCustomer;
@@ -74,14 +80,15 @@ public class CustomerServiceImpl implements CustomerService {
                 updatedCustomer.setEmail(customerDto.getEmail());
                 updatedCustomer.setContact(customerDto.getContact());
                 updatedCustomer.setAddress(customerDto.getAddress());
+                customerRepo.save(updatedCustomer);
+                return new ResponseEntity<>("Customer is updated!", HttpStatus.OK);
             }else{
-                return "Couldn't find the customer";
+                return new ResponseEntity<>("Customer isn't exist!", HttpStatus.BAD_REQUEST);
             }
-            customerRepo.save(updatedCustomer);
-            return "Customer Updated";
+
         }catch (Exception e){
             e.printStackTrace();
-            throw new RuntimeException("Error while updating the category");
+            return new ResponseEntity<>("Server Error",HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }

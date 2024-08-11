@@ -4,6 +4,7 @@ import com.appli.clcapi.common.response.NonPaginatedResponse;
 import com.appli.clcapi.customer.dto.CustomerDto;
 import com.appli.clcapi.customer.service.CustomerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -22,12 +23,12 @@ public class CustomerController {
     }
 
     @DeleteMapping("delete/{custId}")
-    public String delete(@PathVariable Long custId){
+    public ResponseEntity<String> delete(@PathVariable Long custId){
         return customerService.delete(custId);
     }
 
     @PutMapping("update")
-    public String update(@RequestBody  CustomerDto customerDto){
+    public ResponseEntity<String>  update(@RequestBody  CustomerDto customerDto){
         return customerService.update(customerDto);
     }
 
