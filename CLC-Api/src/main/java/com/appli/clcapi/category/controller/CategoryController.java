@@ -1,8 +1,9 @@
 package com.appli.clcapi.category.controller;
 
 import com.appli.clcapi.category.dto.CategoryDto;
-import com.appli.clcapi.category.service.CatergoryService;
+import com.appli.clcapi.category.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -14,29 +15,29 @@ import java.util.List;
 @CrossOrigin("http://localhost:4200")
 public class CategoryController {
 
-    private final CatergoryService catergoryService;
+    private final CategoryService categoryService;
     @PostMapping("register")
-    public String register(@RequestBody CategoryDto categoryDto){
-        return catergoryService.register(categoryDto);
+    public ResponseEntity<String> register(@RequestBody CategoryDto categoryDto){
+        return categoryService.register(categoryDto);
     }
 
     @DeleteMapping("delete/{categoryId}")
-    public String delete(@PathVariable Long categoryId){
-        return catergoryService.delete(categoryId);
+    public ResponseEntity<String> delete(@PathVariable Long categoryId){
+        return categoryService.delete(categoryId);
     }
 
     @PutMapping("update")
-    public String update(@RequestBody  CategoryDto categoryDto){
-        return catergoryService.update(categoryDto);
+    public ResponseEntity<String> update(@RequestBody  CategoryDto categoryDto){
+        return categoryService.update(categoryDto);
     }
 
     @GetMapping("getAll")
     public List<CategoryDto> getAll(){
-        return catergoryService.getAll();
+        return categoryService.getAll();
     }
 
     @GetMapping("select/{existingChar}")
     public ArrayList<CategoryDto> selectCategory(@PathVariable String existingChar){
-        return catergoryService.selectCategory(existingChar);
+        return categoryService.selectCategory(existingChar);
     }
 }
