@@ -34,9 +34,14 @@ public class CategoryServiceImple implements CatergoryService {
     public String delete(Long categoryId) {
        try {
            CategoryEntity aCat = categoryRepo.getReferenceById(categoryId);
-           aCat.setDeleted(true);
-           categoryRepo.save(aCat);
-           return "Selected Category has been deleted";
+           if(aCat.getStockEntity().isEmpty()){
+               aCat.setDeleted(true);
+               categoryRepo.save(aCat);
+               return "Selected Category has been deleted";
+           }else {
+               return "Selected Category has been deleted";
+           }
+
        }catch (Exception e){
            e.printStackTrace();
            throw new RuntimeException("Hasn't been deleted");

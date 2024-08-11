@@ -56,7 +56,7 @@ public class ProductCartImpl implements ProductCartService {
 //          this is the instance that shows a unit discount is acquired 100% from the selling price
             if (productCartDto.getNetAmount() <= 0) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setErrors(List.of("Unit Discount Can't be higher or equals to the selling price!"));
+                response.setErrors(List.of("The unit discount can neither exceed nor equal the selling price!"));
                 return response;
             }
 
@@ -270,7 +270,7 @@ public class ProductCartImpl implements ProductCartService {
 //          this is the instance that unit discount is 100% from the selling price
             if (productCartDto.getNetAmount() <= 0) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setErrors(List.of("Unit Discount Can't be higher or equals to the selling price!"));
+                response.setErrors(List.of("The unit discount can neither exceed nor equal the selling price!"));
                 return response;
             }
 
@@ -323,7 +323,7 @@ public class ProductCartImpl implements ProductCartService {
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(HttpStatus.BAD_REQUEST);
-            response.setErrors(List.of("Couldn't update the cart!"));
+            response.setErrors(List.of("Error updating the cart!"));
         }
 
         return response;
@@ -342,7 +342,7 @@ public class ProductCartImpl implements ProductCartService {
             }
             response.setResult(productCartDtoForView);
             response.setStatus(HttpStatus.OK);
-            response.setSuccessMessage("Searched Item has been found");
+            response.setSuccessMessage("Searched Items are found!");
 
         } catch (Exception e) {
             response.setErrors(List.of(e.toString()));

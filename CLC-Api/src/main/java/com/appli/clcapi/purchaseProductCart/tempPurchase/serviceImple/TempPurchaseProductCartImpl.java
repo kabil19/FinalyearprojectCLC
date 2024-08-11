@@ -251,17 +251,17 @@ public class TempPurchaseProductCartImpl implements TempPurchaseProductCartServi
             }
             if (tempPurchaseProductCartDto.getSellingPrice() <= 0 && tempPurchaseProductCartDto.getPurchasePrice() <= 0) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setErrors(List.of("Prices can't be neither 0 nor less!"));
+                response.setErrors(List.of("Prices can neither be 0 nor less!"));
                 return response;
             }
             if (tempPurchaseProductCartDto.getSellingPrice() <= 0) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setErrors(List.of("Selling price can't be neither 0 nor less!"));
+                response.setErrors(List.of("Selling price can neither be 0 nor less!"));
                 return response;
             }
             if (tempPurchaseProductCartDto.getPurchasePrice() <= 0) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setErrors(List.of("Purchase price can't be neither 0 nor less!"));
+                response.setErrors(List.of("Purchase price can neither be 0 nor less!"));
                 return response;
             }
             if (tempPurchaseProductCartDto.getPurchasePrice() > tempPurchaseProductCartDto.getSellingPrice()) {
@@ -271,7 +271,7 @@ public class TempPurchaseProductCartImpl implements TempPurchaseProductCartServi
             }
             if (tempPurchaseProductCartDto.getDiscount() >= tempPurchaseProductCartDto.getPurchasePrice()) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setErrors(List.of("Unit Discount can't exceed the Purchase Price!"));
+                response.setErrors(List.of("The unit discount can neither exceed nor equal the purchase price!"));
                 return response;
             }
             if (selectedTempPurchaseInvoice.isEmpty()) {

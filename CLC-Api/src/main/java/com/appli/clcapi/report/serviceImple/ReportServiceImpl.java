@@ -146,7 +146,11 @@ public class ReportServiceImpl implements ReportService {
         NonPaginatedResponse response = new NonPaginatedResponse();
 
         try {
-
+            if(confirmSalesInvoiceId == null){
+                response.setErrors(List.of("Select an existing Sales Invoice Ref!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
             start = start.with(LocalTime.MIN);
             end = end.with(LocalTime.MAX);
             List<ConfirmSalesPaymentsEntity> salesInvoicePaymentsList = confirmSalesInvoicePaymentsRepo.findByConfirmSalesInvoiceEntity_ConfirmInvoiceIdAndPaidDateBetween(confirmSalesInvoiceId, start, end);
@@ -173,7 +177,11 @@ public class ReportServiceImpl implements ReportService {
         NonPaginatedResponse response = new NonPaginatedResponse();
 
         try {
-
+            if(purchaseInvoiceId == null){
+                response.setErrors(List.of("Select an existing Purchase Invoice Ref!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
             start = start.with(LocalTime.MIN);
             end = end.with(LocalTime.MAX);
             List<PurchasePaymentEntity> purchaseInvoicePaymentsList = purchasePaymentRepo.findByConfirmPurchaseEntity_ConfirmPurchaseIdAndPaidDateBetween(purchaseInvoiceId, start, end);
@@ -199,6 +207,11 @@ public class ReportServiceImpl implements ReportService {
     public NonPaginatedResponse selectAllPaymentsOfaCustomerWithInRange(Long custId, LocalDateTime start, LocalDateTime end) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
+            if(custId == null){
+                response.setErrors(List.of("Select an existing Customer!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
             start = start.with(LocalTime.MIN);
             end = end.with(LocalTime.MAX);
             //finds out the customer's invoices that has been confirmed within the provided range
@@ -242,6 +255,11 @@ public class ReportServiceImpl implements ReportService {
     public NonPaginatedResponse selectAllPaymentsOfaVendorWithInRange(Long vendorId, LocalDateTime start, LocalDateTime end) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
+            if(vendorId == null){
+                response.setErrors(List.of("Select an existing Sales Vendor!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
             start = start.with(LocalTime.MIN);
             end = end.with(LocalTime.MAX);
             List<ConfirmPurchaseEntity> purchaseInvoiceList = confirmPurchaseRepo

@@ -50,7 +50,7 @@ public class ConfirmPurchaseServiceImpl implements ConfirmPurchaseService {
             if (isConfirmPurchaseCartCreated(confirmPurchaseRecord)) {
                 tempPurchaseRepo.deleteById(purchaseId);
                 response.setStatus(HttpStatus.ACCEPTED);
-                response.setSuccessMessage(ConfirmPurchaseConsonants.PURCHASE_HAS_BEEN_CONFIRMED);
+                response.setSuccessMessage(ConfirmPurchaseConsonants.PURCHASE_IS_CONFIRMED);
             }
 
 
