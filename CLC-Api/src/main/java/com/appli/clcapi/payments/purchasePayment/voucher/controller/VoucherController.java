@@ -13,7 +13,7 @@ public class VoucherController {
 
 private final VoucherService voucherService;
     @GetMapping("getAllVoucher/{purchaseId}")
-    public NonPaginatedResponse getAllVoucherOfThePurchaseId(@PathVariable long purchaseId){
+    public NonPaginatedResponse getAllVoucherOfThePurchaseId(@PathVariable Long purchaseId){
         return voucherService.getAllVoucherOfThePurchaseId(purchaseId);
     }
 }

@@ -4,5 +4,5 @@ import com.appli.clcapi.common.response.NonPaginatedResponse;
 
 public interface VoucherService {
 
-    NonPaginatedResponse getAllVoucherOfThePurchaseId(long purchaseId);
+    NonPaginatedResponse getAllVoucherOfThePurchaseId(Long purchaseId);
 }

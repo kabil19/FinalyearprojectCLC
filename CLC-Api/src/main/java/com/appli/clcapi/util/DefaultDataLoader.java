@@ -31,6 +31,9 @@ public class DefaultDataLoader {
 
         if (userServiceImpl.getAllUsers().isEmpty()) {
             UserDto aUser = new UserDto();
+            aUser.setFirstname("CLC");
+            aUser.setLastname("CLC Main");
+            aUser.setEmail("Clc@outlook.com");
             aUser.setUsername("Admin");
             aUser.setRole(ADMIN);
             aUser.setPassword(password);

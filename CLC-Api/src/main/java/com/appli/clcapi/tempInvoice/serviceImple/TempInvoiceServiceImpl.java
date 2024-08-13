@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static java.util.Objects.isNull;
+
 @RequiredArgsConstructor
 @Service
 public class TempInvoiceServiceImpl implements TempInvoiceService {
@@ -32,6 +34,11 @@ public class TempInvoiceServiceImpl implements TempInvoiceService {
     public NonPaginatedResponse createTempSalesInvoice(TempInvoiceDto tempInvoiceDto) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
+            if(isNull(tempInvoiceDto.getCustomerEntity().getCustId())){
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Customer can't be null!"));
+                return response;
+            }
             Optional<CustomerEntity> customerEntity = customerRepo.findById(tempInvoiceDto.getCustomerEntity().getCustId());
             if (customerEntity.isEmpty()) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
@@ -100,7 +107,9 @@ public class TempInvoiceServiceImpl implements TempInvoiceService {
     @Override
     public ResponseEntity<String> update(TempInvoiceDto tempInvoiceDto) {
         try {
-
+            if(isNull(tempInvoiceDto.getCustomerEntity().getCustId())){
+               return new ResponseEntity<>("Customer Can't be empty!", HttpStatus.BAD_REQUEST);
+            }
             Optional<TempInvoiceEntity> aTempInvoice = tempInvoiceRepo.findById(tempInvoiceDto.getTempInvoiceId());
             if (!aTempInvoice.get().getFinalized()) {
                 TempInvoiceEntity updatedTempInvoice;
@@ -153,10 +162,18 @@ public class TempInvoiceServiceImpl implements TempInvoiceService {
     public NonPaginatedResponse getTempInvoiceById(Long id) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
+            if(isNull(id)){
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Invoice id can't be empty!"));
+                return response;
+            }
             Optional<TempInvoiceEntity> invoiceEntity = tempInvoiceRepo.findById(id);
-            TempInvoiceDto tempInvoiceDto = new TempInvoiceDto(invoiceEntity.get());
-            response.setResult(tempInvoiceDto);
-            response.setSuccessMessage("Temp Invoice is retrieved!");
+            if(invoiceEntity.isPresent()){
+                TempInvoiceDto tempInvoiceDto = new TempInvoiceDto(invoiceEntity.get());
+                response.setResult(tempInvoiceDto);
+                response.setSuccessMessage("Temp Invoice is retrieved!");
+            }
+
         } catch (Exception e) {
             response.setErrors(List.of("Couldn't retrieve!"));
         }

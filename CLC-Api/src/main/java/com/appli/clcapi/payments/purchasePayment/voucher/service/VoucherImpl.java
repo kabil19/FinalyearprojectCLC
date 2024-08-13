@@ -10,14 +10,21 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @RequiredArgsConstructor
 @Service
 public class VoucherImpl implements VoucherService {
     private final VoucherRepo voucherRepo;
     @Override
-    public NonPaginatedResponse getAllVoucherOfThePurchaseId(long purchaseId) {
+    public NonPaginatedResponse getAllVoucherOfThePurchaseId(Long purchaseId) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try{
+            if(isNull(purchaseId)){
+                response.setErrors(List.of("Purchase reference can't be null!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
             List<VoucherEntity> voucherEntities = voucherRepo.findByConfirmPurchaseEntity_ConfirmPurchaseId(purchaseId);
             List<VoucherDto> voucherDto = voucherEntities.stream()
                     .map(VoucherDto::new)

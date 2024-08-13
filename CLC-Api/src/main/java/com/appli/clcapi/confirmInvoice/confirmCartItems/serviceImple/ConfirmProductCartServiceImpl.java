@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @RequiredArgsConstructor
 @Service
 public class ConfirmProductCartServiceImpl implements ConfirmProductCartService {
@@ -58,6 +60,11 @@ public class ConfirmProductCartServiceImpl implements ConfirmProductCartService 
     public NonPaginatedResponse getAllConfirmedProCartItemsByInvoiceId(Long invoiceId) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
+            if(isNull(invoiceId)){
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Invoice can't be null!"));
+                return response;
+            }
             List<ConfirmProductCartEntity> cartList = confirmProductCartRepo.findByConfirmSalesInvoiceEntity_ConfirmInvoiceId(invoiceId);
             List<ConfirmProductCartDto> confirmProductCartDtoList = cartList.stream()
                     .map(ConfirmProductCartDto::new)

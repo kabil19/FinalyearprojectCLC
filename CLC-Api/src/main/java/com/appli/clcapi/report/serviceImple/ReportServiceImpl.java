@@ -24,6 +24,8 @@ import java.time.LocalTime;
 
 import java.util.*;
 
+import static java.util.Objects.isNull;
+
 @Service
 @RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
@@ -146,8 +148,8 @@ public class ReportServiceImpl implements ReportService {
         NonPaginatedResponse response = new NonPaginatedResponse();
 
         try {
-            if(confirmSalesInvoiceId == null){
-                response.setErrors(List.of("Select an existing Sales Invoice Ref!"));
+            if(isNull(confirmSalesInvoiceId)){
+                response.setErrors(List.of("Sales Invoice can't be null!"));
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 return response;
             }
@@ -177,8 +179,8 @@ public class ReportServiceImpl implements ReportService {
         NonPaginatedResponse response = new NonPaginatedResponse();
 
         try {
-            if(purchaseInvoiceId == null){
-                response.setErrors(List.of("Select an existing Purchase Invoice Ref!"));
+            if(isNull(purchaseInvoiceId)){
+                response.setErrors(List.of("Purchase Invoice Ref can't be null!"));
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 return response;
             }
@@ -207,8 +209,8 @@ public class ReportServiceImpl implements ReportService {
     public NonPaginatedResponse selectAllPaymentsOfaCustomerWithInRange(Long custId, LocalDateTime start, LocalDateTime end) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
-            if(custId == null){
-                response.setErrors(List.of("Select an existing Customer!"));
+            if(isNull(custId)){
+                response.setErrors(List.of("Customer can't be null!"));
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 return response;
             }
@@ -255,8 +257,8 @@ public class ReportServiceImpl implements ReportService {
     public NonPaginatedResponse selectAllPaymentsOfaVendorWithInRange(Long vendorId, LocalDateTime start, LocalDateTime end) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
-            if(vendorId == null){
-                response.setErrors(List.of("Select an existing Sales Vendor!"));
+            if(isNull(vendorId)){
+                response.setErrors(List.of("Vendor can't be null!"));
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 return response;
             }

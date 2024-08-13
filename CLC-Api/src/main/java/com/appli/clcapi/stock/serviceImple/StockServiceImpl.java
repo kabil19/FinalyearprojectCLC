@@ -19,10 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Objects.isNull;
+
 @Service
 @RequiredArgsConstructor
 public class StockServiceImpl implements StockService {
 
+    public static final String SERVER_ERROR = "Server Error";
     private final StockRepo stockRepo;
 
     @Override
@@ -31,6 +34,9 @@ public class StockServiceImpl implements StockService {
         try{
             if(stockDto.getSellingPrice() <stockDto.getPurchasePrice()){
                 return new ResponseEntity<>("Purchase price can't be greater than Selling Price!",HttpStatus.BAD_REQUEST);
+            }
+            if(isNull(stockDto.getCategoryOBJ().getCategoryId())){
+                return new ResponseEntity<>("category can't be null!",HttpStatus.BAD_REQUEST);
             }
             StockEntity aStock = StockEntity.builder()
                     .stockId(stockDto.getStockId())
@@ -49,7 +55,7 @@ public class StockServiceImpl implements StockService {
             return new ResponseEntity<>("Stock is Inserted!", HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
-            return new ResponseEntity<>("Server Error",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(SERVER_ERROR,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -62,10 +68,10 @@ public class StockServiceImpl implements StockService {
                 stockRepo.save(aStock);
                 return new ResponseEntity<>("Stock is deleted!", HttpStatus.OK);
             }
-            return new ResponseEntity<>("Stock as some other references, so can't be deleted!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("The selected Stock is a reference for some other entities, so can't be deleted!", HttpStatus.BAD_REQUEST);
         }catch (Exception e){
             e.printStackTrace();
-            return new ResponseEntity<>("Server Error",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(SERVER_ERROR,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -94,7 +100,7 @@ public class StockServiceImpl implements StockService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("Server Error",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(SERVER_ERROR,HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return null;
     }
