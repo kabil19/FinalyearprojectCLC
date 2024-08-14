@@ -15,6 +15,7 @@ import com.appli.clcapi.purchase.dto.ConfirmPurchaseDto;
 import com.appli.clcapi.purchase.entity.ConfirmPurchaseEntity;
 import com.appli.clcapi.purchase.repository.ConfirmPurchaseRepo;
 import com.appli.clcapi.report.service.ReportService;
+import com.appli.clcapi.vendor.repository.VendorRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,8 @@ public class ReportServiceImpl implements ReportService {
     private final ConfirmPurchaseRepo confirmPurchaseRepo;
     private final PurchasePaymentRepo purchasePaymentRepo;
     private final ConfirmSalesPaymentsRepo confirmSalesInvoicePaymentsRepo;
+    private final VendorRepo vendorRepo;
+
 
     @Override
     public NonPaginatedResponse selectSalesReportWithInRange(LocalDateTime start, LocalDateTime end) {
@@ -252,13 +255,15 @@ public class ReportServiceImpl implements ReportService {
         return response;
     }
 
+    private boolean isVendorValid(Long vendorId){
+       return vendorRepo.findById(vendorId).isEmpty();
+    }
     @Override
-
     public NonPaginatedResponse selectAllPaymentsOfaVendorWithInRange(Long vendorId, LocalDateTime start, LocalDateTime end) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
-            if(isNull(vendorId)){
-                response.setErrors(List.of("Vendor can't be null!"));
+            if(isNull(vendorId)||isVendorValid(vendorId)){
+                response.setErrors(List.of("Invalid Vendor!"));
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 return response;
             }
