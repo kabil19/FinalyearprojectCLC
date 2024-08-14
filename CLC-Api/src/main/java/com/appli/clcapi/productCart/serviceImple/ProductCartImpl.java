@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Objects.isNull;
+
 @RequiredArgsConstructor
 @Service
 public class ProductCartImpl implements ProductCartService {
@@ -32,6 +34,10 @@ public class ProductCartImpl implements ProductCartService {
     private final StockRepo stockRepo;
     private final TempInvoiceRepo tempInvoiceRepo;
     private static final Logger logger = LoggerFactory.getLogger(ProductCartImpl.class);
+
+    private boolean isStockValid(long stockId) {
+       return stockRepo.findById(stockId).isEmpty();
+    }
 
     @Override
     @Transactional
@@ -48,7 +54,7 @@ public class ProductCartImpl implements ProductCartService {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 return response;
             }
-            if (productCartDto.getStockDto().getStockId() == null) {
+            if (isNull(productCartDto.getStockDto().getStockId()) || isStockValid(productCartDto.getStockDto().getStockId())) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 response.setErrors(List.of("Stock is not selected!"));
                 return response;
@@ -63,7 +69,7 @@ public class ProductCartImpl implements ProductCartService {
             Long stockId = productCartDto.getStockDto().getStockId();
             Long tempInvoiceId = productCartDto.getTempInvoiceDto().getTempInvoiceId();
             Optional<StockEntity> stocksFromStockEntity = stockRepo.findById(stockId);
-            if(stocksFromStockEntity.isEmpty()){
+            if (stocksFromStockEntity.isEmpty()) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 response.setErrors(List.of("Select an existing stock from the list!"));
                 return response;
@@ -262,7 +268,7 @@ public class ProductCartImpl implements ProductCartService {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 return response;
             }
-            if (productCartDto.getStockDto().getStockId() == null) {
+            if (isNull(productCartDto.getStockDto().getStockId()) || isStockValid(productCartDto.getStockDto().getStockId())) {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 response.setErrors(List.of("Stock is not selected!"));
                 return response;

@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Objects.isNull;
+
 @RequiredArgsConstructor
 @Service
 public class TempPurchaseServiceImpl implements TempPurchaseService {
@@ -26,6 +28,11 @@ public class TempPurchaseServiceImpl implements TempPurchaseService {
     public NonPaginatedResponse addToTempPurchase(TempPurchaseDto tempPurchaseDto) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try{
+            if(isNull(tempPurchaseDto.getVendorDto().getVendorId())||isValidVendor(tempPurchaseDto.getVendorDto().getVendorId())){
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Invalid vendor!"));
+                return response;
+            }
             Optional<VendorEntity> vendorEntity = vendorRepo.findById(tempPurchaseDto.getVendorDto().getVendorId());
             List<TempPurchaseEntity> tempPurchaseEntity = tempPurchaseRepo.findAll();
             if(tempPurchaseEntity.isEmpty()){
@@ -58,11 +65,18 @@ public class TempPurchaseServiceImpl implements TempPurchaseService {
         }
         return response;
     }
-
+    private boolean isValidVendor(long vendorId){
+      return  vendorRepo.findById(vendorId).isEmpty();
+    }
     @Override
     public NonPaginatedResponse deleteTempPurchase(Long purchaseId) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try{
+            if(isNull(purchaseId) || isValidVendor(purchaseId)){
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Invalid vendor!"));
+                return response;
+            }
              tempPurchaseRepo.deleteById(purchaseId);
              response.setStatus(HttpStatus.ACCEPTED);
              response.setSuccessMessage(TempPurchaseConstants.PURCHASE_HAS_BEEN_SUCCESSFULLY_DELETED);
@@ -94,7 +108,7 @@ public class TempPurchaseServiceImpl implements TempPurchaseService {
         }catch(Exception e){
             e.printStackTrace();
             response.setStatus(HttpStatus.BAD_REQUEST);
-            response.setErrors(List.of("couldn't retrieve"));
+            response.setErrors(List.of("Couldn't retrieve"));
         }
         return response;
     }

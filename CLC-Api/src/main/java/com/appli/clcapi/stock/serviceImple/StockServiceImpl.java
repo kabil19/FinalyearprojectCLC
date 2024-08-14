@@ -1,6 +1,7 @@
 package com.appli.clcapi.stock.serviceImple;
 
 import com.appli.clcapi.category.entity.CategoryEntity;
+import com.appli.clcapi.category.repository.CategoryRepo;
 import com.appli.clcapi.stock.dto.StockDto;
 import com.appli.clcapi.stock.entity.StockEntity;
 import com.appli.clcapi.stock.repository.StockRepo;
@@ -27,13 +28,14 @@ public class StockServiceImpl implements StockService {
 
     public static final String SERVER_ERROR = "Server Error";
     private final StockRepo stockRepo;
+    private final CategoryRepo categoryRepo;
 
     @Override
     public ResponseEntity<String> register(StockDto stockDto) {
         LocalDateTime now = LocalDateTime.now();
         try{
-            if(isNull(stockDto.getCategoryOBJ().getCategoryId())){
-                return new ResponseEntity<>("category can't be null!",HttpStatus.BAD_REQUEST);
+            if(isNull(stockDto.getCategoryOBJ().getCategoryId()) || isValidStock(stockDto.getCategoryOBJ().getCategoryId())){
+                return new ResponseEntity<>("Invalid category!",HttpStatus.BAD_REQUEST);
             }
             if(isNull(stockDto.getSellingPrice())){
                 return new ResponseEntity<>("Selling price can't be null!",HttpStatus.BAD_REQUEST);
@@ -68,7 +70,9 @@ public class StockServiceImpl implements StockService {
             return new ResponseEntity<>(SERVER_ERROR,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+private boolean isValidStock(Long catId){
+      return  categoryRepo.findById(catId).isEmpty();
+}
     @Override
     public ResponseEntity<String> delete(Long stockId) {
         try {
