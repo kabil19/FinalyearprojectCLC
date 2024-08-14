@@ -32,12 +32,22 @@ public class StockServiceImpl implements StockService {
     public ResponseEntity<String> register(StockDto stockDto) {
         LocalDateTime now = LocalDateTime.now();
         try{
-            if(stockDto.getSellingPrice() <stockDto.getPurchasePrice()){
-                return new ResponseEntity<>("Purchase price can't be greater than Selling Price!",HttpStatus.BAD_REQUEST);
-            }
             if(isNull(stockDto.getCategoryOBJ().getCategoryId())){
                 return new ResponseEntity<>("category can't be null!",HttpStatus.BAD_REQUEST);
             }
+            if(isNull(stockDto.getSellingPrice())){
+                return new ResponseEntity<>("Selling price can't be null!",HttpStatus.BAD_REQUEST);
+            }
+            if(isNull(stockDto.getPurchasePrice())){
+                return new ResponseEntity<>("Purchase price can't be null!",HttpStatus.BAD_REQUEST);
+            }
+            if(isNull(stockDto.getArrivalDate())){
+                return new ResponseEntity<>("category can't be null!",HttpStatus.BAD_REQUEST);
+            }
+            if(stockDto.getSellingPrice() <stockDto.getPurchasePrice()){
+                return new ResponseEntity<>("Purchase price can't be greater than Selling Price!",HttpStatus.BAD_REQUEST);
+            }
+
             StockEntity aStock = StockEntity.builder()
                     .stockId(stockDto.getStockId())
                     .categoryEntity(new CategoryEntity(stockDto.getCategoryOBJ().getCategoryId()))
@@ -78,10 +88,24 @@ public class StockServiceImpl implements StockService {
     @Override
     public ResponseEntity<String> update(StockDto stockDto) {
         try{
-            Optional<StockEntity> aStock = stockRepo.findById(stockDto.getStockId());
+            if(isNull(stockDto.getCategoryOBJ().getCategoryId())){
+                return new ResponseEntity<>("category can't be null!",HttpStatus.BAD_REQUEST);
+            }
+            if(isNull(stockDto.getSellingPrice())){
+                return new ResponseEntity<>("Selling price can't be null!",HttpStatus.BAD_REQUEST);
+            }
+            if(isNull(stockDto.getPurchasePrice())){
+                return new ResponseEntity<>("Purchase price can't be null!",HttpStatus.BAD_REQUEST);
+            }
+            if(isNull(stockDto.getArrivalDate())){
+                return new ResponseEntity<>("category can't be null!",HttpStatus.BAD_REQUEST);
+            }
+
             if(stockDto.getSellingPrice() <stockDto.getPurchasePrice()){
                 return new ResponseEntity<>("Purchase price can't be greater than Selling Price!",HttpStatus.BAD_REQUEST);
             }
+            Optional<StockEntity> aStock = stockRepo.findById(stockDto.getStockId());
+
             if(aStock.isPresent()){
                 StockEntity updatedStock;
                 updatedStock = aStock.get();

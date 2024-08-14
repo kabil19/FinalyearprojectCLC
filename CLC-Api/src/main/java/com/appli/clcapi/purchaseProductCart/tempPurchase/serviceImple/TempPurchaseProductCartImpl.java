@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Objects.isNull;
+
 @Service
 @RequiredArgsConstructor
 public class TempPurchaseProductCartImpl implements TempPurchaseProductCartService {
@@ -27,7 +29,11 @@ public class TempPurchaseProductCartImpl implements TempPurchaseProductCartServi
     public NonPaginatedResponse addToTempPurchaseCart(TempPurchaseProductCartDto tempPurchaseProductCartDto) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
-
+            if(isNull(tempPurchaseProductCartDto.getStockDto().getStockId())){
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Stock isn't exist!"));
+                return response;
+            }
             Long purchaseId = tempPurchaseProductCartDto.getTempPurchaseEntity().getPurchaseId();
             Optional<TempPurchaseEntity> selectedTempPurchaseInvoice = tempPurchaseRepo.findById(purchaseId);
             Long stockId = tempPurchaseProductCartDto.getStockDto().getStockId();
@@ -230,6 +236,11 @@ public class TempPurchaseProductCartImpl implements TempPurchaseProductCartServi
     public NonPaginatedResponse updateTempPurchaseCartRecord(TempPurchaseProductCartDto tempPurchaseProductCartDto) {
         NonPaginatedResponse response = new NonPaginatedResponse();
         try {
+            if(isNull(tempPurchaseProductCartDto.getStockDto().getStockId())){
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setErrors(List.of("Stock isn't exist!"));
+                return response;
+            }
             Long purchaseId = tempPurchaseProductCartDto.getTempPurchaseEntity().getPurchaseId();
             Optional<TempPurchaseEntity> selectedTempPurchaseInvoice = tempPurchaseRepo.findById(purchaseId);
             Long stockId = tempPurchaseProductCartDto.getStockDto().getStockId();
