@@ -1,9 +1,9 @@
 @echo off
 
 :: Configuration
-set DB_NAME=clc
+set DB_NAME=clc_db
 set DB_USER=root
-set DB_PASSWORD=CLC2019
+set DB_PASSWORD=password
 set BACKUP_DIR=D:\clc-backup
 
 :: Get the current date and time
@@ -22,20 +22,29 @@ set MODE=%1
 if "%MODE%"=="manual" (
     set BACKUP_FILE=%BACKUP_DIR%\%DB_NAME%-%DATE%_%TIME%_manual.sql
 ) else if "%MODE%"=="whenRestore" (
-    set SNAPSHOT_DIR=%BACKUP_DIR%\SNAPSHOT
+    set SNAPSHOT_DIR=%BACKUP_DIR%\snapshot
+    echo Creating SNAPSHOT directory at: %SNAPSHOT_DIR%
     if not exist "%SNAPSHOT_DIR%" (
         mkdir "%SNAPSHOT_DIR%"
+        echo SNAPSHOT directory created.
+    ) else (
+        echo SNAPSHOT directory already exists.
     )
     set BACKUP_FILE=%SNAPSHOT_DIR%\%DB_NAME%-%DATE%_%TIME%.sql
 ) else (
     set BACKUP_FILE=%BACKUP_DIR%\%DB_NAME%-%DATE%_%TIME%.sql
 )
+
 :: Create backup directory if it doesn't exist
 if not exist "%BACKUP_DIR%" (
     mkdir "%BACKUP_DIR%"
+    echo Backup directory created at: %BACKUP_DIR%
+) else (
+    echo Backup directory already exists at: %BACKUP_DIR%
 )
 
 :: Perform the backup
+echo Backing up database to: %BACKUP_FILE%
 if "%DB_PASSWORD%"=="" (
     mysqldump -u %DB_USER% %DB_NAME% > "%BACKUP_FILE%"
 ) else (

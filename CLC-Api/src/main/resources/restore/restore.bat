@@ -1,10 +1,10 @@
 @echo off
+setlocal
 
-:: Configuration
-set DB_NAME=clc
+REM Set database connection details
+set DB_NAME=clc_db
 set DB_USER=root
-set DB_PASSWORD=CLC2019
-
+set DB_PASSWORD=password
 :: Path to the backup file provided by the application
 set BACKUP_FILE=%1
 
