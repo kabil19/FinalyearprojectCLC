@@ -16,7 +16,7 @@ public class TempPurchaseDto {
     private Long purchaseId;
 
     @JsonProperty("purchaseInvoiceNO")
-    private Long purchaseInvoiceNO;
+    private String purchaseInvoiceNO;
 
     @JsonProperty("purchasedDate")
     private Date purchasedDate;

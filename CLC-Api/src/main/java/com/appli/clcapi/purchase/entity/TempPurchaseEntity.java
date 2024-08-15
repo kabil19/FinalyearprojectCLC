@@ -20,7 +20,7 @@ public class TempPurchaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long purchaseId;
 
-    private Long purchaseInvoiceNO;
+    private String purchaseInvoiceNO;
 
     private Date purchasedDate;
 

@@ -24,7 +24,7 @@ public class ConfirmPurchaseEntity {
     @Id
     private Long confirmPurchaseId;
 
-    private Long purchaseInvoice;
+    private String purchaseInvoice;
     private LocalDateTime purchaseDate;
     @ManyToOne
     @JoinColumn(name = "vendorId")

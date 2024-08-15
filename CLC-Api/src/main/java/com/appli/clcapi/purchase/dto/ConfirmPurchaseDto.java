@@ -18,7 +18,7 @@ public class ConfirmPurchaseDto {
     @JsonProperty("confirmPurchaseId")
     private Long confirmPurchaseId;
     @JsonProperty("purchaseInvoice")
-    private Long purchaseInvoice;
+    private String purchaseInvoice;
     @JsonProperty("purchaseDate")
     private LocalDateTime purchaseDate;
     @JsonProperty("vendorOBJ")
