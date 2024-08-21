@@ -52,7 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
     public ResponseEntity<String> delete(Long custId) {
         try{
              var aCust = customerRepo.getReferenceById(custId);
-             if(aCust.getTempInvoiceEntity().isEmpty()){
+             if(aCust.getTempInvoiceEntity().isEmpty() && aCust.getConfirmSalesInvoiceEntity().isEmpty()){
                  aCust.setDeleted(true);
                  customerRepo.save(aCust);
                  return new ResponseEntity<>("Customer is deleted!",HttpStatus.OK);

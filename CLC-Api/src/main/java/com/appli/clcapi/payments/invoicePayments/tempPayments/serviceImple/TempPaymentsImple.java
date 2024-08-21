@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static java.util.Objects.isNull;
+
 @Service
 @RequiredArgsConstructor
 public class TempPaymentsImple implements TempPaymentsService {
@@ -139,9 +141,33 @@ public class TempPaymentsImple implements TempPaymentsService {
 
     }
 
+    private boolean isPayIDValid(Long payId){
+        return tempPaymentsRepo.findById(payId).isEmpty();
+    }
     @Override
     public NonPaginatedResponse deletePayment(Long payId) {
-        return null;
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        try{
+            if (isNull(payId) || isPayIDValid(payId)) {
+                response.setErrors(List.of("Payment id can't be empty!"));
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return response;
+            }
+            Optional<TempPaymentsEntity> aPay = tempPaymentsRepo.findById(payId);
+            if(aPay.isPresent()){
+                TempInvoiceEntity tempInvoiceEntity = aPay.get().getTempSalesInvoice();
+                Double payment = aPay.get().getPaidAmount();
+                tempInvoiceEntity.setPaidAmount(tempInvoiceEntity.getPaidAmount()-payment);
+                tempPaymentsRepo.deleteById(payId);
+                response.setStatus(HttpStatus.OK);
+                response.setSuccessMessage("Payment is deleted!");
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+        }
+        return response;
     }
 
     @Override

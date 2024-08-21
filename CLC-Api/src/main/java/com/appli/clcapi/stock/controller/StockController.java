@@ -37,6 +37,7 @@ public class StockController{
         return stockService.selectStocks(existingChar);
     }
 
+
     @GetMapping("getPaginatedAll")
     public List<StockDto> getPaginatedAll(@PathParam("pageNum") int pageNum){
         return stockService.getPaginatedAll(pageNum, 3);

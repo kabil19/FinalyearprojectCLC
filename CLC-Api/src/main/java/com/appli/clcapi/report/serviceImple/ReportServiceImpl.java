@@ -15,6 +15,9 @@ import com.appli.clcapi.purchase.dto.ConfirmPurchaseDto;
 import com.appli.clcapi.purchase.entity.ConfirmPurchaseEntity;
 import com.appli.clcapi.purchase.repository.ConfirmPurchaseRepo;
 import com.appli.clcapi.report.service.ReportService;
+import com.appli.clcapi.stock.dto.StockDto;
+import com.appli.clcapi.stock.entity.StockEntity;
+import com.appli.clcapi.stock.repository.StockRepo;
 import com.appli.clcapi.vendor.repository.VendorRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,8 +38,9 @@ public class ReportServiceImpl implements ReportService {
     private final ConfirmPurchaseRepo confirmPurchaseRepo;
     private final PurchasePaymentRepo purchasePaymentRepo;
     private final ConfirmSalesPaymentsRepo confirmSalesInvoicePaymentsRepo;
-    private final VendorRepo vendorRepo;
 
+    private final VendorRepo vendorRepo;
+    private final StockRepo stockRepo;
 
     @Override
     public NonPaginatedResponse selectSalesReportWithInRange(LocalDateTime start, LocalDateTime end) {
@@ -301,6 +305,22 @@ public class ReportServiceImpl implements ReportService {
         }
         return response;
     }
+
+    @Override
+    public NonPaginatedResponse getStockInPriceRange(Double startPrice, Double endPrice) {
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        try{
+            List<StockEntity> stockEntities = stockRepo.findAllBySellingPriceBetween(startPrice, endPrice);
+            List<StockDto> stockDto = stockEntities.stream().map(StockDto::new).toList();
+            response.setResult(stockDto);
+            return response;
+        }catch (Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_GATEWAY);
+        }
+        return response;
+    }
+
 
 }
 

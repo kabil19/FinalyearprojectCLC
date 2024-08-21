@@ -22,6 +22,11 @@ public class ReportController {
         return reportService.selectSalesReportWithInRange(startDate, endDate);
 
     }
+
+    @GetMapping("getStockInPriceRange")
+    public NonPaginatedResponse getStockInPriceRange(@RequestParam("startPrice") Double startPrice,@RequestParam("endPrice") Double endPrice){
+        return reportService.getStockInPriceRange(startPrice,endPrice);
+    }
     @GetMapping("selectPurchaseReportWithInRange")
     public NonPaginatedResponse selectPurchaseReportWithInRange(
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,

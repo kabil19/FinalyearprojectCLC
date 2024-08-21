@@ -1,6 +1,7 @@
 package com.appli.clcapi.stock.service;
 
 
+import com.appli.clcapi.common.response.NonPaginatedResponse;
 import com.appli.clcapi.stock.dto.StockDto;
 import org.springframework.http.ResponseEntity;
 
@@ -17,5 +18,6 @@ public interface StockService {
     List<StockDto> selectStocks(String existingChar);
 
     List<StockDto> getAll();
+
      List<StockDto> getPaginatedAll(int pageNum, int pageSize);
 }

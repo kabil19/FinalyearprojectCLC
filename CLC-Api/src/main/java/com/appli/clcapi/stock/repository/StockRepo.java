@@ -10,6 +10,7 @@ public interface StockRepo extends PagingAndSortingRepository<StockEntity, Long>
 
     List<StockEntity> findAllByDeletedEquals(boolean state);
 
+    List<StockEntity> findAllBySellingPriceBetween(Double start, Double end);
     List<StockEntity> findAllByMaterialColourContainingIgnoreCaseOrItemNameContainingIgnoreCaseOrRemarksContainingIgnoreCase
             (String color, String name, String remarks);
 
