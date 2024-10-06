@@ -56,7 +56,8 @@ public class TempInvoiceServiceImpl implements TempInvoiceService {
                     .build();
             TempInvoiceEntity savedData = tempInvoiceRepo.save(anInvoice);
             if(Objects.equals(savedData.getTempInvoiceNumberReference(), null)){
-                savedData.setTempInvoiceNumberReference("CLC-"+savedData.getTempInvoiceId());
+                LocalDateTime dateTime = LocalDateTime.now();
+                savedData.setTempInvoiceNumberReference("FG/"+dateTime.getYear()+"/"+dateTime.getMonthValue()+"/"+savedData.getTempInvoiceId());
                 tempInvoiceRepo.save(savedData);
             }
             response.setSuccessMessage("Sales Invoice is created!");

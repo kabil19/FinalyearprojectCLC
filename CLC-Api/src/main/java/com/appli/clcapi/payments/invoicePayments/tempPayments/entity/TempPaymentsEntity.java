@@ -28,9 +28,6 @@ public class TempPaymentsEntity {
 
 //    private Long purchaseInvoice;
 
-
-
-
     public TempPaymentsEntity(TempPaymentsDto paymentsDto) {
         this.paymentId = paymentsDto.getPaymentId();
         this.paymentType = paymentsDto.getPaymentType();
