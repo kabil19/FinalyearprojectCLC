@@ -28,7 +28,7 @@ public class DatabaseRestoreService {
         if (process.exitValue() == 0) {
             System.out.println("Restore completed successfully.");
         } else {
-            System.err.println("Restore failed.");
+            System.err.println("Restore is failed.");
         }
     }
 }

@@ -2,9 +2,9 @@
 setlocal
 
 REM Set database connection details
-set DB_NAME=clc_db
+set DB_NAME=clc
 set DB_USER=root
-set DB_PASSWORD=password
+set DB_PASSWORD=CLC2019
 :: Path to the backup file provided by the application
 set BACKUP_FILE=%1
 
@@ -24,7 +24,7 @@ if "%DB_PASSWORD%"=="" (
 
 :: Check if the restore was successful
 if ERRORLEVEL 1 (
-    echo Restore failed.
+    echo Restore failed with error code %ERRORLEVEL%.
     exit /b 1
 )
 

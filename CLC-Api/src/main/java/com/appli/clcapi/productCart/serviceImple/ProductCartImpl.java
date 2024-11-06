@@ -251,7 +251,34 @@ public class ProductCartImpl implements ProductCartService {
         return response;
     }
 
+    @Override
+    @Transactional
+    public NonPaginatedResponse addMainDiscount(Long invoiceId, Double mainDiscount) {
+        NonPaginatedResponse response = new NonPaginatedResponse();
+        TempInvoiceEntity aTempInvoice = tempInvoiceRepo.findById(invoiceId).orElseThrow(()->new RuntimeException("No such invoice exists!"));
+        Double invoiceTotal = aTempInvoice.getNetAmount();
+        if(invoiceTotal <= mainDiscount){
+            response.setErrors(List.of("Add a valid discount amount!"));
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            return response;
+        }
+        if(mainDiscount == 0){
+            List<ProductCartEntity> cartList = productCartRepo.findByTempInvoiceEntity_TempInvoiceId(invoiceId);
+            double totalNetAmount = cartList.stream()
+                    .mapToDouble(ProductCartEntity::getNetAmount)
+                    .sum();
+            aTempInvoice.setMainDiscount(mainDiscount);
+            aTempInvoice.setNetAmount(totalNetAmount);
 
+        }else {
+            aTempInvoice.setMainDiscount(mainDiscount);
+            aTempInvoice.setNetAmount(aTempInvoice.getNetAmount() - mainDiscount);
+        }
+        tempInvoiceRepo.save(aTempInvoice);
+        response.setStatus(HttpStatus.OK);
+        response.setSuccessMessage("Discount Added!");
+        return response;
+    }
     @Override
     @Transactional
     public NonPaginatedResponse update(ProductCartDto productCartDto) {

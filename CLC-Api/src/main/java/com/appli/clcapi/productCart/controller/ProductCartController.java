@@ -25,6 +25,11 @@ public class ProductCartController {
     {
         return productCartService.addProductsToCart(productCartDto);
     }
+    @PostMapping("addMainDiscount/{invoiceId}")
+    public NonPaginatedResponse addMainDiscount(@PathVariable Long invoiceId, @RequestBody Double mainDiscount)
+    {
+        return productCartService.addMainDiscount(invoiceId, mainDiscount);
+    }
 
     @DeleteMapping("deleteProductFromTheCart/{proCartId}")
     public NonPaginatedResponse deleteProductFromTheCart(@PathVariable Long proCartId){

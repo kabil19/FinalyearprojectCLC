@@ -52,6 +52,7 @@ public class TempInvoiceServiceImpl implements TempInvoiceService {
                     .paidAmount(tempInvoiceDto.getPaidAmount())
                     .finalized(false)
                     .isComplete(false)
+                    .mainDiscount(0.0)
                     .customer(new CustomerEntity(tempInvoiceDto.getCustomerEntity()))
                     .build();
             TempInvoiceEntity savedData = tempInvoiceRepo.save(anInvoice);
@@ -118,6 +119,7 @@ public class TempInvoiceServiceImpl implements TempInvoiceService {
                 updatedTempInvoice.setTempInvoiceId(tempInvoiceDto.getTempInvoiceId());
                 updatedTempInvoice.setDate(tempInvoiceDto.getDate());
                 updatedTempInvoice.setNetAmount(tempInvoiceDto.getNetAmount());
+                updatedTempInvoice.setMainDiscount(tempInvoiceDto.getMainDiscount());
                 updatedTempInvoice.setPaidAmount(tempInvoiceDto.getPaidAmount());
                 updatedTempInvoice.setTempInvoiceNumberReference(tempInvoiceDto.getTempInvoiceNumberReference());
                 updatedTempInvoice.setCustomer(new CustomerEntity(tempInvoiceDto.getCustomerEntity()));

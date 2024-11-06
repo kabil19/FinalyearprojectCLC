@@ -24,6 +24,9 @@ public class TempInvoiceDto {
     @JsonProperty("netAmount")
     private Double netAmount; //10000
 
+     @JsonProperty("mainDiscount")
+    private Double mainDiscount;
+
     @JsonProperty("paidAmount")
     private Double paidAmount;
 
@@ -48,6 +51,7 @@ public class TempInvoiceDto {
         this.setCustomerEntity(new CustomerDto(tempInvoiceEntity.getCustomer()));
         this.setTempInvoiceNumberReference(tempInvoiceEntity.getTempInvoiceNumberReference());
         this.setIsComplete(tempInvoiceEntity.getIsComplete());
+        this.setMainDiscount(tempInvoiceEntity.getMainDiscount());
     }
 
 

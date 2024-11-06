@@ -32,6 +32,7 @@ public class TempInvoiceEntity {
     private LocalDateTime date;
 
     private Double netAmount;
+    private Double mainDiscount;
 
     private Boolean finalized = false;
 
@@ -68,6 +69,7 @@ public class TempInvoiceEntity {
         this.setPaidAmount(tempInvoiceDto.getPaidAmount());
         this.setCustomer(new CustomerEntity(tempInvoiceDto.getCustomerEntity()));
        this.setIsComplete(tempInvoiceDto.getIsComplete());
+       this.setMainDiscount(tempInvoiceDto.getMainDiscount());
     }
 
 

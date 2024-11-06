@@ -32,4 +32,4 @@ spring:
       matching-strategy: ant_path_matcher
 app:
   default-admin-password: ${CLC_DEFAULT_ADMIN_PW:admin2025}
-  restore-script-path: E:\Kabilan\FinalyearprojectCLC\CLC-Api\src\main\resources\restore\restore.bat
+  restore-script-path: D:\wamp64\www\FinalYearProject\CLC-Api\src\main\resources\restore\restore.bat
