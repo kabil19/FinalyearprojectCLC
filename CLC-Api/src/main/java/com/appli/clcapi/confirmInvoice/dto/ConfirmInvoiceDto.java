@@ -31,6 +31,12 @@ public class ConfirmInvoiceDto {
     @JsonProperty("advanceAmount")
     private Double advanceAmount;
 
+    @JsonProperty("mainDiscount")
+    private Double mainDiscount;
+
+    @JsonProperty("returnAmount")
+    private Double returnAmount;
+
 
     @JsonProperty("isComplete")
     private Boolean isComplete;
@@ -50,5 +56,7 @@ public class ConfirmInvoiceDto {
         this.invoiceReference = confirmSalesInvoiceEntity.getInvoiceReference();
         this.isComplete = confirmSalesInvoiceEntity.getIsComplete();
         this.advanceAmount = confirmSalesInvoiceEntity.getAdvancePayment();
+        this.mainDiscount = confirmSalesInvoiceEntity.getMainDiscount();
+        this.returnAmount = confirmSalesInvoiceEntity.getReturnAmount();
     }
 }

@@ -6,4 +6,5 @@ import com.appli.clcapi.confirmInvoice.entity.ConfirmSalesInvoiceEntity;
 public interface ConfirmProductCartService {
     Boolean confirmTheCartItems(Long productCartId, ConfirmSalesInvoiceEntity confirmInvoice);
     NonPaginatedResponse getAllConfirmedProCartItemsByInvoiceId(Long invoiceId);
+
 }

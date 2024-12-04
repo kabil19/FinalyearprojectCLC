@@ -29,9 +29,9 @@ public class ConfirmSalesInvoiceEntity {
     private LocalDateTime date;
     private Double netAmount;
     private Double paidAmount;
+    private Double mainDiscount;
     private Double advancePayment;
-  /*  @OneToMany(mappedBy = "confirmSalesInvoiceEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ProductCartEntity> productCartEntity;*/
+    private Double returnAmount;
     private Boolean isComplete =false;
 
     @ManyToOne
@@ -66,6 +66,8 @@ public class ConfirmSalesInvoiceEntity {
         this.customer = new CustomerEntity(confirmInvoiceDto.getCustomerOBJ());
         this.isComplete = confirmInvoiceDto.getIsComplete();
         this.advancePayment = confirmInvoiceDto.getAdvanceAmount();
+        this.mainDiscount = confirmInvoiceDto.getMainDiscount();
+        this.returnAmount = confirmInvoiceDto.getReturnAmount();
     }
 
 

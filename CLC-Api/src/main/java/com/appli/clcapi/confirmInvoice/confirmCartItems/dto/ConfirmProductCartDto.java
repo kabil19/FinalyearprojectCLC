@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ConfirmProductCartDto {
 
-    @JsonProperty("conformProductCartId")
+    @JsonProperty("confirmProductCartId")
     private Long confirmProductCartId;
 
     @JsonProperty("stockOBJ")

@@ -168,6 +168,8 @@ public class ConfirmInvoiceServiceImple implements ConfirmInvoiceService {
         confirmSalesInvoiceEntity.setCustomer(tempInvoiceEntity.getCustomer());
         confirmSalesInvoiceEntity.setIsComplete(tempInvoiceEntity.getIsComplete());
         confirmSalesInvoiceEntity.setAdvancePayment(tempInvoiceEntity.getPaidAmount());
+        confirmSalesInvoiceEntity.setMainDiscount(tempInvoiceEntity.getMainDiscount());
+        confirmSalesInvoiceEntity.setReturnAmount(0.00);
         return confirmSalesInvoiceRepo.save(confirmSalesInvoiceEntity);
     }
 
